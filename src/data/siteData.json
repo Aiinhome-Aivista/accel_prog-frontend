@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "logo": "MokshaPath",
+    "links": [
+      { "label": "Programs", "href": "#programs" },
+      { "label": "Courses", "href": "#courses" },
+      { "label": "Why Us", "href": "#impact" },
+      { "label": "Newsletter", "href": "#newsletter" },
+      { "label": "Forum", "href": "#forum" }
+    ],
+    "cta": "Apply"
+  },
+  "hero": {
+    "badge": "AI SUMMER",
+    "titleParts": ["The", "AI-Native", "Summer", "Series"],
+    "highlightWord": "AI-Native",
+    "description": "Four structured cohorts that turn you into an AI-first builder — no prior AI experience necessary. Curated by industry leaders.",
+    "buttons": [
+      { "label": "Enroll Now", "primary": true },
+      { "label": "Explore Courses", "primary": false }
+    ],
+    "stats": [
+      { "value": "4", "label": "Courses" },
+      { "value": "12", "label": "Weeks" },
+      { "value": "4", "label": "Certificates" },
+      { "value": "20+", "label": "Mentors" }
+    ]
+  },
+  "journey": {
+    "badge": "AI JOURNEY",
+    "title": "Your AI Journey",
+    "description": "Four progressive courses — each building on the last — culminating in AI that you'll build and deploy yourself.",
+    "steps": [
+      { "number": 1, "title": "AI Fundamentals", "completed": false, "active": false },
+      { "number": 2, "title": "Prompt AI Builder", "completed": false, "active": false },
+      { "number": 3, "title": "Live Multi-Agent Build", "completed": true, "active": true },
+      { "number": 4, "title": "Launch & Deploy", "completed": false, "active": false }
+    ]
+  },
+  "courses": {
+    "badge": "4 COURSES",
+    "title": "Four Courses. One Transformation.",
+    "description": "From theory to deployment, each course builds on the previous — tackling real problems with real tools and industry mentors by your side.",
+    "items": [
+      {
+        "number": "01",
+        "title": "AI Fundamentals",
+        "duration": "3 Weeks",
+        "description": "Master the foundations of AI, large language models, and prompt engineering. Build intuition before you build products.",
+        "tags": ["LLMs", "Prompting", "ChatGPT"]
+      },
+      {
+        "number": "02",
+        "title": "AI Product Builder",
+        "duration": "3 Weeks",
+        "description": "Build and ship your first AI-powered product — using APIs, no-code tools, and real user feedback loops.",
+        "tags": ["APIs", "No-Code", "GPT-4"]
+      },
+      {
+        "number": "03",
+        "title": "Multi-Agent Systems",
+        "duration": "3 Weeks",
+        "description": "Design, orchestrate, and deploy autonomous AI agents that collaborate to solve complex tasks.",
+        "tags": ["Agents", "AutoGen", "LangChain"]
+      },
+      {
+        "number": "04",
+        "title": "Launch & Scale",
+        "duration": "3 Weeks",
+        "description": "Launch your AI product, acquire early users, and build infrastructure that scales beyond day one.",
+        "tags": ["GTM", "Growth", "Deployment"]
+      }
+    ]
+  },
+  "impact": {
+    "badge": "IN PARTNERSHIP",
+    "title": "Built for Real Impact",
+    "description": "Our curriculum is crafted in partnership with industry leaders — bridging the gap between AI knowledge and real-world application that creates careers.",
+    "partners": [
+      { "name": "OpenAI", "initial": "O" },
+      { "name": "Anthropic", "initial": "A" },
+      { "name": "Google", "initial": "G" },
+      { "name": "Microsoft", "initial": "M" },
+      { "name": "AWS", "initial": "W" },
+      { "name": "Meta", "initial": "M" }
+    ],
+    "features": [
+      { "icon": "🎯", "title": "Real Projects", "description": "Build products that solve actual problems, not toy demos." },
+      { "icon": "🧠", "title": "Expert Mentors", "description": "Weekly sessions with practitioners from top AI companies." },
+      { "icon": "🏆", "title": "Certification", "description": "Earn verifiable certificates recognized by hiring teams." },
+      { "icon": "🌐", "title": "Global Community", "description": "Join a cohort of builders from 40+ countries worldwide." }
+    ]
+  },
+  "footer": {
+    "logo": "VeloPath",
+    "tagline": "Built for the AI-native generation.",
+    "links": ["Privacy", "Terms", "Contact"]
+  }
+}
