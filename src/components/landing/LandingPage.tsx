@@ -384,8 +384,8 @@ function LandingPage({
                     strokeWidth="1.3"
                   />
                 </svg>,
-                "#C96616", // Orange icon color
-                "#FFF7EE", // Light cream background
+                "#e87a2e",
+                "#fcefe6",
               ],
               [
                 "Industry Leaders",
@@ -404,8 +404,8 @@ function LandingPage({
                     strokeLinejoin="round"
                   />
                 </svg>,
-                "#2E7D32", // Green icon color
-                "#E8F5E9", // Light green background
+                "#4caf50",
+                "#edf7ed",
               ],
               [
                 "AI-Native Approach",
@@ -434,8 +434,8 @@ function LandingPage({
                     strokeLinejoin="round"
                   />
                 </svg>,
-                "#1565C0", // Blue icon color
-                "#E3F2FD", // Light blue background
+                "#efa36f", // Blue icon color
+                "#fcefe6", // Light blue background
               ],
               [
                 "Progressive Tracks",
@@ -460,8 +460,8 @@ function LandingPage({
                     strokeWidth="1.3"
                   />
                 </svg>,
-                "#6A1B9A", // Purple icon color
-                "#F3E5F5", // Light purple background
+                "#92ce94",
+                "#edf7ed",
               ],
               [
                 "Real-World Relevance",
@@ -488,8 +488,8 @@ function LandingPage({
                     strokeLinejoin="round"
                   />
                 </svg>,
-                "#C62828", // Red icon color
-                "#FFEBEE", // Light red background
+                "#e87a2e",
+                "#fcefe6",
               ],
               [
                 "Responsible AI",
@@ -508,8 +508,8 @@ function LandingPage({
                     strokeLinecap="round"
                   />
                 </svg>,
-                "#00695C", // Teal icon color
-                "#E0F2F1", // Light teal background
+                "#74c177",
+                "#edf7ed",
               ],
             ].map(([title, desc, icon, color, bgColor]) => (
               <div className="feature fade-in" key={title as string}>
