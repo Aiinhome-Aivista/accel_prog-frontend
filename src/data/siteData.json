@@ -1,14 +1,20 @@
 {
   "nav": {
-    "logo": "MokshaPath",
+    "logo": "MokshPath",
+    "logoSubtitle": "Guided Path to True Learning",
+    "topBar": [
+      { "label": "Request a Demo", "href": "#demo", "highlight": false },
+      { "label": "FAQs", "href": "#faqs", "highlight": false },
+      { "label": "Help Center", "href": "#help", "highlight": true }
+    ],
     "links": [
-      { "label": "Programs", "href": "#programs" },
+      { "label": "Program", "href": "#programs" },
       { "label": "Courses", "href": "#courses" },
       { "label": "Why Us", "href": "#impact" },
-      { "label": "Newsletter", "href": "#newsletter" },
-      { "label": "Forum", "href": "#forum" }
+      { "label": "Instructors", "href": "#instructors" },
+      { "label": "Home", "href": "/" }
     ],
-    "cta": "Apply"
+    "cta": "Sign In"
   },
   "hero": {
     "badge": "AI SUMMER",
