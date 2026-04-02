@@ -1,4 +1,6 @@
+import { use, useEffect, useState } from 'react'
 import { COURSE_DATA } from '../../data/courseData'
+import { courseService } from '../../services/courseService'
 import BrandLogo from '../shared/BrandLogo'
 
 interface LandingPageProps {
@@ -10,6 +12,37 @@ interface LandingPageProps {
 }
 
 function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onCloseNav }: LandingPageProps) {
+
+
+    const [courseData, setCourseData] = useState(COURSE_DATA)
+
+
+
+    useEffect(() => {
+ handleGetCourseData()
+    
+ 
+    }, [])
+    
+
+const handleGetCourseData = async () => {
+  try {
+    const res = await courseService.getCourse();
+
+    // 🔥 Transform API → UI format
+  
+   
+    
+
+  
+  
+    console.log("Mapped Data:", res);
+  } catch (err: any) {
+    console.log("Error:", err.message);
+  }
+};
+
+
     return (
         <div className="landing-page" id="landingPage">
             <div className="top-bar">
@@ -184,7 +217,7 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
                     </div>
 
                     <div className="courses-grid">
-                        {COURSE_DATA.map((course, index) => (
+                        {courseData.map((course, index) => (
                             <div className="course-card fade-in" key={course.title}>
                                 <div className="course-card-top"></div>
                                 <div className="course-card-body">
@@ -302,3 +335,7 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
 }
 
 export default LandingPage
+function setCourses(formatted: any) {
+    throw new Error('Function not implemented.')
+}
+
