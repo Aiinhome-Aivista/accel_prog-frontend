@@ -2,6 +2,7 @@ import { use, useEffect, useState } from 'react'
 import { COURSE_DATA } from '../../data/courseData'
 import { courseService } from '../../services/courseService'
 import BrandLogo from '../shared/BrandLogo'
+import type { CourseItem } from '../../types/registration'
 
 interface LandingPageProps {
     onSignInClick: () => void
@@ -15,6 +16,27 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
 
 
     const [courseData, setCourseData] = useState(COURSE_DATA)
+
+    const mapCourseData = (apiResponse: any): CourseItem[] => {
+  const courses = apiResponse?.data?.courses || [];
+
+  return courses.map((course: any, index: number) => ({
+    label: `Course ${index + 1}`,
+    title: course.course_name,
+    focus: course.tagline || course.description,
+    level: course.course_level,
+    color: index + 1,
+
+    modules: (course.modules || [])
+      .sort((a: any, b: any) => a.module_order - b.module_order)
+      .map((mod: any, i: number) => ({
+        name: `Module ${i + 1}: ${mod.module_name}`,
+        desc: mod.module_description,
+      })),
+
+    outcome: `${course.capstone?.title || ""} - ${course.capstone?.description || ""}`,
+  }));
+};
 
 
 
@@ -31,8 +53,8 @@ const handleGetCourseData = async () => {
 
     // 🔥 Transform API → UI format
   
-   
-    
+   const formatted = mapCourseData(res);
+     setCourseData(formatted);
 
   
   
