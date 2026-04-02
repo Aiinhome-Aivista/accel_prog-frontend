@@ -197,7 +197,7 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
         </div>
       </section>
 
-      <section id="pathway">
+      <section id="instructor">
         <div className="container">
           <div className="section-header">
             <div className="section-label">
@@ -247,7 +247,7 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             </div>
           </div>
 
-          <div className="instructor-card fade-in" id="instructor">
+          <div className="instructor-card fade-in" >
             <div className="instructor-icon-wrap">
               <svg viewBox="0 0 50 50" fill="none" aria-hidden="true">
                 <circle cx="25" cy="15" r="7" stroke="#fff" strokeWidth="2" />
@@ -307,6 +307,7 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             </div>
           </div>
         </div>
+       
       </section>
 
       <section id="courses">

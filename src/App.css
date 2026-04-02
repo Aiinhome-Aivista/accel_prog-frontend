@@ -1076,7 +1076,7 @@ footer {
   width: 92%;
   max-width: 620px;
   max-height: 85vh;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   position: relative;
   animation: modalIn 0.3s ease;
 }
@@ -1106,7 +1106,9 @@ footer {
 }
 
 .detail-body {
+  max-height: calc(85vh - 10rem);
   padding: 1.8rem;
+  overflow-y: auto;
 }
 
 .detail-module {
