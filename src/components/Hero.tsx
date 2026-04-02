@@ -4,7 +4,7 @@ const { hero } = siteData
 
 export default function Hero() {
   return (
-    <section className="pt-28 pb-20 bg-[#FAF6F1]">
+    <section className="pt-36 pb-20 bg-[#FAF6F1]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
           {/* Left: Text Content */}
