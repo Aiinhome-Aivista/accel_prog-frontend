@@ -1,5 +1,8 @@
-import { COURSE_DATA } from "../../data/courseData";
-import BrandLogo from "../shared/BrandLogo";
+import { useEffect, useState } from 'react'
+import { COURSE_DATA } from '../../data/courseData'
+import { courseService } from '../../services/courseService'
+import BrandLogo from '../shared/BrandLogo'
+import type { CourseItem, ProgramStats } from '../../types/registration'
 
 interface LandingPageProps {
   onSignInClick: () => void;
@@ -9,20 +12,67 @@ interface LandingPageProps {
   onCloseNav: () => void;
 }
 
-function LandingPage({
-  onSignInClick,
-  onExploreCourse,
-  navOpen,
-  onToggleNav,
-  onCloseNav,
-}: LandingPageProps) {
-  return (
-    <div className="landing-page" id="landingPage">
-      <div className="top-bar">
-        <a href="#">Request a Demo</a>
-        <a href="#">FAQs</a>
-        <a href="#">Help Center</a>
-      </div>
+function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onCloseNav }: LandingPageProps) {
+
+  const [courseData, setCourseData] = useState<CourseItem[]>(COURSE_DATA)
+  const [programStats, setProgramStats] = useState<ProgramStats>({
+    total_courses: 4,
+    total_modules: 12,
+    total_capstones: 4,
+    years_experience: 20,
+  })
+
+  const mapCourseData = (apiResponse: any): CourseItem[] => {
+    const courses = apiResponse?.data?.courses || [];
+    return courses.map((course: any, index: number) => ({
+      label: `Course ${index + 1}`,
+      title: course.course_name,
+      focus: course.tagline || course.description,
+      level: course.course_level,
+      color: ((index % 4) + 1) as 1 | 2 | 3 | 4,
+      modules: (course.modules || [])
+        .sort((a: any, b: any) => a.module_order - b.module_order)
+        .map((mod: any, i: number) => ({
+          name: `Module ${i + 1}: ${mod.module_name}`,
+          desc: mod.module_description,
+        })),
+      outcome: `${course.capstone?.title || ''} - ${course.capstone?.description || ''}`,
+      tags: course.tags || [],
+    }));
+  };
+
+  const handleGetCourseData = async () => {
+    try {
+      const res = await courseService.getCourse();
+      const formatted = mapCourseData(res);
+      setCourseData(formatted);
+
+      const stats = res?.data?.program?.stats;
+      if (stats) {
+        setProgramStats({
+          total_courses: stats.total_courses ?? 4,
+          total_modules: stats.total_modules ?? 12,
+          total_capstones: stats.total_capstones ?? 4,
+          years_experience: stats.years_experience ?? 20,
+        });
+      }
+    } catch (err: any) {
+      console.log('Error fetching course data:', err.message);
+    }
+  };
+
+  useEffect(() => {
+    handleGetCourseData()
+  }, [])
+
+
+    return (
+        <div className="landing-page" id="landingPage">
+            <div className="top-bar">
+                <a href="#">Request a Demo</a>
+                <a href="#">FAQs</a>
+                <a href="#">Help Center</a>
+            </div>
 
       <nav className="nav">
         <a
@@ -112,30 +162,30 @@ function LandingPage({
             <div className="hero-stats-float">
               <div
                 className="hero-stat-card"
-                style={{ animation: "float 3s ease-in-out infinite" }}
+                style={{ animation: 'float 3s ease-in-out infinite' }}
               >
-                <div className="hero-stat-num">4</div>
+                <div className="hero-stat-num">{programStats.total_courses}</div>
                 <div className="hero-stat-label">Courses</div>
               </div>
               <div
                 className="hero-stat-card"
-                style={{ animation: "float 3s ease-in-out .4s infinite" }}
+                style={{ animation: 'float 3s ease-in-out .4s infinite' }}
               >
-                <div className="hero-stat-num">12</div>
+                <div className="hero-stat-num">{programStats.total_modules}</div>
                 <div className="hero-stat-label">Modules</div>
               </div>
               <div
                 className="hero-stat-card"
-                style={{ animation: "float 3s ease-in-out .8s infinite" }}
+                style={{ animation: 'float 3s ease-in-out .8s infinite' }}
               >
-                <div className="hero-stat-num">4</div>
+                <div className="hero-stat-num">{programStats.total_capstones}</div>
                 <div className="hero-stat-label">Capstones</div>
               </div>
               <div
                 className="hero-stat-card"
-                style={{ animation: "float 3s ease-in-out 1.2s infinite" }}
+                style={{ animation: 'float 3s ease-in-out 1.2s infinite' }}
               >
-                <div className="hero-stat-num">20+</div>
+                <div className="hero-stat-num">{programStats.years_experience}+</div>
                 <div className="hero-stat-label">Yrs Expertise</div>
               </div>
             </div>
@@ -284,7 +334,7 @@ function LandingPage({
           </div>
 
           <div className="courses-grid">
-            {COURSE_DATA.map((course, index) => (
+            {courseData.map((course, index) => (
               <div className="course-card fade-in" key={course.title}>
                 <div className="course-card-top"></div>
                 <div className="course-card-body">
@@ -295,24 +345,21 @@ function LandingPage({
 
                   <h3>{course.title}</h3>
                   <div className="course-focus">{course.focus}</div>
-                  <p>{course.modules[0].desc}</p>
+                  <p>{course.modules[0]?.desc}</p>
 
                   <div className="course-meta">
-                    <div className="course-meta-item">3 Modules</div>
+                    <div className="course-meta-item">{course.modules.length} Modules</div>
                     <div className="course-meta-item">Capstone</div>
                   </div>
 
                   <div className="course-tags">
-                    {course.modules.map((module) => (
-                      <span className="course-tag" key={module.name}>
-                        {module.name
-                          .replace("Module 1: ", "")
-                          .replace("Module 2: ", "")
-                          .replace("Module 3: ", "")
-                          .split(" ")
-                          .slice(0, 2)
-                          .join(" ")}
-                      </span>
+                    {(course.tags && course.tags.length > 0
+                      ? course.tags
+                      : course.modules.map((m) =>
+                          m.name.replace(/Module \d+: /, '').split(' ').slice(0, 2).join(' ')
+                        )
+                    ).map((tag) => (
+                      <span className="course-tag" key={tag}>{tag}</span>
                     ))}
                   </div>
 
@@ -596,4 +643,4 @@ function LandingPage({
   );
 }
 
-export default LandingPage;
+export default LandingPage

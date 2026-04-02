@@ -4,7 +4,7 @@ export const COURSE_DATA: CourseItem[] = [
   {
     label: "Course 1",
     title: "The AI Consumer & Builder",
-    focus: 'Demystifying AI and moving from "using" to "instructing".',
+    focus: 'Demystifying AI — from "using" to "instructing".',
     level: "Foundation",
     color: 1,
     modules: [
@@ -21,8 +21,8 @@ export const COURSE_DATA: CourseItem[] = [
         desc: "NumPy for numerical computing, Pandas for data manipulation, and building automation scripts that integrate with AI APIs.",
       },
     ],
-    outcome:
-      "Students build a Personal AI Research Assistant that summarizes their college syllabus and generates mock test papers.",
+    outcome: "Personal AI Research Assistant - Summarizes syllabus and generates mock test papers.",
+    tags: ["Prompt Engineering", "CoT & Few-Shot", "GitHub Copilot", "Multimodal AI", "Python"],
   },
   {
     label: "Course 2",
@@ -44,8 +44,8 @@ export const COURSE_DATA: CourseItem[] = [
         desc: "Build a digit classifier from scratch. Perceptrons, backpropagation, activation functions, and training fundamentals.",
       },
     ],
-    outcome:
-      "Students develop a Predictive Model - e.g., predicting local weather patterns in Assam or stock market trends for Indian MSMEs.",
+    outcome: "Predictive Model - e.g., local weather patterns or stock trends for Indian MSMEs.",
+    tags: ["Linear Algebra", "Probability", "Scikit-learn", "Neural Networks"],
   },
   {
     label: "Course 3",
@@ -67,8 +67,8 @@ export const COURSE_DATA: CourseItem[] = [
         desc: "Bias detection, data privacy frameworks, and ethical AI guidelines for fair, transparent, compliant systems.",
       },
     ],
-    outcome:
-      "Students build a Custom Knowledge Bot for a local domain - e.g., a Tea Industry Expert bot trained on regional agricultural data.",
+    outcome: "Custom Knowledge Bot - e.g., a Tea Industry Expert bot trained on regional agricultural data.",
+    tags: ["LLMs", "RAG", "Pinecone", "Responsible AI"],
   },
   {
     label: "Course 4",
@@ -90,10 +90,12 @@ export const COURSE_DATA: CourseItem[] = [
         desc: "Quantum AI concepts, AI for Sustainability, neuromorphic computing, and emerging technologies shaping the next decade.",
       },
     ],
-    outcome:
-      "AI for Social Good capstone - autonomous agent for water neutrality management or disaster response in the North East.",
+    outcome: "AI for Social Good capstone - autonomous agent for water neutrality management or disaster response.",
+    tags: ["Agents", "CrewAI", "LangGraph", "MLOps", "Deep Tech"],
   },
 ];
+
+
 
 export const DETAIL_BG = [
   "",

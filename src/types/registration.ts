@@ -40,6 +40,14 @@ export interface CourseItem {
   color: 1 | 2 | 3 | 4;
   modules: CourseModule[];
   outcome: string;
+  tags?: string[];
+}
+
+export interface ProgramStats {
+  total_courses: number;
+  total_modules: number;
+  total_capstones: number;
+  years_experience: number;
 }
 
 export type FormValue = string | number | string[];

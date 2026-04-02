@@ -1,8 +1,33 @@
+import { useEffect } from 'react';
 import siteData from '../data/siteData.json'
+import { courseService } from '../services/courseService';
 
 const { courses } = siteData
 
 export default function Courses() {
+
+
+  useEffect(() => {
+
+    console.log("Course Call")
+ handleGetCourseData()
+  
+ 
+  }, [])
+  
+
+  const handleGetCourseData = async () => {
+  try {
+    const res = await courseService.getCourse();
+
+    console.log("Success:", res);
+  } catch (err: any) {
+    console.log("Error:", err.message);
+  }
+};
+
+
+
   return (
     <section className="py-20 bg-[#F0EAE1]" id="courses">
       <div className="max-w-6xl mx-auto px-6">
