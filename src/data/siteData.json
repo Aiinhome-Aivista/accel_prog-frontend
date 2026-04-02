@@ -16,6 +16,23 @@
     ],
     "cta": "Sign In"
   },
+  "login": {
+    "brand": "MokshPath",
+    "title": "Welcome Back",
+    "subtitle": "Sign in to access your courses and track your progress.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberLabel": "Remember me",
+    "forgotLabel": "Forgot password?",
+    "submitLabel": "Sign In",
+    "submittingLabel": "Signing in…",
+    "divider": "or",
+    "googleLabel": "Continue with Google",
+    "signupText": "Don't have an account?",
+    "signupLink": "Enroll Now"
+  },
   "hero": {
     "badge": "AI SUMMER",
     "titleParts": ["The", "AI-Native", "Summer", "Series"],
@@ -95,6 +112,102 @@
       { "icon": "🧠", "title": "Expert Mentors", "description": "Weekly sessions with practitioners from top AI companies." },
       { "icon": "🏆", "title": "Certification", "description": "Earn verifiable certificates recognized by hiring teams." },
       { "icon": "🌐", "title": "Global Community", "description": "Join a cohort of builders from 40+ countries worldwide." }
+    ]
+  },
+  "registration": {
+    "sidebarTitle": "Registration",
+    "prevLabel": "Previous",
+    "nextLabel": "Next",
+    "submitLabel": "Submit Registration",
+    "successTitle": "Registration Complete!",
+    "successMessage": "Thank you for registering for the AI-Native Summer Series 2026. We'll review your profile and get back to you shortly with next steps.",
+    "successButton": "Back to Home",
+    "sections": [
+      {
+        "id": "personal",
+        "title": "Personal & Academic",
+        "subtitle": "Tell us about yourself and your academic background",
+        "fields": [
+          { "id": "fullName", "label": "Full Name", "type": "text", "placeholder": "Enter your full name", "required": true },
+          { "id": "email", "label": "Email Address", "type": "email", "placeholder": "you@example.com", "required": true },
+          { "id": "phone", "label": "Contact Number", "type": "tel", "placeholder": "+91 98765 43210", "required": true },
+          { "id": "institution", "label": "Current Institution / University", "type": "text", "placeholder": "e.g., IIT Guwahati", "required": true },
+          { "id": "branch", "label": "Branch of Study / Major", "type": "text", "placeholder": "e.g., Computer Science & Engineering", "required": true },
+          { "id": "yearOfStudy", "label": "Year of Study", "type": "select", "options": ["1st Year", "2nd Year", "3rd Year", "4th Year", "Post-Graduate", "Other"], "required": true }
+        ]
+      },
+      {
+        "id": "academic",
+        "title": "Academic Readiness",
+        "subtitle": "Help us understand your current academic foundation",
+        "fields": [
+          { "id": "scoreRange", "label": "Typical score range in core subjects?", "type": "select", "options": ["Below 50%", "50–65%", "65–75%", "75–85%", "85–95%", "Above 95%"], "required": true },
+          { "id": "priorCourses", "label": "Have you completed any AI/ML coursework?", "type": "textarea", "placeholder": "If yes, list the courses. If no, write 'None'.", "required": true },
+          { "id": "recentCourse", "label": "Most recent course you have taken?", "type": "text", "placeholder": "e.g., Data Structures & Algorithms", "required": false },
+          { "id": "enjoyedMost", "label": "What did you enjoy most about it?", "type": "textarea", "placeholder": "Describe what engaged or excited you…", "required": false },
+          { "id": "foundChallenging", "label": "What did you find challenging?", "type": "textarea", "placeholder": "Describe any pain points or challenges…", "required": false }
+        ]
+      },
+      {
+        "id": "practical",
+        "title": "Practical Exposure",
+        "subtitle": "Tell us about your hands-on experience",
+        "fields": [
+          { "id": "projectTitle", "label": "Project Title (if any)", "type": "text", "placeholder": "e.g., Sentiment Analysis Dashboard", "required": false },
+          { "id": "projectTools", "label": "Tools / Technologies Used", "type": "text", "placeholder": "e.g., Python, Flask, TensorFlow", "required": false },
+          { "id": "projectOutcome", "label": "Outcome or Impact", "type": "textarea", "placeholder": "Describe the result and what you learned…", "required": false },
+          { "id": "hackathons", "label": "Hackathons or coding contests?", "type": "textarea", "placeholder": "List events, your role, and results. Write 'None' if N/A.", "required": false }
+        ]
+      },
+      {
+        "id": "interests",
+        "title": "Interests & Motivation",
+        "subtitle": "What drives your interest in AI?",
+        "fields": [
+          { "id": "aiExcitement", "label": "What excites you most about AI?", "type": "chips", "options": ["Building Apps", "Problem-Solving", "Creativity", "Data Analysis", "Ethics & Society", "Automation"], "required": true },
+          { "id": "domainInterest", "label": "Which domains interest you most?", "type": "chips", "options": ["Healthcare", "Finance", "Agriculture", "Education", "Sustainability", "Robotics", "Entertainment", "Government"], "required": true },
+          { "id": "motivation", "label": "What motivates you to pursue AI?", "type": "chips", "options": ["Career Opportunities", "Curiosity", "Social Impact", "Innovation", "Research", "Entrepreneurship"], "required": true }
+        ]
+      },
+      {
+        "id": "teamwork",
+        "title": "Teamwork & People Skills",
+        "subtitle": "How do you collaborate and lead?",
+        "fields": [
+          { "id": "teamExperience", "label": "Team project experience & your role?", "type": "textarea", "placeholder": "Describe your team experience and role…", "required": true },
+          { "id": "disagreements", "label": "How do you handle team disagreements?", "type": "textarea", "placeholder": "Describe your approach to conflict resolution…", "required": false },
+          { "id": "leadershipComfort", "label": "Comfort with leadership responsibilities?", "type": "scale", "min": 1, "max": 5, "labels": ["Not at all", "", "", "", "Very comfortable"], "required": true },
+          { "id": "workStyle", "label": "Work style preference?", "type": "select", "options": ["Independently", "Collaboratively", "A mix of both"], "required": true }
+        ]
+      },
+      {
+        "id": "learning",
+        "title": "Learning Style",
+        "subtitle": "Help us tailor the experience to you",
+        "fields": [
+          { "id": "learnPreference", "label": "How do you prefer to learn?", "type": "chips", "options": ["Videos", "Hands-on Labs", "Reading", "Group Discussions", "One-on-One Mentoring"], "required": true },
+          { "id": "deadlineStyle", "label": "Deadlines or flexible timelines?", "type": "select", "options": ["Firm deadlines push me to perform", "Flexible timelines help me think deeper", "Depends on the task"], "required": true }
+        ]
+      },
+      {
+        "id": "psychometric",
+        "title": "Psychometric & Exploratory",
+        "subtitle": "We'd love to understand how you think",
+        "fields": [
+          { "id": "complexProblem", "label": "Complex problem with no clear solution — first instinct?", "type": "textarea", "placeholder": "Describe your approach…", "required": true },
+          { "id": "responsibleAI", "label": "What does 'responsible AI' mean to you?", "type": "textarea", "placeholder": "Share your understanding…", "required": true },
+          { "id": "dreamProject", "label": "Unlimited resources — what AI project would you build?", "type": "textarea", "placeholder": "Dream big — describe your ideal AI project…", "required": true },
+          { "id": "groupRole", "label": "Natural role in a group?", "type": "select", "options": ["Leader", "Analyst", "Executor", "Innovator", "Mediator"], "required": true }
+        ]
+      },
+      {
+        "id": "aspirational",
+        "title": "Aspirational Thinking",
+        "subtitle": "One final thought experiment",
+        "fields": [
+          { "id": "hometownAI", "label": "An AI for your hometown — what problem would it solve?", "type": "textarea", "placeholder": "Describe the problem, your solution idea, and the impact you envision…", "required": true }
+        ]
+      }
     ]
   },
   "footer": {
