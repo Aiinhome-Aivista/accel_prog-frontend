@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MokshPath – The AI-Native Summer Series 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--orange:#E87A2E;--orange-dark:#D06A20;--orange-light:#F5943E;--orange-glow:rgba(232,122,46,0.12);--navy:#2B2D42;--navy-dark:#1A1B2E;--bg:#F3EDE7;--bg-card:#FFFFFF;--bg-light:#F9F5F0;--text-primary:#2B2D42;--text-secondary:#6B6D7B;--text-muted:#9597A6;--border:#E5DDD4;--green:#4CAF50;--green-light:#E8F5E9;--shadow-sm:0 2px 8px rgba(43,45,66,0.06);--shadow-md:0 8px 24px rgba(43,45,66,0.08);--shadow-lg:0 16px 48px rgba(43,45,66,0.12);--radius:14px;--radius-sm:8px}
+html{scroll-behavior:smooth}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ─── LANDING PAGE STYLES ─── */
+.top-bar{background:var(--navy-dark);padding:.45rem 2rem;display:flex;justify-content:center;gap:2rem;position:relative;z-index:101}
+.top-bar a{color:rgba(255,255,255,0.85);font-size:.75rem;font-weight:500;text-decoration:none;letter-spacing:.02em;transition:color .2s}.top-bar a:hover{color:var(--orange)}
+.nav{position:sticky;top:0;z-index:100;background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-sm)}
+.nav-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.nav-logo-icon{width:42px;height:42px}
+.nav-logo-text{display:flex;flex-direction:column;line-height:1.15}
+.nav-logo-name{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy)}.nav-logo-name span{color:var(--orange)}
+.nav-logo-tag{font-size:.62rem;color:var(--text-muted);font-weight:500;letter-spacing:.02em}
+.nav-links{display:flex;align-items:center;gap:1.8rem}
+.nav-links a{text-decoration:none;color:var(--text-secondary);font-size:.85rem;font-weight:500;transition:color .2s}.nav-links a:hover{color:var(--orange)}
+.btn-signin{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.3rem;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-signin-fill{background:var(--orange);color:#fff}.btn-signin-fill:hover{background:var(--orange-dark);transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,122,46,0.3)}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text-primary)}.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.mobile-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px}.mobile-toggle span{display:block;width:20px;height:2px;background:var(--navy);margin:4px 0;border-radius:2px;transition:.3s}
+
+.hero{padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+.hero-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-content{position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:.45rem;padding:.4rem 1rem;border-radius:50px;background:var(--orange-glow);color:var(--orange);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.2rem;animation:fadeUp .7s ease}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2.2rem,4.5vw,3.4rem);line-height:1.13;color:var(--navy);margin-bottom:1rem;animation:fadeUp .7s ease .1s both}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero-sub{font-size:1.02rem;color:var(--text-secondary);line-height:1.7;margin-bottom:2rem;max-width:480px;animation:fadeUp .7s ease .2s both}
+.hero-cta{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;animation:fadeUp .7s ease .3s both}
+.hero-cta .btn-signin-fill{padding:.75rem 2rem;font-size:.9rem;border-radius:10px}
+.hero-cta .btn-outline{padding:.75rem 1.8rem;font-size:.9rem;border-radius:10px}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;animation:fadeUp .8s ease .2s both}
+.hero-circle{width:380px;height:380px;border-radius:50%;background:linear-gradient(135deg,rgba(232,122,46,0.08),rgba(232,122,46,0.03));position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.hero-stats-float{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;position:relative;z-index:2}
+.hero-stat-card{background:var(--bg-card);border-radius:12px;padding:1.3rem;text-align:center;box-shadow:var(--shadow-md);border:1px solid var(--border);transition:transform .3s}.hero-stat-card:hover{transform:translateY(-3px)}
+.hero-stat-num{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--orange)}
+.hero-stat-label{font-size:.72rem;color:var(--text-muted);margin-top:.15rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+
+section{padding:4.5rem 2rem}.container{max-width:1160px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:3rem}
+.section-label{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:.6rem}
+.section-label .ico{width:18px;height:18px;border-radius:50%;background:var(--orange-glow);display:flex;align-items:center;justify-content:center}.section-label .ico svg{width:10px;height:10px}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(1.7rem,3vw,2.3rem);color:var(--navy);line-height:1.2;margin-bottom:.5rem}
+.section-sub{font-size:.92rem;color:var(--text-secondary);line-height:1.65;max-width:520px;margin:0 auto}
+
+#pathway{background:var(--bg-light)}
+.pathway-track{display:flex;align-items:stretch;gap:0;margin-top:1rem;position:relative}
+.pathway-track::before{content:'';position:absolute;top:50px;left:12.5%;right:12.5%;height:3px;background:linear-gradient(90deg,var(--orange),var(--orange-light),#66BB6A,var(--green));border-radius:2px;z-index:0}
+.pathway-step{flex:1;text-align:center;position:relative;z-index:1}
+.pathway-num{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff;margin-bottom:.8rem;box-shadow:0 3px 10px rgba(0,0,0,0.12)}
+.pathway-step:nth-child(1) .pathway-num{background:var(--orange)}.pathway-step:nth-child(2) .pathway-num{background:#E8A040}.pathway-step:nth-child(3) .pathway-num{background:#66BB6A}.pathway-step:nth-child(4) .pathway-num{background:var(--green)}
+.pathway-week{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.25rem}
+.pathway-name{font-family:'DM Serif Display',serif;font-size:.95rem;color:var(--navy)}
+.pathway-sessions{font-size:.7rem;color:var(--text-muted);margin-top:.2rem}
+
+.courses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.course-card{background:var(--bg-card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:all .35s cubic-bezier(.25,.46,.45,.94)}.course-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:transparent}
+.course-card-top{height:6px;width:100%}
+.course-card:nth-child(1) .course-card-top{background:linear-gradient(90deg,var(--orange),var(--orange-light))}.course-card:nth-child(2) .course-card-top{background:linear-gradient(90deg,#E8A040,#F0C060)}.course-card:nth-child(3) .course-card-top{background:linear-gradient(90deg,#66BB6A,#81C784)}.course-card:nth-child(4) .course-card-top{background:linear-gradient(90deg,var(--green),#66BB6A)}
+.course-card-body{padding:1.8rem 1.8rem 1.5rem}
+.course-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.course-card-week{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.3rem .7rem;border-radius:6px}
+.course-card:nth-child(1) .course-card-week{background:var(--orange-glow);color:var(--orange)}.course-card:nth-child(2) .course-card-week{background:rgba(232,160,64,0.12);color:#C08830}.course-card:nth-child(3) .course-card-week{background:rgba(102,187,106,0.12);color:#388E3C}.course-card:nth-child(4) .course-card-week{background:rgba(76,175,80,0.12);color:#2E7D32}
+.course-card-level{font-size:.68rem;font-weight:600;color:var(--text-muted);display:flex;align-items:center;gap:.3rem}.course-card-level svg{width:12px;height:12px;opacity:.5}
+.course-card h3{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);margin-bottom:.4rem;line-height:1.25}
+.course-card .course-focus{font-size:.78rem;color:var(--orange);font-weight:600;margin-bottom:.55rem;font-style:italic}
+.course-card p{font-size:.84rem;color:var(--text-secondary);line-height:1.65;margin-bottom:1.1rem}
+.course-meta{display:flex;gap:1.2rem;margin-bottom:1.2rem}.course-meta-item{display:flex;align-items:center;gap:.3rem;font-size:.73rem;color:var(--text-muted);font-weight:500}.course-meta-item svg{width:13px;height:13px;opacity:.55}
+.course-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.3rem}.course-tag{padding:.22rem .6rem;border-radius:50px;font-size:.65rem;font-weight:600;background:var(--bg);color:var(--text-secondary);border:1px solid var(--border)}
+.btn-explore{display:inline-flex;align-items:center;gap:.35rem;font-size:.82rem;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer;padding:.45rem 0;font-family:inherit;transition:gap .2s}.btn-explore:hover{gap:.6rem}.btn-explore svg{width:15px;height:15px;transition:transform .2s}.btn-explore:hover svg{transform:translateX(3px)}
+.course-outcome{background:var(--bg-light);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-bottom:1.3rem;border-left:3px solid var(--orange)}
+.course-card:nth-child(2) .course-outcome{border-left-color:#E8A040}.course-card:nth-child(3) .course-outcome{border-left-color:#66BB6A}.course-card:nth-child(4) .course-outcome{border-left-color:var(--green)}
+.course-outcome-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.25rem}
+.course-outcome p{font-size:.78rem;color:var(--text-primary);line-height:1.55;margin-bottom:0;font-weight:500}
+
+.instructor-card{background:var(--navy-dark);color:#fff;border-radius:var(--radius);padding:2.5rem;display:flex;gap:2.5rem;align-items:center;margin-top:2.5rem}
+.instructor-icon-wrap{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange-light));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 20px rgba(232,122,46,0.3)}
+.instructor-icon-wrap svg{width:50px;height:50px;color:#fff}
+.instructor-info h3{font-family:'DM Serif Display',serif;font-size:1.35rem;margin-bottom:.35rem}
+.instructor-info .instructor-role{font-size:.88rem;color:rgba(255,255,255,0.6);margin-bottom:1rem;line-height:1.55}
+.instructor-creds{display:flex;flex-wrap:wrap;gap:.4rem}.instructor-cred{padding:.3rem .7rem;border-radius:6px;border:1px solid rgba(255,255,255,0.15);font-size:.7rem;font-weight:500;color:rgba(255,255,255,0.7)}
+
+#features{background:var(--bg-light)}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.feature{padding:1.8rem;border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);transition:all .3s}.feature:hover{box-shadow:var(--shadow-md);border-color:transparent;transform:translateY(-3px)}
+.feature-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.feature:nth-child(odd) .feature-icon{background:var(--orange-glow);color:var(--orange)}.feature:nth-child(even) .feature-icon{background:rgba(76,175,80,0.1);color:var(--green)}
+.feature h4{font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:.35rem}.feature p{font-size:.8rem;color:var(--text-secondary);line-height:1.6}
+
+.cta-section{text-align:center;padding:4.5rem 2rem}
+.cta-box{background:linear-gradient(135deg,var(--navy-dark),var(--navy));border-radius:var(--radius);padding:3.5rem;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(232,122,46,0.1)}
+.cta-box::after{content:'';position:absolute;bottom:-40px;left:-40px;width:150px;height:150px;border-radius:50%;background:rgba(76,175,80,0.08)}
+.cta-box h2{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,2.5vw,2rem);color:#fff;margin-bottom:.6rem;position:relative;z-index:1}
+.cta-box p{color:rgba(255,255,255,0.6);font-size:.92rem;margin-bottom:1.8rem;max-width:460px;margin-left:auto;margin-right:auto;position:relative;z-index:1;line-height:1.6}
+.cta-box .btn-signin-fill{padding:.8rem 2.2rem;font-size:.95rem;border-radius:10px;position:relative;z-index:1}
+
+footer{background:var(--bg-card);border-top:1px solid var(--border);padding:2rem}
+.footer-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-left{display:flex;align-items:center;gap:.6rem}.footer-copy{font-size:.78rem;color:var(--text-muted)}
+.footer-links{display:flex;gap:1.5rem}.footer-links a{font-size:.78rem;color:var(--text-secondary);text-decoration:none;transition:color .2s}.footer-links a:hover{color:var(--orange)}
+
+/* ─── MODALS ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,27,46,0.55);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}.modal-overlay.active{display:flex;opacity:1}
+.modal{background:var(--bg-card);border-radius:var(--radius);padding:2.5rem;width:90%;max-width:400px;position:relative;animation:modalIn .3s ease}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--text-muted);padding:.2rem}.modal-close:hover{color:var(--navy)}
+.modal-brand{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
+.modal-brand svg{width:30px;height:30px}.modal-brand span{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy)}.modal-brand span em{font-style:normal;color:var(--orange)}
+.modal h2{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.25rem}
+.modal-sub{font-size:.82rem;color:var(--text-muted);margin-bottom:1.5rem}
+.form-group{margin-bottom:.9rem}.form-group label{display:block;font-size:.73rem;font-weight:600;color:var(--navy);margin-bottom:.35rem}
+.form-group input{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.87rem;font-family:inherit;transition:border-color .2s;background:var(--bg-light)}.form-group input:focus{outline:none;border-color:var(--orange);background:#fff}
+.form-submit{width:100%;padding:.78rem;border:none;border-radius:10px;background:var(--orange);color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:.4rem}.form-submit:hover{background:var(--orange-dark);box-shadow:0 4px 16px rgba(232,122,46,0.3)}
+.form-divider{text-align:center;margin:1rem 0;font-size:.73rem;color:var(--text-muted);position:relative}.form-divider::before,.form-divider::after{content:'';position:absolute;top:50%;width:calc(50% - 1.2rem);height:1px;background:var(--border)}.form-divider::before{left:0}.form-divider::after{right:0}
+.btn-google{width:100%;padding:.7rem;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:.84rem;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;color:var(--text-primary)}.btn-google:hover{border-color:var(--orange);box-shadow:var(--shadow-sm)}
+
+.detail-modal{background:var(--bg-card);border-radius:var(--radius);padding:0;width:92%;max-width:620px;max-height:85vh;overflow-y:auto;position:relative;animation:modalIn .3s ease}
+.detail-header{padding:1.8rem 1.8rem 1.2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-card);border-radius:var(--radius) var(--radius) 0 0;z-index:2}
+.detail-header h2{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-top:.4rem}
+.detail-header .detail-focus{font-size:.85rem;color:var(--orange);font-style:italic;margin-top:.2rem}
+.detail-body{padding:1.8rem}
+.detail-module{margin-bottom:1.8rem;padding:1.2rem;background:var(--bg-light);border-radius:var(--radius-sm);border-left:3px solid var(--orange)}
+.detail-module h4{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:.5rem}
+.detail-module p{font-size:.8rem;color:var(--text-secondary);line-height:1.6}
+.detail-outcome-box{background:var(--navy-dark);border-radius:var(--radius-sm);padding:1.4rem;margin-top:.5rem;color:#fff}
+.detail-outcome-box h4{font-size:.82rem;font-weight:700;margin-bottom:.5rem;color:var(--orange-light)}
+.detail-outcome-box p{font-size:.82rem;color:rgba(255,255,255,0.8);line-height:1.6}
+
+/* ─── REGISTRATION PAGE ─── */
+.reg-page{display:none;min-height:100vh;background:var(--bg)}
+.reg-page.active{display:block}
+.landing-page.hidden{display:none}
+
+.reg-topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm)}
+.reg-back{display:flex;align-items:center;gap:.4rem;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.84rem;font-weight:500;color:var(--text-secondary);transition:color .2s;padding:.4rem .6rem;border-radius:6px}.reg-back:hover{color:var(--orange);background:var(--orange-glow)}
+.reg-back svg{width:16px;height:16px}
+
+.reg-layout{max-width:900px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:240px 1fr;gap:2rem;min-height:calc(100vh - 64px)}
+
+/* Sidebar progress */
+.reg-sidebar{position:sticky;top:80px;align-self:start}
+.reg-sidebar h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:1.2rem}
+.reg-progress-bar{height:6px;background:var(--border);border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.reg-progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--green));border-radius:3px;transition:width .4s ease}
+.reg-progress-pct{font-size:.72rem;font-weight:700;color:var(--orange);margin-bottom:.8rem;text-align:right}
+
+.reg-sections{display:flex;flex-direction:column;gap:.3rem}
+.reg-sec-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.78rem;font-weight:500;color:var(--text-muted);position:relative}
+.reg-sec-item:hover{background:var(--bg-light);color:var(--text-primary)}
+.reg-sec-item.active{background:var(--orange-glow);color:var(--orange);font-weight:600}
+.reg-sec-item.completed{color:var(--green)}
+.reg-sec-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.6rem;transition:all .2s}
+.reg-sec-item.active .reg-sec-dot{border-color:var(--orange);background:var(--orange-glow)}
+.reg-sec-item.completed .reg-sec-dot{border-color:var(--green);background:var(--green-light)}
+.reg-sec-check{width:10px;height:10px;color:var(--green)}
+
+/* Main form area */
+.reg-main{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.reg-form-header{padding:1.5rem 2rem;border-bottom:1px solid var(--border);background:var(--bg-light)}
+.reg-form-header h2{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:.2rem}
+.reg-form-header p{font-size:.8rem;color:var(--text-muted)}
+.reg-form-body{padding:1.5rem 2rem 2rem}
+
+/* Import options */
+.reg-import{display:flex;gap:.8rem;margin-bottom:2rem;flex-wrap:wrap}
+.reg-import-btn{display:flex;align-items:center;gap:.5rem;padding:.65rem 1.2rem;border:1.5px dashed var(--border);border-radius:10px;background:var(--bg-light);cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:500;color:var(--text-secondary);transition:all .2s;flex:1;min-width:200px;justify-content:center}
+.reg-import-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-glow)}
+.reg-import-btn svg{width:18px;height:18px;flex-shrink:0}
+.reg-import-btn input[type="file"]{display:none}
+
+/* Form fields */
+.reg-field{margin-bottom:1.3rem}
+.reg-field label{display:block;font-size:.78rem;font-weight:600;color:var(--navy);margin-bottom:.4rem}
+.reg-field label .req{color:var(--orange);margin-left:2px}
+.reg-field input,.reg-field textarea,.reg-field select{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.85rem;font-family:inherit;transition:all .2s;background:var(--bg-light)}
+.reg-field input:focus,.reg-field textarea:focus,.reg-field select:focus{outline:none;border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,122,46,0.08)}
+.reg-field textarea{min-height:80px;resize:vertical}
+.reg-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%239597A6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;padding-right:2.5rem;cursor:pointer}
+.reg-field .hint{font-size:.7rem;color:var(--text-muted);margin-top:.25rem}
+.reg-field.filled input,.reg-field.filled textarea,.reg-field.filled select{border-color:var(--green)}
+.reg-field.filled label::after{content:'✓';color:var(--green);margin-left:.4rem;font-size:.7rem}
+
+/* Multi-select chips */
+.chip-group{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{padding:.4rem .8rem;border-radius:50px;font-size:.75rem;font-weight:500;border:1.5px solid var(--border);background:var(--bg-light);cursor:pointer;transition:all .2s;color:var(--text-secondary);user-select:none}
+.chip:hover{border-color:var(--orange);color:var(--orange)}
+.chip.selected{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+/* Scale input */
+.scale-group{display:flex;gap:.5rem;align-items:center}
+.scale-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-light);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-secondary)}
+.scale-btn:hover{border-color:var(--orange);color:var(--orange)}
+.scale-btn.selected{background:var(--orange);color:#fff;border-color:var(--orange)}
+.scale-label{font-size:.68rem;color:var(--text-muted);margin-top:.2rem}
+
+/* Navigation buttons */
+.reg-nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-top:1px solid var(--border);background:var(--bg-light)}
+.reg-nav-prev{display:flex;align-items:center;gap:.3rem;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.84rem;font-weight:500;color:var(--text-secondary);padding:.5rem 1rem;border-radius:8px;transition:all .2s}.reg-nav-prev:hover{color:var(--orange);background:var(--orange-glow)}
+.reg-nav-prev svg{width:14px;height:14px}
+.reg-nav-next{padding:.65rem 1.8rem;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;background:var(--orange);color:#fff;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.reg-nav-next:hover{background:var(--orange-dark);box-shadow:0 4px 16px rgba(232,122,46,0.3)}
+.reg-nav-next svg{width:14px;height:14px}
+.reg-nav-next.submit{background:var(--green)}.reg-nav-next.submit:hover{background:#388E3C;box-shadow:0 4px 16px rgba(76,175,80,0.3)}
+
+/* Success */
+.reg-success{text-align:center;padding:4rem 2rem}
+.reg-success-icon{width:80px;height:80px;border-radius:50%;background:var(--green-light);display:inline-flex;align-items:center;justify-content:center;margin-bottom:1.5rem}
+.reg-success-icon svg{width:40px;height:40px;color:var(--green)}
+.reg-success h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.5rem}
+.reg-success p{font-size:.92rem;color:var(--text-secondary);line-height:1.6;max-width:420px;margin:0 auto 2rem}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}.fade-in.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:960px){.hero-inner{grid-template-columns:1fr;text-align:center}.hero-sub{margin-left:auto;margin-right:auto}.hero-cta{justify-content:center}.hero-visual{order:-1}.hero-stats-float{max-width:340px;margin:0 auto}.courses-grid{grid-template-columns:1fr}.features-grid{grid-template-columns:repeat(2,1fr)}.instructor-card{flex-direction:column;text-align:center}.reg-layout{grid-template-columns:1fr}.reg-sidebar{position:static;display:flex;flex-direction:column}}
+@media(max-width:700px){.top-bar{padding:.4rem 1rem;gap:1rem;flex-wrap:wrap}.nav-links{display:none}.mobile-toggle{display:block}.nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--bg-card);border-bottom:1px solid var(--border);padding:1.2rem 2rem;gap:.8rem;box-shadow:var(--shadow-md);z-index:99}.features-grid{grid-template-columns:1fr}.hero{padding:3rem 1.5rem 2.5rem}section{padding:3rem 1.5rem}.pathway-track{flex-wrap:wrap;gap:1.2rem}.pathway-track::before{display:none}.pathway-step{flex:none;width:calc(50% - .6rem)}.cta-box{padding:2.5rem 1.5rem}.detail-modal{width:96%;max-height:90vh}.reg-layout{padding:1rem}.reg-form-header,.reg-form-body,.reg-nav{padding-left:1.2rem;padding-right:1.2rem}.reg-import{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LANDING PAGE                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="landing-page" id="landingPage">
+
+<div class="top-bar"><a href="#">Request a Demo</a><a href="#">FAQs</a><a href="#">Help Center</a></div>
+
+<nav class="nav"><a href="https://mokshpath.org/" class="nav-logo"><svg class="nav-logo-icon" viewBox="0 0 42 42" fill="none"><circle cx="21" cy="14" r="6" fill="#E87A2E"/><path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E"/><path d="M11 31c0 0 2 4 10 4s10-4 10-4" stroke="#E87A2E" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="21" cy="38" rx="8" ry="2" fill="#E87A2E" opacity=".15"/><path d="M8 27l-3 2m29-2l3 2" stroke="#E87A2E" stroke-width="1.5" stroke-linecap="round"/><circle cx="21" cy="14" r="3" fill="#FFF" opacity=".3"/></svg><div class="nav-logo-text"><span class="nav-logo-name">Moksh<span>Path</span></span><span class="nav-logo-tag">Guided Path to True Learning</span></div></a><div class="nav-links" id="navLinks"><a href="#pathway">Program</a><a href="#courses">Courses</a><a href="#features">Why Us</a><a href="#instructor">Instructors</a><a href="https://mokshpath.org/" target="_blank">Home</a><button class="btn-signin btn-signin-fill" onclick="openModal()">Sign In</button></div><button class="mobile-toggle" onclick="toggleNav()"><span></span><span></span><span></span></button></nav>
+
+<section class="hero"><div class="hero-inner"><div class="hero-content"><div class="hero-badge"><span class="dot"></span> Summer 2026</div><h1>The <em>AI-Native</em> Summer Series</h1><p class="hero-sub">Four accelerated courses that take you from AI consumer to AI builder — from prompt engineering to autonomous agents. Curated by industry leaders.</p><div class="hero-cta"><button class="btn-signin btn-signin-fill" onclick="openModal()">Enroll Now</button><button class="btn-signin btn-outline" onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})">Explore Courses</button></div></div><div class="hero-visual"><div class="hero-circle"></div><div class="hero-stats-float"><div class="hero-stat-card" style="animation:float 3s ease-in-out infinite"><div class="hero-stat-num">4</div><div class="hero-stat-label">Courses</div></div><div class="hero-stat-card" style="animation:float 3s ease-in-out .4s infinite"><div class="hero-stat-num">12</div><div class="hero-stat-label">Modules</div></div><div class="hero-stat-card" style="animation:float 3s ease-in-out .8s infinite"><div class="hero-stat-num">4</div><div class="hero-stat-label">Capstones</div></div><div class="hero-stat-card" style="animation:float 3s ease-in-out 1.2s infinite"><div class="hero-stat-num">20+</div><div class="hero-stat-label">Yrs Expertise</div></div></div></div></div></section>
+
+<section id="pathway"><div class="container"><div class="section-header"><div class="section-label"><div class="ico"><svg viewBox="0 0 10 10" fill="none"><path d="M1 5h8M5 1v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>Learning Pathway</div><div class="section-title">Your AI-Native Journey</div><p class="section-sub">Four progressive courses — each building on the last — from using AI to building autonomous systems.</p></div><div class="pathway-track fade-in"><div class="pathway-step"><div class="pathway-num">1</div><div class="pathway-week">Course 1</div><div class="pathway-name">AI Consumer & Builder</div><div class="pathway-sessions">Foundation</div></div><div class="pathway-step"><div class="pathway-num">2</div><div class="pathway-week">Course 2</div><div class="pathway-name">Data & ML Architect</div><div class="pathway-sessions">Core</div></div><div class="pathway-step"><div class="pathway-num">3</div><div class="pathway-week">Course 3</div><div class="pathway-name">Gen AI & RAG Specialist</div><div class="pathway-sessions">Applied</div></div><div class="pathway-step"><div class="pathway-num">4</div><div class="pathway-week">Course 4</div><div class="pathway-name">Agentic & Deep Tech</div><div class="pathway-sessions">Advanced</div></div></div>
+<div class="instructor-card fade-in" id="instructor"><div class="instructor-icon-wrap"><svg viewBox="0 0 50 50" fill="none"><circle cx="25" cy="15" r="7" stroke="#fff" stroke-width="2"/><path d="M12 38c0-5.5 5.8-10 13-10s13 4.5 13 10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="37" cy="15" r="5" stroke="#fff" stroke-width="1.5" opacity=".6"/><path d="M42 32c2.5 1 5 3.5 5 7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><circle cx="13" cy="15" r="5" stroke="#fff" stroke-width="1.5" opacity=".6"/><path d="M8 32c-2.5 1-5 3.5-5 7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".6"/></svg></div><div class="instructor-info"><h3>Curated by Industry Leaders</h3><div class="instructor-role">Designed and delivered by seasoned professionals with 20+ years of hands-on experience in AI, Machine Learning, Data Science, and Enterprise Technology.</div><div class="instructor-creds"><span class="instructor-cred">20+ Years Experience</span><span class="instructor-cred">Enterprise AI</span><span class="instructor-cred">Gen AI & LLMs</span><span class="instructor-cred">MLOps & Cloud</span><span class="instructor-cred">AI Governance</span><span class="instructor-cred">Deep Tech</span></div></div></div></div></section>
+
+<section id="courses"><div class="container"><div class="section-header"><div class="section-label"><div class="ico"><svg viewBox="0 0 10 10" fill="none"><rect x="1" y="1" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg></div>Courses</div><div class="section-title">Four Courses. One Transformation.</div><p class="section-sub">From "using" AI to building autonomous, enterprise-grade systems — each course ends with a real-world capstone.</p></div>
+<div class="courses-grid">
+<div class="course-card fade-in"><div class="course-card-top"></div><div class="course-card-body"><div class="course-card-header"><div class="course-card-week">Course 1</div><div class="course-card-level"><svg viewBox="0 0 12 12" fill="none"><path d="M3 9V6m3 3V4.5m3 4.5V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Foundation</div></div><h3>The AI Consumer & Builder</h3><div class="course-focus">Demystifying AI — from "using" to "instructing"</div><p>Master advanced prompt engineering, harness multimodal Gen AI for code and creativity, and learn Python for AI automation.</p><div class="course-meta"><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 5.5h10" stroke="currentColor" stroke-width="1.2"/></svg>3 Modules</div><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2l1.5 3 3.5.5-2.5 2.4.6 3.5L7 9.9 3.9 11.4l.6-3.5L2 5.5l3.5-.5L7 2z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>Capstone</div></div><div class="course-tags"><span class="course-tag">Prompt Engineering</span><span class="course-tag">CoT & Few-Shot</span><span class="course-tag">GitHub Copilot</span><span class="course-tag">Multimodal AI</span><span class="course-tag">Python</span></div><div class="course-outcome"><div class="course-outcome-label">Capstone</div><p>Build a Personal AI Research Assistant that summarizes your syllabus and generates mock test papers.</p></div><button class="btn-explore" onclick="openDetail(0)">Explore More <svg viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+<div class="course-card fade-in"><div class="course-card-top"></div><div class="course-card-body"><div class="course-card-header"><div class="course-card-week">Course 2</div><div class="course-card-level"><svg viewBox="0 0 12 12" fill="none"><path d="M3 9V6m3 3V4.5m3 4.5V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Core</div></div><h3>The Data & ML Architect</h3><div class="course-focus">Understanding the "Brain" behind the bot</div><p>Dive into statistics and mathematics powering AI, master classic ML algorithms, and build neural networks from scratch.</p><div class="course-meta"><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 5.5h10" stroke="currentColor" stroke-width="1.2"/></svg>3 Modules</div><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2l1.5 3 3.5.5-2.5 2.4.6 3.5L7 9.9 3.9 11.4l.6-3.5L2 5.5l3.5-.5L7 2z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>Capstone</div></div><div class="course-tags"><span class="course-tag">Linear Algebra</span><span class="course-tag">Probability</span><span class="course-tag">Scikit-learn</span><span class="course-tag">Neural Networks</span></div><div class="course-outcome"><div class="course-outcome-label">Capstone</div><p>Develop a Predictive Model — e.g., local weather patterns or stock trends for Indian MSMEs.</p></div><button class="btn-explore" onclick="openDetail(1)">Explore More <svg viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+<div class="course-card fade-in"><div class="course-card-top"></div><div class="course-card-body"><div class="course-card-header"><div class="course-card-week">Course 3</div><div class="course-card-level"><svg viewBox="0 0 12 12" fill="none"><path d="M3 9V6m3 3V4.5m3 4.5V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Applied</div></div><h3>The Gen AI & RAG Specialist</h3><div class="course-focus">Building enterprise-grade applications</div><p>Understand LLM internals, build RAG pipelines with vector databases, and implement responsible AI governance.</p><div class="course-meta"><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 5.5h10" stroke="currentColor" stroke-width="1.2"/></svg>3 Modules</div><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2l1.5 3 3.5.5-2.5 2.4.6 3.5L7 9.9 3.9 11.4l.6-3.5L2 5.5l3.5-.5L7 2z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>Capstone</div></div><div class="course-tags"><span class="course-tag">Transformers</span><span class="course-tag">RAG</span><span class="course-tag">Pinecone/Chroma</span><span class="course-tag">AI Ethics</span></div><div class="course-outcome"><div class="course-outcome-label">Capstone</div><p>Build a Custom Knowledge Bot — e.g., a "Tea Industry Expert" trained on regional agricultural data.</p></div><button class="btn-explore" onclick="openDetail(2)">Explore More <svg viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+<div class="course-card fade-in"><div class="course-card-top"></div><div class="course-card-body"><div class="course-card-header"><div class="course-card-week">Course 4</div><div class="course-card-level"><svg viewBox="0 0 12 12" fill="none"><path d="M3 9V6m3 3V4.5m3 4.5V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Advanced</div></div><h3>The Agentic & Deep Tech Engineer</h3><div class="course-focus">From chatbots to autonomous agents</div><p>Design multi-agent workflows, master MLOps and cloud deployment, and explore Quantum AI and sustainability.</p><div class="course-meta"><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 5.5h10" stroke="currentColor" stroke-width="1.2"/></svg>3 Modules</div><div class="course-meta-item"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2l1.5 3 3.5.5-2.5 2.4.6 3.5L7 9.9 3.9 11.4l.6-3.5L2 5.5l3.5-.5L7 2z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>Capstone</div></div><div class="course-tags"><span class="course-tag">CrewAI</span><span class="course-tag">LangGraph</span><span class="course-tag">Docker</span><span class="course-tag">Cloud APIs</span><span class="course-tag">Quantum AI</span></div><div class="course-outcome"><div class="course-outcome-label">Capstone</div><p>"AI for Social Good" — autonomous agent for water neutrality or disaster response.</p></div><button class="btn-explore" onclick="openDetail(3)">Explore More <svg viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+</div></div></section>
+
+<section id="features"><div class="container"><div class="section-header"><div class="section-label"><div class="ico"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1l1.2 2.4 2.8.4-2 2 .5 2.7L5 7.2 2.5 8.5l.5-2.7-2-2 2.8-.4L5 1z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg></div>Why This Program</div><div class="section-title">Built for Real Impact</div><p class="section-sub">Everything you need to go from AI consumer to AI builder — and beyond.</p></div><div class="features-grid">
+<div class="feature fade-in"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 16l3-3 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="9" r="2" stroke="currentColor" stroke-width="1.3"/></svg></div><h4>Project-Based Learning</h4><p>Every course ends with a capstone — from AI research assistants to autonomous social-good agents.</p></div>
+<div class="feature fade-in"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.5L10 14.7l-4.9 2.5.9-5.5-4-3.9 5.5-.8L10 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div><h4>Industry Leaders</h4><p>Curated by professionals with 20+ years in AI, enterprise tech, and deep tech research.</p></div>
+<div class="feature fade-in"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h4>AI-Native Approach</h4><p>Learn to instruct AI, not just use it — from CoT prompting to multi-agent workflows.</p></div>
+<div class="feature fade-in"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 18c0-3 3.1-5.5 7-5.5s7 2.5 7 5.5" stroke="currentColor" stroke-width="1.3"/></svg></div><h4>Progressive Tracks</h4><p>Foundation → Core → Applied → Advanced — deep mastery through structured progression.</p></div>
+<div class="feature fade-in"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 15l4-4 3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5h3v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h4>Real-World Relevance</h4><p>Capstones grounded in real domains — Indian MSMEs, agriculture, sustainability, disaster response.</p></div>
+<div class="feature fade-in"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 3H5a2 2 0 00-2 2v3m0 4v3a2 2 0 002 2h3m4 0h3a2 2 0 002-2v-3m0-4V5a2 2 0 00-2-2h-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div><h4>Responsible AI</h4><p>Bias detection, data privacy, ethical frameworks, and AI governance woven into every course.</p></div>
+</div></div></section>
+
+<section class="cta-section"><div class="container"><div class="cta-box fade-in"><h2>Ready to Become AI-Native?</h2><p>Join the Summer 2026 cohort and transform from AI consumer to AI builder with real-world capstone projects.</p><button class="btn-signin btn-signin-fill" onclick="openModal()">Enroll Now</button></div></div></section>
+
+<footer><div class="footer-inner"><div class="footer-left"><svg width="28" height="28" viewBox="0 0 42 42" fill="none"><circle cx="21" cy="14" r="6" fill="#E87A2E"/><path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E"/><path d="M11 31c0 0 2 4 10 4s10-4 10-4" stroke="#E87A2E" stroke-width="1.5" stroke-linecap="round"/></svg><span class="footer-copy">&copy; 2026 MokshPath – Guided Path to True Learning</span></div><div class="footer-links"><a href="https://mokshpath.org/" target="_blank">Home</a><a href="#courses">Courses</a><a href="#" onclick="openModal();return false">Sign In</a></div></div></footer>
+</div><!-- /landing-page -->
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- REGISTRATION PAGE                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="reg-page" id="regPage">
+  <div class="reg-topbar">
+    <button class="reg-back" onclick="goBackToLanding()"><svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back to Home</button>
+    <a href="https://mokshpath.org/" class="nav-logo" style="text-decoration:none"><svg width="32" height="32" viewBox="0 0 42 42" fill="none"><circle cx="21" cy="14" r="6" fill="#E87A2E"/><path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E"/></svg><div class="nav-logo-text"><span class="nav-logo-name">Moksh<span>Path</span></span></div></a>
+  </div>
+  <div class="reg-layout">
+    <div class="reg-sidebar">
+      <h3>Registration</h3>
+      <div class="reg-progress-pct" id="progressPct">0% Complete</div>
+      <div class="reg-progress-bar"><div class="reg-progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="reg-sections" id="regSections"></div>
+    </div>
+    <div class="reg-main">
+      <div id="regContent"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SIGN IN MODAL ─── -->
+<div class="modal-overlay" id="signinModal"><div class="modal"><button class="modal-close" onclick="closeModal()"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="modal-brand"><svg width="30" height="30" viewBox="0 0 42 42" fill="none"><circle cx="21" cy="14" r="6" fill="#E87A2E"/><path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E"/></svg><span>Moksh<em>Path</em></span></div><h2>Sign In</h2><div class="modal-sub">Access your courses and track your progress.</div><div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com"></div><div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password"></div><button class="form-submit" onclick="signInAndRegister()">Sign In</button><div class="form-divider">or</div><button class="btn-google" onclick="signInAndRegister()"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>Continue with Google</button></div></div>
+
+<!-- ─── DETAIL MODAL ─── -->
+<div class="modal-overlay" id="detailModal"><div class="detail-modal"><button class="modal-close" onclick="closeDetail()" style="position:absolute;top:1rem;right:1rem;z-index:5"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="detail-header" id="detailHeader"></div><div class="detail-body" id="detailBody"></div></div></div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA-DRIVEN REGISTRATION SCHEMA
+// ═══════════════════════════════════════════
+const REG_SCHEMA = [
+  {
+    id: "personal",
+    title: "Personal & Academic",
+    subtitle: "Tell us about yourself and your academic background",
+    fields: [
+      { id: "fullName", label: "Full Name", type: "text", placeholder: "Enter your full name", required: true },
+      { id: "email", label: "Email Address", type: "email", placeholder: "you@example.com", required: true },
+      { id: "phone", label: "Contact Number", type: "tel", placeholder: "+91 98765 43210", required: true },
+      { id: "institution", label: "Current Institution / University", type: "text", placeholder: "e.g., IIT Guwahati", required: true },
+      { id: "branch", label: "Branch of Study / Major", type: "text", placeholder: "e.g., Computer Science & Engineering", required: true },
+      { id: "yearOfStudy", label: "Year of Study", type: "select", options: ["1st Year", "2nd Year", "3rd Year", "4th Year", "Post-Graduate", "Other"], required: true }
+    ]
+  },
+  {
+    id: "academic",
+    title: "Academic Readiness",
+    subtitle: "Help us understand your current academic foundation",
+    fields: [
+      { id: "scoreRange", label: "Typical score range in core subjects (Maths, Programming, Physics)?", type: "select", options: ["Below 50%", "50–65%", "65–75%", "75–85%", "85–95%", "Above 95%"], required: true },
+      { id: "priorCourses", label: "Have you completed any AI/ML or related coursework?", type: "textarea", placeholder: "If yes, list the courses. If no, write 'None'.", required: true },
+      { id: "recentCourse", label: "Most recent course you have taken?", type: "text", placeholder: "e.g., Data Structures & Algorithms", required: false },
+      { id: "enjoyedMost", label: "What did you enjoy most about it?", type: "textarea", placeholder: "Describe what engaged or excited you...", required: false },
+      { id: "foundChallenging", label: "What did you dislike or find challenging?", type: "textarea", placeholder: "Describe any pain points or challenges...", required: false }
+    ]
+  },
+  {
+    id: "practical",
+    title: "Practical Exposure",
+    subtitle: "Tell us about your hands-on experience",
+    fields: [
+      { id: "projectTitle", label: "Have you built any hands-on projects? If yes, Project Title:", type: "text", placeholder: "e.g., Sentiment Analysis Dashboard", required: false },
+      { id: "projectTools", label: "Tools / Technologies Used", type: "text", placeholder: "e.g., Python, Flask, TensorFlow", required: false },
+      { id: "projectOutcome", label: "Outcome or Impact", type: "textarea", placeholder: "Describe the result, what you learned, or how it was received...", required: false },
+      { id: "hackathons", label: "Have you participated in hackathons, coding contests, or Kaggle challenges?", type: "textarea", placeholder: "List events, your role, and results. Write 'None' if not applicable.", required: false }
+    ]
+  },
+  {
+    id: "interests",
+    title: "Interests & Motivation",
+    subtitle: "What drives your interest in AI?",
+    fields: [
+      { id: "aiExcitement", label: "What excites you most about AI?", type: "chips", options: ["Building Apps", "Problem-Solving", "Creativity", "Data Analysis", "Ethics & Society", "Automation"], required: true },
+      { id: "domainInterest", label: "Which domains interest you most?", type: "chips", options: ["Healthcare", "Finance", "Agriculture", "Education", "Sustainability", "Robotics", "Entertainment", "Government"], required: true },
+      { id: "motivation", label: "What motivates you to pursue AI?", type: "chips", options: ["Career Opportunities", "Curiosity", "Social Impact", "Innovation", "Research", "Entrepreneurship"], required: true }
+    ]
+  },
+  {
+    id: "teamwork",
+    title: "Teamwork & People Skills",
+    subtitle: "How do you collaborate and lead?",
+    fields: [
+      { id: "teamExperience", label: "Have you worked in a team project before? What role did you play?", type: "textarea", placeholder: "Describe your team experience and role...", required: true },
+      { id: "disagreements", label: "How do you handle disagreements in a team setting?", type: "textarea", placeholder: "Describe your approach to conflict resolution...", required: false },
+      { id: "leadershipComfort", label: "How comfortable are you with leadership responsibilities?", type: "scale", min: 1, max: 5, labels: ["Not at all", "", "", "", "Very comfortable"], required: true },
+      { id: "workStyle", label: "Do you prefer working independently or collaboratively?", type: "select", options: ["Independently", "Collaboratively", "A mix of both"], required: true }
+    ]
+  },
+  {
+    id: "learning",
+    title: "Learning Style",
+    subtitle: "Help us tailor the experience to you",
+    fields: [
+      { id: "learnPreference", label: "How do you prefer to learn?", type: "chips", options: ["Videos", "Hands-on Labs", "Reading", "Group Discussions", "One-on-One Mentoring"], required: true },
+      { id: "deadlineStyle", label: "Do you thrive more under deadlines or flexible timelines?", type: "select", options: ["Firm deadlines push me to perform", "Flexible timelines help me think deeper", "Depends on the task"], required: true }
+    ]
+  },
+  {
+    id: "psychometric",
+    title: "Psychometric & Exploratory",
+    subtitle: "We'd love to understand how you think",
+    fields: [
+      { id: "complexProblem", label: "If given a complex problem with no clear solution, what's your first instinct?", type: "textarea", placeholder: "Describe your approach...", required: true },
+      { id: "failureResponse", label: "How do you respond to failure or bugs in your code?", type: "textarea", placeholder: "Describe your typical reaction and next steps...", required: false },
+      { id: "responsibleAI", label: "What does \"responsible AI\" mean to you?", type: "textarea", placeholder: "Share your understanding in a few lines...", required: true },
+      { id: "dreamProject", label: "If you had unlimited resources, what AI project would you build?", type: "textarea", placeholder: "Dream big — describe your ideal AI project...", required: true },
+      { id: "taskPreference", label: "Do you prefer structured tasks or open-ended challenges?", type: "select", options: ["Structured tasks", "Open-ended challenges", "A healthy mix"], required: false },
+      { id: "creativityBalance", label: "How do you balance creativity with discipline?", type: "textarea", placeholder: "Share your approach...", required: false },
+      { id: "groupRole", label: "What role do you naturally take in a group?", type: "select", options: ["Leader", "Analyst", "Executor", "Innovator", "Mediator"], required: true },
+      { id: "ambiguityHandling", label: "How do you handle ambiguity when instructions are unclear?", type: "textarea", placeholder: "Describe your approach...", required: false }
+    ]
+  },
+  {
+    id: "aspirational",
+    title: "Aspirational Thinking",
+    subtitle: "One final thought experiment",
+    fields: [
+      { id: "hometownAI", label: "Imagine you're designing an AI for your hometown. What problem would it solve?", type: "textarea", placeholder: "Describe the problem, your solution idea, and the impact you envision...", required: true }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let currentSection = 0;
+let formData = {};
+let submitted = false;
+
+// ═══════════════════════════════════════════
+// LANDING PAGE FUNCTIONS
+// ═══════════════════════════════════════════
+const courseData = [
+  { label:"Course 1", title:"The AI Consumer & Builder", focus:'Demystifying AI and moving from "using" to "instructing."', level:"Foundation", color:1, modules:[{name:"Module 1: Advanced Prompt Engineering",desc:"Go beyond simple chat. Master Chain-of-Thought (CoT) reasoning, Few-Shot prompting, and structured prompt design."},{name:"Module 2: Multimodal Creativity",desc:"Harness Gen AI across modalities — GitHub Copilot for code, diffusion models for images, AI-powered research synthesis."},{name:"Module 3: Python for AI",desc:"NumPy for numerical computing, Pandas for data manipulation, and building automation scripts that integrate with AI APIs."}], outcome:"Students build a Personal AI Research Assistant that summarizes their college syllabus and generates mock test papers."},
+  { label:"Course 2", title:"The Data & ML Architect", focus:'Understanding the "Brain" behind the bot.', level:"Core", color:2, modules:[{name:"Module 1: Statistics & Mathematics for AI",desc:"Practical linear algebra and probability in neural network architectures — every concept tied to a real AI use case."},{name:"Module 2: Classic Machine Learning",desc:"Supervised vs. Unsupervised learning with Scikit-learn. Classifiers, regressors, clustering, bias-variance tradeoff."},{name:"Module 3: Introduction to Neural Networks",desc:"Build a digit classifier from scratch. Perceptrons, backpropagation, activation functions, and training fundamentals."}], outcome:"Students develop a Predictive Model — e.g., predicting local weather patterns in Assam or stock market trends for Indian MSMEs."},
+  { label:"Course 3", title:"The Gen AI & RAG Specialist", focus:"Building enterprise-grade applications.", level:"Applied", color:3, modules:[{name:"Module 1: LLM Fundamentals",desc:"Transformer architecture, tokenization, context windows, and the pre-training vs. fine-tuning paradigm."},{name:"Module 2: Retrieval Augmented Generation (RAG)",desc:'Build systems that "talk to your data" using Pinecone and Chroma. Embedding generation, semantic search, RAG pipeline design.'},{name:"Module 3: Responsible AI & Governance",desc:"Bias detection, data privacy frameworks, and ethical AI guidelines for fair, transparent, compliant systems."}], outcome:'Students build a Custom Knowledge Bot for a local domain — e.g., a "Tea Industry Expert" bot trained on regional agricultural data.'},
+  { label:"Course 4", title:"The Agentic & Deep Tech Engineer", focus:"Moving from chatbots to autonomous agents.", level:"Advanced", color:4, modules:[{name:"Module 1: Agentic AI Workflows",desc:"Multi-agent systems using CrewAI and LangGraph. Tool-use chains, ReAct patterns, autonomous task execution."},{name:"Module 2: MLOps & Deployment",desc:"Notebook to production. Docker, Cloud APIs, monitoring, A/B testing, continuous deployment pipelines."},{name:"Module 3: Deep Tech Frontiers",desc:"Quantum AI concepts, AI for Sustainability, neuromorphic computing, and emerging technologies shaping the next decade."}], outcome:'"AI for Social Good" capstone — autonomous agent for water neutrality management or disaster response in the North East.'}
+];
+const cC=['','var(--orange-glow)','rgba(232,160,64,0.12)','rgba(102,187,106,0.12)','rgba(76,175,80,0.12)'],cT=['','var(--orange)','#C08830','#388E3C','#2E7D32'],cB=['','var(--orange)','#E8A040','#66BB6A','var(--green)'];
+
+function openModal(){document.getElementById('signinModal').classList.add('active')}
+function closeModal(){document.getElementById('signinModal').classList.remove('active')}
+function openDetail(i){const c=courseData[i];document.getElementById('detailHeader').innerHTML=`<div class="course-card-week" style="background:${cC[c.color]};color:${cT[c.color]};display:inline-block;padding:.3rem .7rem;border-radius:6px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em">${c.label} · ${c.level}</div><h2>${c.title}</h2><div class="detail-focus">${c.focus}</div>`;let h='';c.modules.forEach(m=>{h+=`<div class="detail-module" style="border-left-color:${cB[c.color]}"><h4>${m.name}</h4><p>${m.desc}</p></div>`});h+=`<div class="detail-outcome-box"><h4>Capstone Project</h4><p>${c.outcome}</p></div>`;document.getElementById('detailBody').innerHTML=h;document.getElementById('detailModal').classList.add('active')}
+function closeDetail(){document.getElementById('detailModal').classList.remove('active')}
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active')})});
+function toggleNav(){document.getElementById('navLinks').classList.toggle('open')}
+document.querySelectorAll('.nav-links a').forEach(a=>{a.addEventListener('click',()=>{document.getElementById('navLinks').classList.remove('open')})});
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// ═══════════════════════════════════════════
+// REGISTRATION SYSTEM
+// ═══════════════════════════════════════════
+function signInAndRegister() {
+  closeModal();
+  document.getElementById('landingPage').classList.add('hidden');
+  document.getElementById('regPage').classList.add('active');
+  window.scrollTo(0, 0);
+  renderSidebar();
+  renderSection(0);
+}
+
+function goBackToLanding() {
+  document.getElementById('landingPage').classList.remove('hidden');
+  document.getElementById('regPage').classList.remove('active');
+  window.scrollTo(0, 0);
+}
+
+function renderSidebar() {
+  const el = document.getElementById('regSections');
+  el.innerHTML = REG_SCHEMA.map((s, i) => {
+    const completed = isSectionComplete(i);
+    const active = i === currentSection;
+    let cls = 'reg-sec-item';
+    if (active) cls += ' active';
+    if (completed && !active) cls += ' completed';
+    return `<div class="${cls}" onclick="goToSection(${i})">
+      <div class="reg-sec-dot">${completed ? '<svg class="reg-sec-check" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}</div>
+      ${s.title}
+    </div>`;
+  }).join('');
+  updateProgress();
+}
+
+function isSectionComplete(idx) {
+  const section = REG_SCHEMA[idx];
+  const requiredFields = section.fields.filter(f => f.required);
+  if (requiredFields.length === 0) return section.fields.some(f => formData[f.id] && String(formData[f.id]).trim() !== '');
+  return requiredFields.every(f => {
+    const val = formData[f.id];
+    if (Array.isArray(val)) return val.length > 0;
+    return val && String(val).trim() !== '';
+  });
+}
+
+function updateProgress() {
+  let filled = 0, total = 0;
+  REG_SCHEMA.forEach(s => {
+    s.fields.forEach(f => {
+      total++;
+      const val = formData[f.id];
+      if (Array.isArray(val) && val.length > 0) filled++;
+      else if (val && String(val).trim() !== '') filled++;
+    });
+  });
+  const pct = Math.round((filled / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '% Complete';
+}
+
+function goToSection(idx) {
+  currentSection = idx;
+  renderSidebar();
+  renderSection(idx);
+}
+
+function renderSection(idx) {
+  if (submitted) { renderSuccess(); return; }
+  const section = REG_SCHEMA[idx];
+  let html = `<div class="reg-form-header"><h2>${section.title}</h2><p>${section.subtitle}</p></div><div class="reg-form-body">`;
+  if (idx === 0) {
+    html += `<div class="reg-import">
+      <label class="reg-import-btn">
+        <svg viewBox="0 0 18 18" fill="none"><path d="M9 2v10m0 0l-3-3m3 3l3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Upload Resume
+        <input type="file" accept=".pdf,.doc,.docx" onchange="handleResumeUpload(this)">
+      </label>
+      <button class="reg-import-btn" onclick="handleLinkedIn()">
+        <svg viewBox="0 0 18 18" fill="none"><rect x="1" y="1" width="16" height="16" rx="3" stroke="#0077B5" stroke-width="1.3"/><path d="M5.5 7.5v5m3.5-5v5m0-3.5a2 2 0 014 0v3.5" stroke="#0077B5" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="5.5" r=".8" fill="#0077B5"/></svg>
+        Import from LinkedIn
+      </button>
+    </div>`;
+  }
+  section.fields.forEach(f => {
+    const val = formData[f.id];
+    const isFilled = Array.isArray(val) ? val.length > 0 : (val && String(val).trim() !== '');
+    html += `<div class="reg-field${isFilled ? ' filled' : ''}">`;
+    html += `<label>${f.label}${f.required ? '<span class="req">*</span>' : ''}</label>`;
+    if (f.type === 'text' || f.type === 'email' || f.type === 'tel') {
+      html += `<input type="${f.type}" placeholder="${f.placeholder || ''}" value="${val || ''}" oninput="updateField('${f.id}', this.value)">`;
+    } else if (f.type === 'textarea') {
+      html += `<textarea placeholder="${f.placeholder || ''}" oninput="updateField('${f.id}', this.value)">${val || ''}</textarea>`;
+    } else if (f.type === 'select') {
+      html += `<select onchange="updateField('${f.id}', this.value)"><option value="">Select...</option>`;
+      f.options.forEach(o => { html += `<option value="${o}"${val === o ? ' selected' : ''}>${o}</option>`; });
+      html += '</select>';
+    } else if (f.type === 'chips') {
+      const selected = formData[f.id] || [];
+      html += '<div class="chip-group">';
+      f.options.forEach(o => {
+        html += `<div class="chip${selected.includes(o) ? ' selected' : ''}" onclick="toggleChip('${f.id}','${o}')">${o}</div>`;
+      });
+      html += '</div>';
+    } else if (f.type === 'scale') {
+      html += '<div class="scale-group">';
+      for (let n = f.min; n <= f.max; n++) {
+        html += `<div style="text-align:center"><div class="scale-btn${val == n ? ' selected' : ''}" onclick="updateField('${f.id}', ${n})">${n}</div>${f.labels[n - 1] ? '<div class="scale-label">' + f.labels[n - 1] + '</div>' : ''}</div>`;
+      }
+      html += '</div>';
+    }
+    if (f.hint) html += `<div class="hint">${f.hint}</div>`;
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Nav
+  html += '<div class="reg-nav">';
+  if (idx > 0) {
+    html += `<button class="reg-nav-prev" onclick="goToSection(${idx - 1})"><svg viewBox="0 0 14 14" fill="none"><path d="M9 3L4 7l5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Previous</button>`;
+  } else {
+    html += '<div></div>';
+  }
+  if (idx < REG_SCHEMA.length - 1) {
+    html += `<button class="reg-nav-next" onclick="goToSection(${idx + 1})">Next <svg viewBox="0 0 14 14" fill="none"><path d="M5 3l5 4-5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
+  } else {
+    html += `<button class="reg-nav-next submit" onclick="submitRegistration()">Submit Registration <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
+  }
+  html += '</div>';
+
+  document.getElementById('regContent').innerHTML = html;
+  document.getElementById('regContent').scrollTop = 0;
+  window.scrollTo({ top: document.querySelector('.reg-layout').offsetTop - 80, behavior: 'smooth' });
+}
+
+function updateField(id, value) {
+  formData[id] = value;
+  updateProgress();
+  renderSidebar();
+  // Update filled class on current field
+  const field = event?.target?.closest('.reg-field');
+  if (field) {
+    const isFilled = value && String(value).trim() !== '';
+    field.classList.toggle('filled', isFilled);
+  }
+}
+
+function toggleChip(fieldId, value) {
+  if (!formData[fieldId]) formData[fieldId] = [];
+  const idx = formData[fieldId].indexOf(value);
+  if (idx > -1) formData[fieldId].splice(idx, 1);
+  else formData[fieldId].push(value);
+  updateProgress();
+  renderSidebar();
+  renderSection(currentSection);
+}
+
+function handleResumeUpload(input) {
+  if (input.files && input.files[0]) {
+    const name = input.files[0].name;
+    alert(`Resume "${name}" uploaded successfully! In a production system, we would parse this to pre-fill your details.`);
+  }
+}
+
+function handleLinkedIn() {
+  alert('LinkedIn import would redirect to LinkedIn OAuth in a production system. For now, please fill in the details manually.');
+}
+
+function submitRegistration() {
+  // Check required fields in all sections
+  let incomplete = [];
+  REG_SCHEMA.forEach(s => {
+    s.fields.filter(f => f.required).forEach(f => {
+      const val = formData[f.id];
+      const filled = Array.isArray(val) ? val.length > 0 : (val && String(val).trim() !== '');
+      if (!filled) incomplete.push(f.label);
+    });
+  });
+  if (incomplete.length > 0) {
+    alert(`Please complete these required fields:\n\n• ${incomplete.slice(0, 5).join('\n• ')}${incomplete.length > 5 ? '\n• ... and ' + (incomplete.length - 5) + ' more' : ''}`);
+    return;
+  }
+  submitted = true;
+  renderSuccess();
+}
+
+function renderSuccess() {
+  document.getElementById('regContent').innerHTML = `
+    <div class="reg-success">
+      <div class="reg-success-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M8 20l8 8L32 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h2>Registration Complete!</h2>
+      <p>Thank you for registering for the AI-Native Summer Series 2026. We'll review your profile and get back to you shortly with next steps.</p>
+      <button class="btn-signin btn-signin-fill" style="padding:.8rem 2rem;font-size:.9rem;border-radius:10px" onclick="goBackToLanding()">Back to Home</button>
+    </div>`;
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressPct').textContent = '100% Complete';
+}
+</script>
+</body>
+</html>
