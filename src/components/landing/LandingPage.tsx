@@ -51,6 +51,8 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
                 </button>
             </nav>
 
+
+            {/* =========== The AI-Native Summer Series =============*/}
             <section className="hero">
                 <div className="hero-inner">
                     <div className="hero-content">
@@ -77,6 +79,7 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
                         <div className="hero-circle"></div>
                         <div className="hero-stats-float">
                             <div className="hero-stat-card" style={{ animation: 'float 3s ease-in-out infinite' }}>
+
                                 <div className="hero-stat-num">4</div>
                                 <div className="hero-stat-label">Courses</div>
                             </div>
