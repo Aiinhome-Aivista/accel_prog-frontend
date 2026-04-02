@@ -7,12 +7,13 @@ import type { CourseItem, ProgramStats } from '../../types/registration'
 interface LandingPageProps {
   onSignInClick: () => void;
   onExploreCourse: (index: number) => void;
+  onCoursesLoaded: (data: CourseItem[]) => void;
   navOpen: boolean;
   onToggleNav: () => void;
   onCloseNav: () => void;
 }
 
-function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onCloseNav }: LandingPageProps) {
+function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen, onToggleNav, onCloseNav }: LandingPageProps) {
 
   const [courseData, setCourseData] = useState<CourseItem[]>(COURSE_DATA)
   const [programStats, setProgramStats] = useState<ProgramStats>({
@@ -45,7 +46,10 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
     try {
       const res = await courseService.getCourse();
       const formatted = mapCourseData(res);
-      setCourseData(formatted);
+      if (formatted.length > 0) {
+        setCourseData(formatted);
+        onCoursesLoaded(formatted);
+      }
 
       const stats = res?.data?.program?.stats;
       if (stats) {
@@ -57,7 +61,7 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
         });
       }
     } catch (err: any) {
-      console.log('Error fetching course data:', err.message);
+      console.error('Error fetching course data:', err);
     }
   };
 
@@ -66,13 +70,13 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
   }, [])
 
 
-    return (
-        <div className="landing-page" id="landingPage">
-            <div className="top-bar">
-                <a href="#">Request a Demo</a>
-                <a href="#">FAQs</a>
-                <a href="#">Help Center</a>
-            </div>
+  return (
+    <div className="landing-page" id="landingPage">
+      <div className="top-bar">
+        <a href="#">Request a Demo</a>
+        <a href="#">FAQs</a>
+        <a href="#">Help Center</a>
+      </div>
 
       <nav className="nav">
         <a
@@ -356,8 +360,8 @@ function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onC
                     {(course.tags && course.tags.length > 0
                       ? course.tags
                       : course.modules.map((m) =>
-                          m.name.replace(/Module \d+: /, '').split(' ').slice(0, 2).join(' ')
-                        )
+                        m.name.replace(/Module \d+: /, '').split(' ').slice(0, 2).join(' ')
+                      )
                     ).map((tag) => (
                       <span className="course-tag" key={tag}>{tag}</span>
                     ))}

@@ -5,7 +5,7 @@ import DetailModal from './components/modals/DetailModal'
 import SignInModal from './components/modals/SignInModal'
 import RegistrationPage from './components/registration/RegistrationPage'
 import { REG_SCHEMA } from './data/registrationSchema'
-import type { FormDataMap, FormValue } from './types/registration'
+import type { CourseItem, FormDataMap, FormValue } from './types/registration'
 
 function App() {
   const [showRegistration, setShowRegistration] = useState(false)
@@ -15,24 +15,41 @@ function App() {
   const [currentSection, setCurrentSection] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [formData, setFormData] = useState<FormDataMap>({})
+  const [courseData, setCourseData] = useState<CourseItem[]>([])
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const intersectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible')
-            observer.unobserve(entry.target)
+            intersectionObserver.unobserve(entry.target)
           }
         })
       },
       { threshold: 0.12 },
     )
 
-    const elements = document.querySelectorAll('.fade-in')
-    elements.forEach((element) => observer.observe(element))
+    // Observe all current .fade-in elements
+    const observeAll = () => {
+      document.querySelectorAll('.fade-in:not(.visible)').forEach((el) => {
+        intersectionObserver.observe(el)
+      })
+    }
 
-    return () => observer.disconnect()
+    observeAll()
+
+    // Watch for new .fade-in elements added to the DOM (e.g., after API calls)
+    const mutationObserver = new MutationObserver(() => {
+      observeAll()
+    })
+
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      intersectionObserver.disconnect()
+      mutationObserver.disconnect()
+    }
   }, [showRegistration])
 
   const isSectionComplete = (idx: number) => {
@@ -146,6 +163,7 @@ function App() {
         <LandingPage
           onSignInClick={() => setIsSignInOpen(true)}
           onExploreCourse={(index) => setCourseIndex(index)}
+          onCoursesLoaded={(data) => setCourseData(data)}
           navOpen={navOpen}
           onToggleNav={() => setNavOpen((prev) => !prev)}
           onCloseNav={() => setNavOpen(false)}
@@ -167,7 +185,7 @@ function App() {
       )}
 
       <SignInModal open={isSignInOpen} onClose={() => setIsSignInOpen(false)} onSignIn={handleSignInAndRegister} />
-      <DetailModal courseIndex={courseIndex} onClose={() => setCourseIndex(null)} />
+      <DetailModal courseIndex={courseIndex} courseData={courseData} onClose={() => setCourseIndex(null)} />
     </>
   )
 }

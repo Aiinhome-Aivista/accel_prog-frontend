@@ -1,14 +1,16 @@
-import { COURSE_DATA, DETAIL_BG, DETAIL_BORDER, DETAIL_TEXT } from '../../data/courseData'
+import type { CourseItem } from '../../types/registration'
+import { DETAIL_BG, DETAIL_BORDER, DETAIL_TEXT } from '../../data/courseData'
 
 interface DetailModalProps {
     courseIndex: number | null
+    courseData: CourseItem[]
     onClose: () => void
 }
 
-function DetailModal({ courseIndex, onClose }: DetailModalProps) {
+function DetailModal({ courseIndex, courseData, onClose }: DetailModalProps) {
     if (courseIndex === null) return null
 
-    const course = COURSE_DATA[courseIndex]
+    const course = courseData[courseIndex]
     if (!course) return null
 
     return (
