@@ -1,6 +1,8 @@
-
+import { useState } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../Firebase";
+import { authService } from "../../services/authService";
+
 
 
 interface SignInModalProps {
@@ -10,7 +12,14 @@ interface SignInModalProps {
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
+    const [email, setEmail] = useState("");
+    const [otpCode, setOtpCode] = useState("");
+    const [isOtpSent, setIsOtpSent] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+    const [isVerifying, setIsVerifying] = useState(false);
+
     if (!open) return null
+
 
     const handleGoogleSignIn = async () => {
         const provider = new GoogleAuthProvider();
@@ -30,6 +39,55 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             }
         }
     };
+
+    const handleSendOtp = async () => {
+        if (!email) {
+            alert("Please enter your email address first.");
+            return;
+        }
+
+        setIsSending(true);
+        try {
+            const response = await authService.sendOtp({ email });
+            console.log("Send OTP Success:", response);
+            if (response.status === "success") {
+                setIsOtpSent(true);
+                alert("OTP sent successfully to your email!");
+            } else {
+                alert(response.message || "Failed to send OTP.");
+            }
+        } catch (error: any) {
+            console.error("Send OTP Error:", error);
+            alert(error.message || "Failed to send OTP. Please try again.");
+        } finally {
+            setIsSending(false);
+        }
+    };
+
+    const handleVerifyOtp = async () => {
+        if (!email || !otpCode) {
+            alert("Please provide both email and OTP code.");
+            return;
+        }
+
+        setIsVerifying(true);
+        try {
+            const response = await authService.verifyOtp({ email, otp_code: otpCode });
+            console.log("Verify OTP Success:", response);
+            if (response.status === "success") {
+                onSignIn(); // Success!
+            } else {
+                alert(response.message || "Invalid OTP code.");
+            }
+        } catch (error: any) {
+            console.error("Verify OTP Error:", error);
+            alert(error.message || "Verification failed. Please try again.");
+        } finally {
+            setIsVerifying(true); // Should probably be false
+            setIsVerifying(false);
+        }
+    };
+
 
 
     return (
@@ -54,19 +112,59 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 <h2>Sign In</h2>
                 <div className="modal-sub">Access your courses and track your progress.</div>
 
-                <div className="form-group">
+                <div className="form-group email-group">
                     <label htmlFor="signin-email">Email</label>
-                    <input id="signin-email" type="email" placeholder="you@example.com" />
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <input 
+                            id="signin-email" 
+                            type="email" 
+                            placeholder="you@example.com" 
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            style={{ flex: 1 }}
+                            disabled={isOtpSent}
+                        />
+                        <button 
+                            type="button" 
+                            className="btn-otp" 
+                            onClick={handleSendOtp}
+                            disabled={isSending || isOtpSent}
+                            style={{ 
+                                padding: '0 15px', 
+                                border: '1px solid #E87A2E', 
+                                color: '#E87A2E', 
+                                borderRadius: '6px', 
+                                fontSize: '13px',
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            {isSending ? "Sending..." : isOtpSent ? "Sent" : "Send OTP"}
+                        </button>
+                    </div>
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="signin-password">Password</label>
-                    <input id="signin-password" type="password" placeholder="Enter your password" />
-                </div>
+                {isOtpSent && (
+                    <div className="form-group">
+                        <label htmlFor="signin-otp">OTP Code</label>
+                        <input 
+                            id="signin-otp" 
+                            type="text" 
+                            placeholder="Enter 6-digit code" 
+                            value={otpCode}
+                            onChange={(e) => setOtpCode(e.target.value)}
+                        />
+                    </div>
+                )}
 
-                <button className="form-submit" onClick={onSignIn}>
-                    Sign In
+                <button 
+                    className="form-submit" 
+                    onClick={handleVerifyOtp}
+                    disabled={isVerifying || !isOtpSent}
+                >
+                    {isVerifying ? "Verifying..." : "Sign In"}
                 </button>
+
 
                 <div className="form-divider">or</div>
 
