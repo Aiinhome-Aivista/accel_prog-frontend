@@ -406,7 +406,7 @@ section {
 .pathway-track::before {
   content: "";
   position: absolute;
-  top: 50px;
+  top: 18px;
   left: 12.5%;
   right: 12.5%;
   height: 3px;
@@ -1685,6 +1685,39 @@ footer {
 .fade-in.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Container for the whole card */
+.feature {
+  text-align: left; /* Ensures the h4 and p stay aligned to the left */
+  /* Add your card padding, background, borders here */
+}
+
+/* Container for the whole card */
+.feature {
+  text-align: left; /* Ensures the h4 and p stay aligned to the left */
+  /* Add your card padding, background, borders here */
+}
+
+/* Container for the icon */
+.feature-icon {
+  /* 2. Sizing */
+  width: 56px; /* A fixed width is required for margin: auto to work */
+  height: 56px;
+
+  /* 3. Icon Alignment within the box */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 4. Colors are now injected dynamically via React's style prop! */
+  border-radius: 12px; /* Rounded corners */
+}
+
+/* Ensure the SVG scales nicely inside */
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 @media (max-width: 960px) {
