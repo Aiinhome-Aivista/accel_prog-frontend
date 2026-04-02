@@ -1,0 +1,349 @@
+import type { SectionSchema } from "../types/registration";
+
+export const REG_SCHEMA: SectionSchema[] = [
+  {
+    id: "personal",
+    title: "Personal & Academic",
+    subtitle: "Tell us about yourself and your academic background",
+    fields: [
+      {
+        id: "fullName",
+        label: "Full Name",
+        type: "text",
+        placeholder: "Enter your full name",
+        required: true,
+      },
+      {
+        id: "email",
+        label: "Email Address",
+        type: "email",
+        placeholder: "you@example.com",
+        required: true,
+      },
+      {
+        id: "phone",
+        label: "Contact Number",
+        type: "tel",
+        placeholder: "+91 98765 43210",
+        required: true,
+      },
+      {
+        id: "institution",
+        label: "Current Institution / University",
+        type: "text",
+        placeholder: "e.g., IIT Guwahati",
+        required: true,
+      },
+      {
+        id: "branch",
+        label: "Branch of Study / Major",
+        type: "text",
+        placeholder: "e.g., Computer Science & Engineering",
+        required: true,
+      },
+      {
+        id: "yearOfStudy",
+        label: "Year of Study",
+        type: "select",
+        options: [
+          "1st Year",
+          "2nd Year",
+          "3rd Year",
+          "4th Year",
+          "Post-Graduate",
+          "Other",
+        ],
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "academic",
+    title: "Academic Readiness",
+    subtitle: "Help us understand your current academic foundation",
+    fields: [
+      {
+        id: "scoreRange",
+        label:
+          "Typical score range in core subjects (Maths, Programming, Physics)?",
+        type: "select",
+        options: [
+          "Below 50%",
+          "50-65%",
+          "65-75%",
+          "75-85%",
+          "85-95%",
+          "Above 95%",
+        ],
+        required: true,
+      },
+      {
+        id: "priorCourses",
+        label: "Have you completed any AI/ML or related coursework?",
+        type: "textarea",
+        placeholder: "If yes, list the courses. If no, write 'None'.",
+        required: true,
+      },
+      {
+        id: "recentCourse",
+        label: "Most recent course you have taken?",
+        type: "text",
+        placeholder: "e.g., Data Structures & Algorithms",
+        required: false,
+      },
+      {
+        id: "enjoyedMost",
+        label: "What did you enjoy most about it?",
+        type: "textarea",
+        placeholder: "Describe what engaged or excited you...",
+        required: false,
+      },
+      {
+        id: "foundChallenging",
+        label: "What did you dislike or find challenging?",
+        type: "textarea",
+        placeholder: "Describe any pain points or challenges...",
+        required: false,
+      },
+    ],
+  },
+  {
+    id: "practical",
+    title: "Practical Exposure",
+    subtitle: "Tell us about your hands-on experience",
+    fields: [
+      {
+        id: "projectTitle",
+        label: "Have you built any hands-on projects? If yes, Project Title:",
+        type: "text",
+        placeholder: "e.g., Sentiment Analysis Dashboard",
+        required: false,
+      },
+      {
+        id: "projectTools",
+        label: "Tools / Technologies Used",
+        type: "text",
+        placeholder: "e.g., Python, Flask, TensorFlow",
+        required: false,
+      },
+      {
+        id: "projectOutcome",
+        label: "Outcome or Impact",
+        type: "textarea",
+        placeholder:
+          "Describe the result, what you learned, or how it was received...",
+        required: false,
+      },
+      {
+        id: "hackathons",
+        label:
+          "Have you participated in hackathons, coding contests, or Kaggle challenges?",
+        type: "textarea",
+        placeholder:
+          "List events, your role, and results. Write 'None' if not applicable.",
+        required: false,
+      },
+    ],
+  },
+  {
+    id: "interests",
+    title: "Interests & Motivation",
+    subtitle: "What drives your interest in AI?",
+    fields: [
+      {
+        id: "aiExcitement",
+        label: "What excites you most about AI?",
+        type: "chips",
+        options: [
+          "Building Apps",
+          "Problem-Solving",
+          "Creativity",
+          "Data Analysis",
+          "Ethics & Society",
+          "Automation",
+        ],
+        required: true,
+      },
+      {
+        id: "domainInterest",
+        label: "Which domains interest you most?",
+        type: "chips",
+        options: [
+          "Healthcare",
+          "Finance",
+          "Agriculture",
+          "Education",
+          "Sustainability",
+          "Robotics",
+          "Entertainment",
+          "Government",
+        ],
+        required: true,
+      },
+      {
+        id: "motivation",
+        label: "What motivates you to pursue AI?",
+        type: "chips",
+        options: [
+          "Career Opportunities",
+          "Curiosity",
+          "Social Impact",
+          "Innovation",
+          "Research",
+          "Entrepreneurship",
+        ],
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "teamwork",
+    title: "Teamwork & People Skills",
+    subtitle: "How do you collaborate and lead?",
+    fields: [
+      {
+        id: "teamExperience",
+        label:
+          "Have you worked in a team project before? What role did you play?",
+        type: "textarea",
+        placeholder: "Describe your team experience and role...",
+        required: true,
+      },
+      {
+        id: "disagreements",
+        label: "How do you handle disagreements in a team setting?",
+        type: "textarea",
+        placeholder: "Describe your approach to conflict resolution...",
+        required: false,
+      },
+      {
+        id: "leadershipComfort",
+        label: "How comfortable are you with leadership responsibilities?",
+        type: "scale",
+        min: 1,
+        max: 5,
+        labels: ["Not at all", "", "", "", "Very comfortable"],
+        required: true,
+      },
+      {
+        id: "workStyle",
+        label: "Do you prefer working independently or collaboratively?",
+        type: "select",
+        options: ["Independently", "Collaboratively", "A mix of both"],
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "learning",
+    title: "Learning Style",
+    subtitle: "Help us tailor the experience to you",
+    fields: [
+      {
+        id: "learnPreference",
+        label: "How do you prefer to learn?",
+        type: "chips",
+        options: [
+          "Videos",
+          "Hands-on Labs",
+          "Reading",
+          "Group Discussions",
+          "One-on-One Mentoring",
+        ],
+        required: true,
+      },
+      {
+        id: "deadlineStyle",
+        label: "Do you thrive more under deadlines or flexible timelines?",
+        type: "select",
+        options: [
+          "Firm deadlines push me to perform",
+          "Flexible timelines help me think deeper",
+          "Depends on the task",
+        ],
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "psychometric",
+    title: "Psychometric & Exploratory",
+    subtitle: "We'd love to understand how you think",
+    fields: [
+      {
+        id: "complexProblem",
+        label:
+          "If given a complex problem with no clear solution, what's your first instinct?",
+        type: "textarea",
+        placeholder: "Describe your approach...",
+        required: true,
+      },
+      {
+        id: "failureResponse",
+        label: "How do you respond to failure or bugs in your code?",
+        type: "textarea",
+        placeholder: "Describe your typical reaction and next steps...",
+        required: false,
+      },
+      {
+        id: "responsibleAI",
+        label: 'What does "responsible AI" mean to you?',
+        type: "textarea",
+        placeholder: "Share your understanding in a few lines...",
+        required: true,
+      },
+      {
+        id: "dreamProject",
+        label:
+          "If you had unlimited resources, what AI project would you build?",
+        type: "textarea",
+        placeholder: "Dream big - describe your ideal AI project...",
+        required: true,
+      },
+      {
+        id: "taskPreference",
+        label: "Do you prefer structured tasks or open-ended challenges?",
+        type: "select",
+        options: ["Structured tasks", "Open-ended challenges", "A healthy mix"],
+        required: false,
+      },
+      {
+        id: "creativityBalance",
+        label: "How do you balance creativity with discipline?",
+        type: "textarea",
+        placeholder: "Share your approach...",
+        required: false,
+      },
+      {
+        id: "groupRole",
+        label: "What role do you naturally take in a group?",
+        type: "select",
+        options: ["Leader", "Analyst", "Executor", "Innovator", "Mediator"],
+        required: true,
+      },
+      {
+        id: "ambiguityHandling",
+        label: "How do you handle ambiguity when instructions are unclear?",
+        type: "textarea",
+        placeholder: "Describe your approach...",
+        required: false,
+      },
+    ],
+  },
+  {
+    id: "aspirational",
+    title: "Aspirational Thinking",
+    subtitle: "One final thought experiment",
+    fields: [
+      {
+        id: "hometownAI",
+        label:
+          "Imagine you're designing an AI for your hometown. What problem would it solve?",
+        type: "textarea",
+        placeholder:
+          "Describe the problem, your solution idea, and the impact you envision...",
+        required: true,
+      },
+    ],
+  },
+];
