@@ -329,11 +329,14 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
               Courses
             </div>
             <div className="section-title">
-              Four Courses. One Transformation.
+              {(() => {
+                const words: Record<number, string> = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six' };
+                return `${words[programStats.total_courses] ?? programStats.total_courses} Course${programStats.total_courses !== 1 ? 's' : ''}. One Transformation.`;
+              })()}
             </div>
             <p className="section-sub">
-              From using AI to building autonomous, enterprise-grade systems -
-              each course ends with a real-world capstone.
+              From using AI to building autonomous, enterprise-grade systems —
+              each  the course ends with a real-world capstone.
             </p>
           </div>
 
