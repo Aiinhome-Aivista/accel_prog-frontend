@@ -39,7 +39,10 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                     <input id="signin-password" type="password" placeholder="Enter your password" />
                 </div>
 
-                <button className="form-submit" onClick={onSignIn}>
+                {/* <button className="form-submit" onClick={onSignIn}>
+                    Sign In
+                </button> */}
+                 <button className="form-submit">
                     Sign In
                 </button>
 
