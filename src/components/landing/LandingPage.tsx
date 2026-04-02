@@ -1,5 +1,8 @@
-import { COURSE_DATA } from "../../data/courseData";
-import BrandLogo from "../shared/BrandLogo";
+import { use, useEffect, useState } from 'react'
+import { COURSE_DATA } from '../../data/courseData'
+import { courseService } from '../../services/courseService'
+import BrandLogo from '../shared/BrandLogo'
+import type { CourseItem } from '../../types/registration'
 
 interface LandingPageProps {
     onSignInClick: () => void;
@@ -9,13 +12,59 @@ interface LandingPageProps {
     onCloseNav: () => void;
 }
 
-function LandingPage({
-    onSignInClick,
-    onExploreCourse,
-    navOpen,
-    onToggleNav,
-    onCloseNav,
-}: LandingPageProps) {
+function LandingPage({ onSignInClick, onExploreCourse, navOpen, onToggleNav, onCloseNav }: LandingPageProps) {
+
+
+    const [courseData, setCourseData] = useState(COURSE_DATA)
+
+    const mapCourseData = (apiResponse: any): CourseItem[] => {
+  const courses = apiResponse?.data?.courses || [];
+
+  return courses.map((course: any, index: number) => ({
+    label: `Course ${index + 1}`,
+    title: course.course_name,
+    focus: course.tagline || course.description,
+    level: course.course_level,
+    color: index + 1,
+
+    modules: (course.modules || [])
+      .sort((a: any, b: any) => a.module_order - b.module_order)
+      .map((mod: any, i: number) => ({
+        name: `Module ${i + 1}: ${mod.module_name}`,
+        desc: mod.module_description,
+      })),
+
+    outcome: `${course.capstone?.title || ""} - ${course.capstone?.description || ""}`,
+  }));
+};
+
+
+
+    useEffect(() => {
+ handleGetCourseData()
+    
+ 
+    }, [])
+    
+
+const handleGetCourseData = async () => {
+  try {
+    const res = await courseService.getCourse();
+
+    // 🔥 Transform API → UI format
+  
+   const formatted = mapCourseData(res);
+     setCourseData(formatted);
+
+  
+  
+    console.log("Mapped Data:", res);
+  } catch (err: any) {
+    console.log("Error:", err.message);
+  }
+};
+
+
     return (
         <div className="landing-page" id="landingPage">
             <div className="top-bar">
@@ -286,7 +335,7 @@ function LandingPage({
                     </div>
 
                     <div className="courses-grid">
-                        {COURSE_DATA.map((course, index) => (
+                        {courseData.map((course, index) => (
                             <div className="course-card fade-in" key={course.title}>
                                 <div className="course-card-top"></div>
                                 <div className="course-card-body">
@@ -598,4 +647,8 @@ function LandingPage({
     );
 }
 
-export default LandingPage;
+export default LandingPage
+function setCourses(formatted: any) {
+    throw new Error('Function not implemented.')
+}
+
