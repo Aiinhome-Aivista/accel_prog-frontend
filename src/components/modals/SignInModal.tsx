@@ -1,3 +1,8 @@
+
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../../Firebase";
+
+
 interface SignInModalProps {
     open: boolean
     onClose: () => void
@@ -6,6 +11,26 @@ interface SignInModalProps {
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     if (!open) return null
+
+    const handleGoogleSignIn = async () => {
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            console.log("Success:", result.user);
+            onSignIn(); // Close modal or handle logic
+        } catch (error: any) {
+            if (error.code === 'auth/configuration-not-found') {
+                console.error("Firebase Configuration Error: Auth not enabled or project/domain mismatch.");
+                alert("Sign-in configuration not found. Please verify Firebase project settings.");
+            } else if (error.code === 'auth/popup-closed-by-user') {
+                console.warn("User closed the Google sign-in popup.");
+            } else {
+                console.error("Error signing in with Google:", error);
+                alert(`Error signing in: ${error.message}`);
+            }
+        }
+    };
+
 
     return (
         <div className="modal-overlay active" onClick={onClose}>
@@ -39,16 +64,13 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                     <input id="signin-password" type="password" placeholder="Enter your password" />
                 </div>
 
-                {/* <button className="form-submit" onClick={onSignIn}>
-                    Sign In
-                </button> */}
-                 <button className="form-submit">
+                <button className="form-submit" onClick={onSignIn}>
                     Sign In
                 </button>
 
                 <div className="form-divider">or</div>
 
-                <button className="btn-google" onClick={onSignIn}>
+                <button className="btn-google" onClick={handleGoogleSignIn}>
                     <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
                         <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />
                         <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853" />
