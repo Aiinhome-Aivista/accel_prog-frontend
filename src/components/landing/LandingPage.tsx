@@ -1,601 +1,509 @@
 import { COURSE_DATA } from "../../data/courseData";
 import BrandLogo from "../shared/BrandLogo";
+import ProjectIcon from "../../assets/icons/Project-Based-Learning.svg";
+import IndustryIcon from "../../assets/icons/Industry-Leaders.svg";
+import ProgressiveIcon from "../../assets/icons/Progressive-Tracks.svg";
+import AIApproachIcon from "../../assets/icons/AI-Native-Approach.svg";
+import RealWorldIcon from "../../assets/icons/Real-World-Relevance.svg";
+import ResponsibleIcon from "../../assets/icons/Responsible-AI.svg";
 
 interface LandingPageProps {
-    onSignInClick: () => void;
-    onExploreCourse: (index: number) => void;
-    navOpen: boolean;
-    onToggleNav: () => void;
-    onCloseNav: () => void;
+  onSignInClick: () => void;
+  onExploreCourse: (index: number) => void;
+  navOpen: boolean;
+  onToggleNav: () => void;
+  onCloseNav: () => void;
 }
 
+// 1. Map UI assets using a strict, unchanging ID (not the title)
+const uiAssetMap: Record<string, { icon: string; bgColor: string }> = {
+  project_learning: { icon: ProjectIcon, bgColor: "#fcefe6" },
+  industry_leaders: { icon: IndustryIcon, bgColor: "#edf7ed" },
+  progressive_tracks: { icon: ProgressiveIcon, bgColor: "#edf7ed" },
+  ai_native_approach: { icon: AIApproachIcon, bgColor: "#fcefe6" },
+  real_world_relevance: { icon: RealWorldIcon, bgColor: "#fcefe6" },
+  responsible_ai: { icon: ResponsibleIcon, bgColor: "#edf7ed" },
+};
+
+// 2. Your features data (simulating what an API would return)
+const apiFeaturesData = [
+  {
+    id: "project_learning",
+    title: "Project-Based Learning",
+    desc: "Every course ends with a capstone - from AI research assistants to autonomous social-good agents.",
+  },
+  {
+    id: "industry_leaders",
+    title: "Industry Leaders",
+    desc: "Curated by professionals with 20+ years in AI, enterprise tech, and deep tech research.",
+  },
+  {
+    id: "ai_native_approach",
+    title: "AI-Native Approach",
+    desc: "Learn to instruct AI, not just use it - from CoT prompting to multi-agent workflows.",
+  },
+  {
+    id: "progressive_tracks",
+    title: "Progressive Tracks",
+    desc: "Foundation to Advanced - deep mastery through structured progression.",
+  },
+  {
+    id: "real_world_relevance",
+    title: "Real-World Relevance",
+    desc: "Capstones grounded in real domains like MSMEs, agriculture, sustainability, and disaster response.",
+  },
+  {
+    id: "responsible_ai",
+    title: "Responsible AI",
+    desc: "Bias detection, data privacy, ethical frameworks, and AI governance woven into every course.",
+  },
+];
+
 function LandingPage({
-    onSignInClick,
-    onExploreCourse,
-    navOpen,
-    onToggleNav,
-    onCloseNav,
+  onSignInClick,
+  onExploreCourse,
+  navOpen,
+  onToggleNav,
+  onCloseNav,
 }: LandingPageProps) {
-    return (
-        <div className="landing-page" id="landingPage">
-            <div className="top-bar">
-                <a href="#">Request a Demo</a>
-                <a href="#">FAQs</a>
-                <a href="#">Help Center</a>
-            </div>
+  return (
+    <div className="landing-page" id="landingPage">
+      <div className="top-bar">
+        <a href="#">Request a Demo</a>
+        <a href="#">FAQs</a>
+        <a href="#">Help Center</a>
+      </div>
 
-            <nav className="nav">
-                <a
-                    href="https://mokshpath.org/"
-                    className="nav-logo"
-                    onClick={onCloseNav}
-                >
-                    <BrandLogo />
-                </a>
+      <nav className="nav">
+        <a
+          href="https://mokshpath.org/"
+          className="nav-logo"
+          onClick={onCloseNav}
+        >
+          <BrandLogo />
+        </a>
 
-                <div className={`nav-links ${navOpen ? "open" : ""}`} id="navLinks">
-                    <a href="#pathway" onClick={onCloseNav}>
-                        Program
-                    </a>
-                    <a href="#courses" onClick={onCloseNav}>
-                        Courses
-                    </a>
-                    <a href="#features" onClick={onCloseNav}>
-                        Why Us
-                    </a>
-                    <a href="#instructor" onClick={onCloseNav}>
-                        Instructors
-                    </a>
-                    <a
-                        href="https://mokshpath.org/"
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={onCloseNav}
-                    >
-                        Home
-                    </a>
-                    <button
-                        className="btn-signin btn-signin-fill"
-                        onClick={onSignInClick}
-                    >
-                        Sign In
-                    </button>
-                </div>
-
-                <button
-                    className="mobile-toggle"
-                    onClick={onToggleNav}
-                    aria-label="Toggle menu"
-                >
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </nav>
-
-            {/* ============= The AI-Native Summer Series =============*/}
-
-            <section className="hero">
-                <div className="hero-inner">
-                    <div className="hero-content">
-                        <div className="hero-badge">
-                            <span className="dot"></span> Summer 2026
-                        </div>
-                        <h1>
-                            The <em>AI-Native</em> Summer Series
-                        </h1>
-                        <p className="hero-sub">
-                            Four accelerated courses that take you from AI consumer to AI
-                            builder - from prompt engineering to autonomous agents. Curated by
-                            industry leaders.
-                        </p>
-                        <div className="hero-cta">
-                            <button
-                                className="btn-signin btn-signin-fill"
-                                onClick={onSignInClick}
-                            >
-                                Enroll Now
-                            </button>
-                            <button
-                                className="btn-signin btn-outline"
-                                onClick={() =>
-                                    document
-                                        .getElementById("courses")
-                                        ?.scrollIntoView({ behavior: "smooth" })
-                                }
-                            >
-                                Explore Courses
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="hero-visual">
-                        <div className="hero-circle"></div>
-                        <div className="hero-stats-float">
-                            <div
-                                className="hero-stat-card"
-                                style={{ animation: "float 3s ease-in-out infinite" }}
-                            >
-                                <div className="hero-stat-num">4</div>
-                                <div className="hero-stat-label">Courses</div>
-                            </div>
-                            <div
-                                className="hero-stat-card"
-                                style={{ animation: "float 3s ease-in-out .4s infinite" }}
-                            >
-                                <div className="hero-stat-num">12</div>
-                                <div className="hero-stat-label">Modules</div>
-                            </div>
-                            <div
-                                className="hero-stat-card"
-                                style={{ animation: "float 3s ease-in-out .8s infinite" }}
-                            >
-                                <div className="hero-stat-num">4</div>
-                                <div className="hero-stat-label">Capstones</div>
-                            </div>
-                            <div
-                                className="hero-stat-card"
-                                style={{ animation: "float 3s ease-in-out 1.2s infinite" }}
-                            >
-                                <div className="hero-stat-num">20+</div>
-                                <div className="hero-stat-label">Yrs Expertise</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="pathway">
-                <div className="container">
-                    <div className="section-header">
-                        <div className="section-label">
-                            <div className="ico">
-                                <svg viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                                    <path
-                                        d="M1 5h8M5 1v8"
-                                        stroke="currentColor"
-                                        strokeWidth="1.5"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                            </div>
-                            Learning Pathway
-                        </div>
-                        <div className="section-title">Your AI-Native Journey</div>
-                        <p className="section-sub">
-                            Four progressive courses - each building on the last - from using
-                            AI to building autonomous systems.
-                        </p>
-                    </div>
-
-                    <div className="pathway-track fade-in">
-                        <div className="pathway-step">
-                            <div className="pathway-num">1</div>
-                            <div className="pathway-week">Course 1</div>
-                            <div className="pathway-name">AI Consumer & Builder</div>
-                            <div className="pathway-sessions">Foundation</div>
-                        </div>
-                        <div className="pathway-step">
-                            <div className="pathway-num">2</div>
-                            <div className="pathway-week">Course 2</div>
-                            <div className="pathway-name">Data & ML Architect</div>
-                            <div className="pathway-sessions">Core</div>
-                        </div>
-                        <div className="pathway-step">
-                            <div className="pathway-num">3</div>
-                            <div className="pathway-week">Course 3</div>
-                            <div className="pathway-name">Gen AI & RAG Specialist</div>
-                            <div className="pathway-sessions">Applied</div>
-                        </div>
-                        <div className="pathway-step">
-                            <div className="pathway-num">4</div>
-                            <div className="pathway-week">Course 4</div>
-                            <div className="pathway-name">Agentic & Deep Tech</div>
-                            <div className="pathway-sessions">Advanced</div>
-                        </div>
-                    </div>
-
-                    <div className="instructor-card fade-in" id="instructor">
-                        <div className="instructor-icon-wrap">
-                            <svg viewBox="0 0 50 50" fill="none" aria-hidden="true">
-                                <circle cx="25" cy="15" r="7" stroke="#fff" strokeWidth="2" />
-                                <path
-                                    d="M12 38c0-5.5 5.8-10 13-10s13 4.5 13 10"
-                                    stroke="#fff"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <circle
-                                    cx="37"
-                                    cy="15"
-                                    r="5"
-                                    stroke="#fff"
-                                    strokeWidth="1.5"
-                                    opacity=".6"
-                                />
-                                <path
-                                    d="M42 32c2.5 1 5 3.5 5 7"
-                                    stroke="#fff"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    opacity=".6"
-                                />
-                                <circle
-                                    cx="13"
-                                    cy="15"
-                                    r="5"
-                                    stroke="#fff"
-                                    strokeWidth="1.5"
-                                    opacity=".6"
-                                />
-                                <path
-                                    d="M8 32c-2.5 1-5 3.5-5 7"
-                                    stroke="#fff"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    opacity=".6"
-                                />
-                            </svg>
-                        </div>
-                        <div className="instructor-info">
-                            <h3>Curated by Industry Leaders</h3>
-                            <div className="instructor-role">
-                                Designed and delivered by seasoned professionals with 20+ years
-                                of hands-on experience in AI, Machine Learning, Data Science,
-                                and Enterprise Technology.
-                            </div>
-                            <div className="instructor-creds">
-                                <span className="instructor-cred">20+ Years Experience</span>
-                                <span className="instructor-cred">Enterprise AI</span>
-                                <span className="instructor-cred">Gen AI & LLMs</span>
-                                <span className="instructor-cred">MLOps & Cloud</span>
-                                <span className="instructor-cred">AI Governance</span>
-                                <span className="instructor-cred">Deep Tech</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="courses">
-                <div className="container">
-                    <div className="section-header">
-                        <div className="section-label">
-                            <div className="ico">
-                                <svg viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                                    <rect
-                                        x="1"
-                                        y="1"
-                                        width="8"
-                                        height="8"
-                                        rx="1.5"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                    />
-                                </svg>
-                            </div>
-                            Courses
-                        </div>
-                        <div className="section-title">
-                            Four Courses. One Transformation.
-                        </div>
-                        <p className="section-sub">
-                            From using AI to building autonomous, enterprise-grade systems -
-                            each course ends with a real-world capstone.
-                        </p>
-                    </div>
-
-                    <div className="courses-grid">
-                        {COURSE_DATA.map((course, index) => (
-                            <div className="course-card fade-in" key={course.title}>
-                                <div className="course-card-top"></div>
-                                <div className="course-card-body">
-                                    <div className="course-card-header">
-                                        <div className="course-card-week">{course.label}</div>
-                                        <div className="course-card-level">{course.level}</div>
-                                    </div>
-
-                                    <h3>{course.title}</h3>
-                                    <div className="course-focus">{course.focus}</div>
-                                    <p>{course.modules[0].desc}</p>
-
-                                    <div className="course-meta">
-                                        <div className="course-meta-item">3 Modules</div>
-                                        <div className="course-meta-item">Capstone</div>
-                                    </div>
-
-                                    <div className="course-tags">
-                                        {course.modules.map((module) => (
-                                            <span className="course-tag" key={module.name}>
-                                                {module.name
-                                                    .replace("Module 1: ", "")
-                                                    .replace("Module 2: ", "")
-                                                    .replace("Module 3: ", "")
-                                                    .split(" ")
-                                                    .slice(0, 2)
-                                                    .join(" ")}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    <div className="course-outcome">
-                                        <div className="course-outcome-label">Capstone</div>
-                                        <p>{course.outcome}</p>
-                                    </div>
-
-                                    <button
-                                        className="btn-explore"
-                                        onClick={() => onExploreCourse(index)}
-                                    >
-                                        Explore More
-                                        <svg viewBox="0 0 15 15" fill="none" aria-hidden="true">
-                                            <path
-                                                d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5"
-                                                stroke="currentColor"
-                                                strokeWidth="1.4"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section id="features">
-                <div className="container">
-                    <div className="section-header">
-                        <div className="section-label">
-                            <div className="ico">*</div>
-                            Why This Program
-                        </div>
-                        <div className="section-title">Built for Real Impact</div>
-                        <p className="section-sub">
-                            Everything you need to go from AI consumer to AI builder - and
-                            beyond.
-                        </p>
-                    </div>
-
-                    <div className="features-grid">
-                        {[
-                            [
-                                "Project-Based Learning",
-                                "Every course ends with a capstone - from AI research assistants to autonomous social-good agents.",
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    key="svg-1"
-                                >
-                                    <path
-                                        d="M4 16l3-3 2.5 2.5L16 9"
-                                        stroke="currentColor"
-                                        strokeWidth="1.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                    <circle
-                                        cx="16"
-                                        cy="9"
-                                        r="2"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                    />
-                                </svg>,
-                                "#e87a2e",
-                                "#fcefe6",
-                            ],
-                            [
-                                "Industry Leaders",
-                                "Curated by professionals with 20+ years in AI, enterprise tech, and deep tech research.",
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    key="svg-2"
-                                >
-                                    <path
-                                        d="M10 2l2.5 5 5.5.8-4 3.9.9 5.5L10 14.7l-4.9 2.5.9-5.5-4-3.9 5.5-.8L10 2z"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>,
-                                "#4caf50",
-                                "#edf7ed",
-                            ],
-                            [
-                                "AI-Native Approach",
-                                "Learn to instruct AI, not just use it - from CoT prompting to multi-agent workflows.",
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    key="svg-3"
-                                >
-                                    <rect
-                                        x="3"
-                                        y="3"
-                                        width="14"
-                                        height="14"
-                                        rx="3"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                    />
-                                    <path
-                                        d="M7 10l2 2 4-4"
-                                        stroke="currentColor"
-                                        strokeWidth="1.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>,
-                                "#efa36f", // Blue icon color
-                                "#fcefe6", // Light blue background
-                            ],
-                            [
-                                "Progressive Tracks",
-                                "Foundation to Advanced - deep mastery through structured progression.",
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    key="svg-4"
-                                >
-                                    <circle
-                                        cx="10"
-                                        cy="7"
-                                        r="3.5"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                    />
-                                    <path
-                                        d="M3 18c0-3 3.1-5.5 7-5.5s7 2.5 7 5.5"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                    />
-                                </svg>,
-                                "#92ce94",
-                                "#edf7ed",
-                            ],
-                            [
-                                "Real-World Relevance",
-                                "Capstones grounded in real domains like MSMEs, agriculture, sustainability, and disaster response.",
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    key="svg-5"
-                                >
-                                    <path
-                                        d="M4 15l4-4 3 3 5-6"
-                                        stroke="currentColor"
-                                        strokeWidth="1.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                    <path
-                                        d="M13 5h3v3"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>,
-                                "#e87a2e",
-                                "#fcefe6",
-                            ],
-                            [
-                                "Responsible AI",
-                                "Bias detection, data privacy, ethical frameworks, and AI governance woven into every course.",
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    key="svg-6"
-                                >
-                                    <path
-                                        d="M8 3H5a2 2 0 00-2 2v3m0 4v3a2 2 0 002 2h3m4 0h3a2 2 0 002-2v-3m0-4V5a2 2 0 00-2-2h-3"
-                                        stroke="currentColor"
-                                        strokeWidth="1.3"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>,
-                                "#74c177",
-                                "#edf7ed",
-                            ],
-                        ].map(([title, desc, icon, color, bgColor]) => (
-                            <div className="feature fade-in" key={title as string}>
-                                {/* Apply the dynamic colors using inline styles */}
-                                <div
-                                    className="feature-icon"
-                                    style={{
-                                        color: color as string,
-                                        backgroundColor: bgColor as string,
-                                    }}
-                                >
-                                    {icon as React.ReactNode}
-                                </div>
-                                <h4>{title as string}</h4>
-                                <p>{desc as string}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="cta-section">
-                <div className="container">
-                    <div className="cta-box fade-in">
-                        <h2>Ready to Become AI-Native?</h2>
-                        <p>
-                            Join the Summer 2026 cohort and transform from AI consumer to AI
-                            builder with real-world capstone projects.
-                        </p>
-                        <button
-                            className="btn-signin btn-signin-fill"
-                            onClick={onSignInClick}
-                        >
-                            Enroll Now
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <footer>
-                <div className="footer-inner">
-                    <div className="footer-left">
-                        <svg
-                            width="28"
-                            height="28"
-                            viewBox="0 0 42 42"
-                            fill="none"
-                            aria-hidden="true"
-                        >
-                            <circle cx="21" cy="14" r="6" fill="#E87A2E" />
-                            <path
-                                d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z"
-                                fill="#E87A2E"
-                            />
-                            <path
-                                d="M11 31c0 0 2 4 10 4s10-4 10-4"
-                                stroke="#E87A2E"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <span className="footer-copy">
-                            Copyright 2026 MokshPath - Guided Path to True Learning
-                        </span>
-                    </div>
-                    <div className="footer-links">
-                        <a href="https://mokshpath.org/" target="_blank" rel="noreferrer">
-                            Home
-                        </a>
-                        <a href="#courses">Courses</a>
-                        <a
-                            href="#"
-                            onClick={(event) => {
-                                event.preventDefault();
-                                onSignInClick();
-                            }}
-                        >
-                            Sign In
-                        </a>
-                    </div>
-                </div>
-            </footer>
+        <div className={`nav-links ${navOpen ? "open" : ""}`} id="navLinks">
+          <a href="#pathway" onClick={onCloseNav}>
+            Program
+          </a>
+          <a href="#courses" onClick={onCloseNav}>
+            Courses
+          </a>
+          <a href="#features" onClick={onCloseNav}>
+            Why Us
+          </a>
+          <a href="#instructor" onClick={onCloseNav}>
+            Instructors
+          </a>
+          <a
+            href="https://mokshpath.org/"
+            target="_blank"
+            rel="noreferrer"
+            onClick={onCloseNav}
+          >
+            Home
+          </a>
+          <button
+            className="btn-signin btn-signin-fill"
+            onClick={onSignInClick}
+          >
+            Sign In
+          </button>
         </div>
-    );
+
+        <button
+          className="mobile-toggle"
+          onClick={onToggleNav}
+          aria-label="Toggle menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+
+      {/* ============= The AI-Native Summer Series =============*/}
+
+      <section className="hero">
+        <div className="hero-inner">
+          <div className="hero-content">
+            <div className="hero-badge">
+              <span className="dot"></span> Summer 2026
+            </div>
+            <h1>
+              The <em>AI-Native</em> Summer Series
+            </h1>
+            <p className="hero-sub">
+              Four accelerated courses that take you from AI consumer to AI
+              builder - from prompt engineering to autonomous agents. Curated by
+              industry leaders.
+            </p>
+            <div className="hero-cta">
+              <button
+                className="btn-signin btn-signin-fill"
+                onClick={onSignInClick}
+              >
+                Enroll Now
+              </button>
+              <button
+                className="btn-signin btn-outline"
+                onClick={() =>
+                  document
+                    .getElementById("courses")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
+                Explore Courses
+              </button>
+            </div>
+          </div>
+
+          <div className="hero-visual">
+            <div className="hero-circle"></div>
+            <div className="hero-stats-float">
+              <div
+                className="hero-stat-card"
+                style={{ animation: "float 3s ease-in-out infinite" }}
+              >
+                <div className="hero-stat-num">4</div>
+                <div className="hero-stat-label">Courses</div>
+              </div>
+              <div
+                className="hero-stat-card"
+                style={{ animation: "float 3s ease-in-out .4s infinite" }}
+              >
+                <div className="hero-stat-num">12</div>
+                <div className="hero-stat-label">Modules</div>
+              </div>
+              <div
+                className="hero-stat-card"
+                style={{ animation: "float 3s ease-in-out .8s infinite" }}
+              >
+                <div className="hero-stat-num">4</div>
+                <div className="hero-stat-label">Capstones</div>
+              </div>
+              <div
+                className="hero-stat-card"
+                style={{ animation: "float 3s ease-in-out 1.2s infinite" }}
+              >
+                <div className="hero-stat-num">20+</div>
+                <div className="hero-stat-label">Yrs Expertise</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pathway">
+        <div className="container">
+          <div className="section-header">
+            <div className="section-label">
+              <div className="ico">
+                <svg viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path
+                    d="M1 5h8M5 1v8"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              Learning Pathway
+            </div>
+            <div className="section-title">Your AI-Native Journey</div>
+            <p className="section-sub">
+              Four progressive courses - each building on the last - from using
+              AI to building autonomous systems.
+            </p>
+          </div>
+
+          <div className="pathway-track fade-in">
+            <div className="pathway-step">
+              <div className="pathway-num">1</div>
+              <div className="pathway-week">Course 1</div>
+              <div className="pathway-name">AI Consumer & Builder</div>
+              <div className="pathway-sessions">Foundation</div>
+            </div>
+            <div className="pathway-step">
+              <div className="pathway-num">2</div>
+              <div className="pathway-week">Course 2</div>
+              <div className="pathway-name">Data & ML Architect</div>
+              <div className="pathway-sessions">Core</div>
+            </div>
+            <div className="pathway-step">
+              <div className="pathway-num">3</div>
+              <div className="pathway-week">Course 3</div>
+              <div className="pathway-name">Gen AI & RAG Specialist</div>
+              <div className="pathway-sessions">Applied</div>
+            </div>
+            <div className="pathway-step">
+              <div className="pathway-num">4</div>
+              <div className="pathway-week">Course 4</div>
+              <div className="pathway-name">Agentic & Deep Tech</div>
+              <div className="pathway-sessions">Advanced</div>
+            </div>
+          </div>
+
+          <div className="instructor-card fade-in" id="instructor">
+            <div className="instructor-icon-wrap">
+              <svg viewBox="0 0 50 50" fill="none" aria-hidden="true">
+                <circle cx="25" cy="15" r="7" stroke="#fff" strokeWidth="2" />
+                <path
+                  d="M12 38c0-5.5 5.8-10 13-10s13 4.5 13 10"
+                  stroke="#fff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <circle
+                  cx="37"
+                  cy="15"
+                  r="5"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  opacity=".6"
+                />
+                <path
+                  d="M42 32c2.5 1 5 3.5 5 7"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  opacity=".6"
+                />
+                <circle
+                  cx="13"
+                  cy="15"
+                  r="5"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  opacity=".6"
+                />
+                <path
+                  d="M8 32c-2.5 1-5 3.5-5 7"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  opacity=".6"
+                />
+              </svg>
+            </div>
+            <div className="instructor-info">
+              <h3>Curated by Industry Leaders</h3>
+              <div className="instructor-role">
+                Designed and delivered by seasoned professionals with 20+ years
+                of hands-on experience in AI, Machine Learning, Data Science,
+                and Enterprise Technology.
+              </div>
+              <div className="instructor-creds">
+                <span className="instructor-cred">20+ Years Experience</span>
+                <span className="instructor-cred">Enterprise AI</span>
+                <span className="instructor-cred">Gen AI & LLMs</span>
+                <span className="instructor-cred">MLOps & Cloud</span>
+                <span className="instructor-cred">AI Governance</span>
+                <span className="instructor-cred">Deep Tech</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="courses">
+        <div className="container">
+          <div className="section-header">
+            <div className="section-label">
+              <div className="ico">
+                <svg viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <rect
+                    x="1"
+                    y="1"
+                    width="8"
+                    height="8"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.3"
+                  />
+                </svg>
+              </div>
+              Courses
+            </div>
+            <div className="section-title">
+              Four Courses. One Transformation.
+            </div>
+            <p className="section-sub">
+              From using AI to building autonomous, enterprise-grade systems -
+              each course ends with a real-world capstone.
+            </p>
+          </div>
+
+          <div className="courses-grid">
+            {COURSE_DATA.map((course, index) => (
+              <div className="course-card fade-in" key={course.title}>
+                <div className="course-card-top"></div>
+                <div className="course-card-body">
+                  <div className="course-card-header">
+                    <div className="course-card-week">{course.label}</div>
+                    <div className="course-card-level">{course.level}</div>
+                  </div>
+
+                  <h3>{course.title}</h3>
+                  <div className="course-focus">{course.focus}</div>
+                  <p>{course.modules[0].desc}</p>
+
+                  <div className="course-meta">
+                    <div className="course-meta-item">3 Modules</div>
+                    <div className="course-meta-item">Capstone</div>
+                  </div>
+
+                  <div className="course-tags">
+                    {course.modules.map((module) => (
+                      <span className="course-tag" key={module.name}>
+                        {module.name
+                          .replace("Module 1: ", "")
+                          .replace("Module 2: ", "")
+                          .replace("Module 3: ", "")
+                          .split(" ")
+                          .slice(0, 2)
+                          .join(" ")}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="course-outcome">
+                    <div className="course-outcome-label">Capstone</div>
+                    <p>{course.outcome}</p>
+                  </div>
+
+                  <button
+                    className="btn-explore"
+                    onClick={() => onExploreCourse(index)}
+                  >
+                    Explore More
+                    <svg viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                      <path
+                        d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div className="container">
+          <div className="section-header">
+            <div className="section-label">
+              <div className="ico">*</div>
+              Why This Program
+            </div>
+            <div className="section-title">Built for Real Impact</div>
+            <p className="section-sub">
+              Everything you need to go from AI consumer to AI builder - and
+              beyond.
+            </p>
+          </div>
+
+          {/* Cleaned up features-grid using uiAssetMap */}
+          <div className="features-grid">
+            {apiFeaturesData.map((feature) => {
+              const uiConfig = uiAssetMap[feature.id];
+
+              // Safety fallback in case the map is missing an ID
+              if (!uiConfig) return null;
+
+              return (
+                <div className="feature fade-in" key={feature.id}>
+                  <div
+                    className="feature-icon"
+                    style={{
+                      backgroundColor: uiConfig.bgColor,
+                    }}
+                  >
+                    <img
+                      src={uiConfig.icon}
+                      alt={feature.title}
+                      width="20"
+                      height="20"
+                    />
+                  </div>
+                  <h4>{feature.title}</h4>
+                  <p>{feature.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="cta-section">
+        <div className="container">
+          <div className="cta-box fade-in">
+            <h2>Ready to Become AI-Native?</h2>
+            <p>
+              Join the Summer 2026 cohort and transform from AI consumer to AI
+              builder with real-world capstone projects.
+            </p>
+            <button
+              className="btn-signin btn-signin-fill"
+              onClick={onSignInClick}
+            >
+              Enroll Now
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div className="footer-inner">
+          <div className="footer-left">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 42 42"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle cx="21" cy="14" r="6" fill="#E87A2E" />
+              <path
+                d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z"
+                fill="#E87A2E"
+              />
+              <path
+                d="M11 31c0 0 2 4 10 4s10-4 10-4"
+                stroke="#E87A2E"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="footer-copy">
+              Copyright 2026 MokshPath - Guided Path to True Learning
+            </span>
+          </div>
+          <div className="footer-links">
+            <a href="https://mokshpath.org/" target="_blank" rel="noreferrer">
+              Home
+            </a>
+            <a href="#courses">Courses</a>
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault();
+                onSignInClick();
+              }}
+            >
+              Sign In
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
 }
 
 export default LandingPage;
