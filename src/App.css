@@ -406,7 +406,7 @@ section {
 .pathway-track::before {
   content: "";
   position: absolute;
-  top: 50px;
+  top: 18px;
   left: 12.5%;
   right: 12.5%;
   height: 3px;
