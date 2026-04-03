@@ -10,10 +10,11 @@ import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
 import ProgramSelector from "./components/home/mokshPathDashboard";
 import { useEffect, useMemo, useState } from 'react'
 import { useToast } from './context/ToastContext'
+import Dashboard from './components/dashboard/Dashboard'
 
 function App() {
   // 1. Unified navigation state
-  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION">("HOME");
+  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION" | "DASHBOARD">("HOME");
   const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
@@ -88,9 +89,13 @@ function App() {
   }, [formData, submitted]);
 
   // Navigation Handlers
-  const handleSignInAndRegister = () => {
+  const handleSignIn = (isNewUser: boolean) => {
     setIsSignInOpen(false);
-    setView("REGISTRATION");
+    if (isNewUser) {
+      setView("REGISTRATION");
+    } else {
+      setView("DASHBOARD");
+    }
     window.scrollTo(0, 0);
   };
 
@@ -165,11 +170,15 @@ function App() {
         />
       )}
 
+      {view === "DASHBOARD" && (
+        <Dashboard onLogout={() => setView("HOME")} />
+      )}
+
       {/* Global Modals */}
       <SignInModal 
         open={isSignInOpen} 
         onClose={() => setIsSignInOpen(false)} 
-        onSignIn={handleSignInAndRegister} 
+        onSignIn={handleSignIn} 
       />
       
       <DetailModal 
