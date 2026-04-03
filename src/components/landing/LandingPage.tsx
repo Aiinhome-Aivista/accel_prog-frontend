@@ -100,7 +100,6 @@ function LandingPage({
 
         <div className={`nav-links ${navOpen ? "open" : ""}`} id="navLinks">
           <a
-            href="#"
             style={{
               display: "inline-flex",
               alignItems: "center",
