@@ -114,7 +114,9 @@ function renderField(
               </button>
               {labels[n - 1] ? (
                 <div className="scale-label">{labels[n - 1]}</div>
-              ) : <div className="h-5"> </div>}
+              ) : (
+                <div className="h-5"> </div>
+              )}
             </div>
           );
         })}
@@ -163,17 +165,12 @@ function RegistrationPage({
       </div>
 
       <div className="reg-banner">
-        <div className="reg-banner-inner flex flex-col md:flex-row h-full">
-          <h2 className="text-start text-nowrap">
+        <div className="reg-banner-inner">
+          <h2>
             Let's Shape Your <em>AI Path</em>
           </h2>
-          <small className="border-2 hidden md:block mx-4 h-full border-gray-300/25 border-rounded-full reg-bar"></small>
-          <p className="text-start hidden md:block">
-            The more we know you, the better we curate your learning journey. <br />
-            Tell us your story — your curiosity is the first algorithm.
-          </p>
-          <p className="text-start block md:hidden">
-            The more we know you, the better we curate your learning journey. 
+          <p className="">
+            The more we know you, the better we curate your learning journey.
             Tell us your story — your curiosity is the first algorithm.
           </p>
         </div>
