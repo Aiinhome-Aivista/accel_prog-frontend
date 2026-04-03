@@ -22,13 +22,6 @@
   --radius-sm: 8px;
 }
 
-.home-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #f3ede7;
-  overflow: hidden; /* ❌ no scroll */
-}
 
 .home-hero {
   flex: 1;
@@ -45,12 +38,12 @@
 /* Typography */
 .home-hero h1 {
   font-family: "DM Serif Display", serif;
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-size: clamp(1rem, 4vw, 3rem);
   color: #2b2d42;
   line-height: 1.1;
-  margin-top: 0.5rem;
+  /* margin-top: 0.5rem; */
   font-weight: 400;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .home-hero h1 em {
@@ -60,9 +53,9 @@
 
 .home-hero-sub {
   color: #6b6d7b;
-  font-size: 1.05rem;
+  font-size: 1rem;
   max-width: 600px;
-  margin: 1.2rem auto 0;
+  margin: .2rem auto 0;
   line-height: 1.6;
 }
 
@@ -72,7 +65,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   max-width: 1100px;
-  margin: 3rem auto;
+  margin: 1rem auto;
   padding: 0 2.5rem;
 }
 
@@ -80,7 +73,7 @@
 /* DEFAULT CARD */
 .home-card {
   background: #ffffff;
-  padding: 2.5rem 2rem;
+  padding: 2.5rem 1rem;
   border-radius: 14px;
   border: 2px solid #e5ddd4;
   position: relative;
@@ -141,12 +134,12 @@
 /* Badges and Icons */
 .home-path-badge {
   display: inline-block;
-  margin: 1rem 0 1.5rem;
+  margin: 1rem 0 .5rem;
   padding: 0.4rem 1rem;
   background-color: rgba(232, 122, 46, 0.12);
   color: #e87a2e;
   border-radius: 50px;
-  font-size: 0.72rem;
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -292,7 +285,7 @@
   flex-shrink: 0;
   padding: 8px 0;
   margin-top: auto;
-  padding-bottom: 2rem;
+  padding-bottom: auto;
   font-size: 0.75rem;
   color: #9597a6;
   background: var(--bg);
@@ -328,7 +321,5 @@
     padding: 0 0.5rem;
   }
 
-  .home-card {
-    padding: 2rem 1.5rem;
-  }
+
 }
