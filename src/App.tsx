@@ -16,13 +16,43 @@ import { authService } from './services/authService';
 function App() {
   // 1. Unified navigation state
   const [view, setView] = useState< "LANDING" | "REGISTRATION" | "DASHBOARD">("LANDING");
+  // 1. Unified navigation state from localStorage
+
+
+  const [userName, setUserName] = useState<string>(() => {
+    return localStorage.getItem("user_name") || "";
+  });
+
   const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState(0);
+
+  const [currentSection, setCurrentSection] = useState(() => {
+    return Number(localStorage.getItem("reg_section")) || 0;
+  });
+
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState<FormDataMap>({});
+
+  const [formData, setFormData] = useState<FormDataMap>(() => {
+    try {
+      const saved = localStorage.getItem("reg_form");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // Persist view changes
+  useEffect(() => {
+    localStorage.setItem("app_view", view);
+  }, [view]);
+
+  // Persist registration progress
+  useEffect(() => {
+    localStorage.setItem("reg_form", JSON.stringify(formData));
+    localStorage.setItem("reg_section", String(currentSection));
+  }, [formData, currentSection]);
   const [courseData, setCourseData] = useState<CourseItem[]>([]);
 
   useEffect(() => {
@@ -90,8 +120,12 @@ function App() {
   }, [formData, submitted]);
 
   // Navigation Handlers
-  const handleSignIn = (isNewUser: boolean, email: string) => {
+  const handleSignIn = (isNewUser: boolean, email: string, name?: string) => {
     setIsSignInOpen(false);
+    if (name) {
+      setUserName(name);
+      localStorage.setItem("user_name", name);
+    }
     if (isNewUser) {
       setView("REGISTRATION");
       setFormData((prev) => ({ ...prev, email: email }));
@@ -108,9 +142,14 @@ function App() {
     setSubmitted(false);
     setCurrentSection(0);
     setNavOpen(false);
+    setUserName("");
     
     // 2. Clear browser cache/storage
     localStorage.removeItem("token");
+    localStorage.removeItem("app_view");
+    localStorage.removeItem("reg_form");
+    localStorage.removeItem("reg_section");
+    localStorage.removeItem("user_name");
     
     // 3. Reset scroll
     window.scrollTo(0, 0);
@@ -229,7 +268,7 @@ function App() {
       )}
 
       {view === "DASHBOARD" && (
-        <Dashboard onLogout={handleLogout} />
+        <Dashboard onLogout={handleLogout} userName={userName} />
       )}
 
       {/* Global Modals */}
@@ -238,6 +277,7 @@ function App() {
         onClose={() => setIsSignInOpen(false)}
         onSignIn={handleSignIn}
       />
+
 
       <DetailModal
         courseIndex={courseIndex}

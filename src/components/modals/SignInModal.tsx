@@ -9,7 +9,7 @@ import { useToast } from "../../context/ToastContext";
 interface SignInModalProps {
     open: boolean
     onClose: () => void
-    onSignIn: (isNewUser: boolean, email: string) => void
+    onSignIn: (isNewUser: boolean, email: string, name?: string) => void
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -33,14 +33,29 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     const { showError } = useToast();
     if (!open) return null
 
-
     const handleGoogleSignIn = async () => {
         const provider = new GoogleAuthProvider();
         try {
             const result = await signInWithPopup(auth, provider);
-            console.log("Success:", result.user);
-            // Default to true (registration) for Google unless backend confirms
-            onSignIn(true, result.user.email || ""); 
+            console.log("Firebase Success:", result.user);
+
+            // Call Backend API
+            const response = await authService.googleSignIn({
+                email: result.user.email || "",
+                full_name: result.user.displayName || "Google User",
+                is_google_verified: true
+            });
+            
+            console.log("Backend Success:", response);
+
+            if (response.status === "success") {
+                // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
+                const isExistingUser = response.is_new_user === false || response.data?.is_new_user === false;
+                const name = response.data?.full_name || result.user.displayName || "Google User";
+                onSignIn(!isExistingUser, result.user.email || "", name); 
+            } else {
+                showError("Sign-in error", response.message || "Backend verification failed.");
+            }
         } catch (error: any) {
             if (error.code === 'auth/configuration-not-found') {
                 console.error("Firebase Configuration Error: Auth not enabled or project/domain mismatch.");
@@ -54,6 +69,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         }
     };
 
+
+
     const handleSendOtp = async () => {
         if (!email) {
             alert("Please enter your email address first.");
@@ -66,7 +83,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             console.log("Send OTP Success:", response);
             if (response.status === "success") {
                 setIsOtpSent(true);
-                alert("OTP sent successfully to your email!");
+                // alert("OTP sent successfully to your email!");
             } else {
                 alert(response.message || "Failed to send OTP.");
             }
@@ -89,8 +106,10 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             const response = await authService.verifyOtp({ email, otp_code: otpCode });
             console.log("Verify OTP Success:", response);
             if (response.status === "success") {
-                // Pass true for registration UNLESS the backend explicitly says is_new_user is false
-                onSignIn(response.is_new_user !== false, email); 
+                // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
+                const isExistingUser = response.is_new_user === false || response.data?.is_new_user === false;
+                const name = response.data?.full_name || "User";
+                onSignIn(!isExistingUser, email, name); 
             } else {
                 alert(response.message || "Invalid OTP code.");
             }
@@ -98,7 +117,6 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             console.error("Verify OTP Error:", error);
             alert(error.message || "Verification failed. Please try again.");
         } finally {
-            setIsVerifying(true); // Should probably be false
             setIsVerifying(false);
         }
     };
@@ -144,8 +162,15 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                         <button 
                             type="button" 
                             className="btn-otp" 
-                            onClick={handleSendOtp}
-                            disabled={isSending || isOtpSent}
+                            onClick={() => {
+                                if (isOtpSent) {
+                                    setIsOtpSent(false);
+                                    setOtpCode("");
+                                } else {
+                                    handleSendOtp();
+                                }
+                            }}
+                            disabled={isSending}
                             style={{ 
                                 padding: '0 15px', 
                                 border: '1px solid #E87A2E', 
@@ -156,7 +181,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                                 whiteSpace: 'nowrap'
                             }}
                         >
-                            {isSending ? "Sending..." : isOtpSent ? "Sent" : "Send OTP"}
+                            {isSending ? "Sending..." : isOtpSent ? "Edit Email" : "Send OTP"}
                         </button>
                     </div>
                 </div>
