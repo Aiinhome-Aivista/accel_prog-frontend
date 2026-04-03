@@ -293,9 +293,11 @@ body {
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: linear-gradient(135deg,
-      rgba(232, 122, 46, 0.08),
-      rgba(232, 122, 46, 0.03));
+  background: linear-gradient(
+    135deg,
+    rgba(232, 122, 46, 0.08),
+    rgba(232, 122, 46, 0.03)
+  );
   position: absolute;
   top: 50%;
   left: 50%;
@@ -417,11 +419,13 @@ section {
   left: 12.5%;
   right: 12.5%;
   height: 3px;
-  background: linear-gradient(90deg,
-      var(--orange),
-      var(--orange-light),
-      #66bb6a,
-      var(--green));
+  background: linear-gradient(
+    90deg,
+    var(--orange),
+    var(--orange-light),
+    #66bb6a,
+    var(--green)
+  );
   border-radius: 2px;
   z-index: 0;
 }
@@ -1159,8 +1163,11 @@ footer {
 }
 
 .reg-page {
-  min-height: 100vh;
+  height: 100vh;
   background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .reg-topbar {
@@ -1210,7 +1217,9 @@ footer {
   display: grid;
   grid-template-columns: 240px 1fr;
   gap: 2rem;
-  min-height: calc(100vh - 64px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .reg-sidebar {
@@ -1320,7 +1329,9 @@ footer {
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  overflow: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .reg-form-header {
@@ -1457,6 +1468,68 @@ footer {
   color: var(--green);
   margin-left: 0.4rem;
   font-size: 0.7rem;
+}
+
+/* Banner */
+.reg-banner {
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+  padding: 1.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.reg-banner::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(232, 122, 46, 0.1);
+}
+
+.reg-banner::after {
+  content: "";
+  position: absolute;
+  bottom: -30px;
+  left: 30%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.reg-banner-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.reg-banner h2 {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.reg-banner h2 em {
+  font-style: normal;
+  color: var(--orange-light);
+}
+
+.reg-banner p {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  /* max-width: 560px; */
+  /* margin: 0 auto; */
+}
+
+.reg-bar{
+  border-radius: 25px;
 }
 
 .chip-group {
@@ -1660,7 +1733,6 @@ footer {
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -1672,7 +1744,6 @@ footer {
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -1902,3 +1973,4 @@ footer {
   top: 1rem !important;
   right: 1rem !important;
 }
+
