@@ -11,6 +11,7 @@ interface LandingPageProps {
   navOpen: boolean;
   onToggleNav: () => void;
   onCloseNav: () => void;
+  onGoHome: () => void;
 }
 
 function LandingPage({
@@ -20,6 +21,7 @@ function LandingPage({
   navOpen,
   onToggleNav,
   onCloseNav,
+  onGoHome
 }: LandingPageProps) {
   const [courseData, setCourseData] = useState<CourseItem[]>(COURSE_DATA);
   const [programStats, setProgramStats] = useState<ProgramStats>({
@@ -85,26 +87,46 @@ function LandingPage({
 
       <nav className="nav">
         <a
-          href="https://mokshpath.org/"
+          href="#" // Change this so it doesn't leave the app
           className="nav-logo"
-          onClick={onCloseNav}
+          onClick={(e) => {
+            e.preventDefault(); // Prevent page reload
+            onCloseNav();
+            onGoHome(); // Trigger the view change to HOME
+          }}
         >
           <BrandLogo />
         </a>
 
         <div className={`nav-links ${navOpen ? "open" : ""}`} id="navLinks">
-        {/* <a
-            href="javascript:void(0)"
-            className="display: inline-flex; align-items: center; gap: 0.3rem">
-            <svg width="14" height="13" viewBox="0 0 14 14" fill="none">
+          <a
+            href="#"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              textDecoration: "none",
+            }}
+            className="display: inline-flex; align-items: center; gap: 0.3rem"
+
+            onClick={(e) => {
+              e.preventDefault();
+              onCloseNav();
+              onGoHome();
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
                 d="M9 3L4 7l5 4"
                 stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              /></svg>
-            All Programs</a> */}
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>All Programs</span>
+          </a>
+
           <a href="#pathway" onClick={onCloseNav}>
             Program
           </a>
@@ -409,12 +431,12 @@ function LandingPage({
                     {(course.tags && course.tags.length > 0
                       ? course.tags
                       : course.modules.map((m) =>
-                          m.name
-                            .replace(/Module \d+: /, "")
-                            .split(" ")
-                            .slice(0, 2)
-                            .join(" "),
-                        )
+                        m.name
+                          .replace(/Module \d+: /, "")
+                          .split(" ")
+                          .slice(0, 2)
+                          .join(" "),
+                      )
                     ).map((tag) => (
                       <span className="course-tag" key={tag}>
                         {tag}
@@ -669,7 +691,11 @@ function LandingPage({
             </span>
           </div>
           <div className="footer-links cursor-pointer">
-            <a target="_blank" rel="noreferrer">
+            <a target="_blank" rel="noreferrer" href="#" onClick={(e) => {
+              e.preventDefault(); // Prevent page reload
+              onCloseNav();
+              onGoHome(); // Trigger the view change to HOME
+            }}>
               All Programs
             </a>
             <a href="#courses">Courses</a>
