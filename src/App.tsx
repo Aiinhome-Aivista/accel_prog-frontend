@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import LandingPage from "./components/landing/LandingPage";
 import DetailModal from "./components/modals/DetailModal";
@@ -7,11 +6,13 @@ import RegistrationPage from "./components/registration/RegistrationPage";
 import { REG_SCHEMA } from "./data/registrationSchema";
 import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
 import ProgramSelector from "./components/home/mokshPathDashboard";
+import { useEffect, useMemo, useState } from 'react'
+import { useToast } from './context/ToastContext'
 
 function App() {
   // 1. Unified navigation state
   const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION">("HOME");
-  
+  const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
@@ -120,7 +121,7 @@ function App() {
     });
 
     if (incomplete.length > 0) {
-      alert(`Please complete required fields:\n\n- ${incomplete.slice(0, 5).join("\n- ")}`);
+      showIncompleteFormToast(incomplete)
       return;
     }
     setSubmitted(true);

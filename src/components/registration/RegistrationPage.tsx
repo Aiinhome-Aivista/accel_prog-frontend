@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react'
+import { useToast } from '../../context/ToastContext'
 import BrandLogo from '../shared/BrandLogo'
 import type { FieldSchema, FormDataMap, FormValue, SectionSchema } from '../../types/registration'
 
@@ -108,6 +109,7 @@ function RegistrationPage({
     onSubmit,
     isSectionComplete,
 }: RegistrationPageProps) {
+    const { showSuccess, showInfo } = useToast()
     const section = schema[currentSection]
 
     return (
@@ -181,7 +183,7 @@ function RegistrationPage({
                                                 onChange={(event) => {
                                                     const fileName = event.target.files?.[0]?.name
                                                     if (fileName) {
-                                                        alert(`Resume ${fileName} uploaded successfully! In a production system, we would parse this to pre-fill your details.`)
+                                                        showSuccess('Resume Uploaded', `Resume ${fileName} uploaded successfully! In a production system, we would parse this to pre-fill your details.`)
                                                     }
                                                 }}
                                             />
@@ -190,7 +192,7 @@ function RegistrationPage({
                                         <button
                                             type="button"
                                             className="reg-import-btn"
-                                            onClick={() => alert('LinkedIn import would redirect to LinkedIn OAuth in a production system. For now, please fill in the details manually.')}
+                                            onClick={() => showInfo('LinkedIn Import', 'LinkedIn import would redirect to LinkedIn OAuth in a production system. For now, please fill in the details manually.')}
                                         >
                                             <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
                                                 <rect x="1" y="1" width="16" height="16" rx="3" stroke="#0077B5" strokeWidth="1.3" />
@@ -255,11 +257,14 @@ function RegistrationPage({
                                     <path d="M8 20l8 8L32 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </div>
-                            <h2>Registration Complete!</h2>
+                            <h2>You're On the Radar!</h2>
                             <p>
-                                Thank you for registering for the AI-Native Summer Series 2026. We will review your profile and get back to you shortly with next steps.
+                                Thanks for sharing your story with us. Our team is now crafting the perfect learning path just for you. We'll notify you shortly with your course details, schedule, and everything you need to hit the ground running.
                             </p>
-                            <button className="btn-signin btn-signin-fill" style={{ padding: '.8rem 2rem', fontSize: '.9rem', borderRadius: '10px' }} onClick={onBackHome}>
+                            <p style={{ fontStyle: 'italic', color: 'var(--orange)', fontWeight: 600 }}>
+                                "The best algorithms start with great inputs — and yours are brilliant."
+                            </p>
+                            <button className="btn-signin btn-signin-fill" style={{ backgroundColor: 'var(--orange)', color: '#fff', border: 'none', padding: '.8rem 2rem', fontSize: '1rem', borderRadius: '10px', fontWeight: 600 }} onClick={onBackHome}>
                                 Back to Home
                             </button>
                         </div>
