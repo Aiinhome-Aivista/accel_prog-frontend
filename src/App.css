@@ -1476,6 +1476,9 @@ footer {
   padding: 1.5rem 1.5rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .reg-banner::before {
