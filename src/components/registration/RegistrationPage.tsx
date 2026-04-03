@@ -255,11 +255,14 @@ function RegistrationPage({
                                     <path d="M8 20l8 8L32 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </div>
-                            <h2>Registration Complete!</h2>
+                            <h2>You're On the Radar!</h2>
                             <p>
-                                Thank you for registering for the AI-Native Summer Series 2026. We will review your profile and get back to you shortly with next steps.
+                                Thanks for sharing your story with us. Our team is now crafting the perfect learning path just for you. We'll notify you shortly with your course details, schedule, and everything you need to hit the ground running.
                             </p>
-                            <button className="btn-signin btn-signin-fill" style={{ padding: '.8rem 2rem', fontSize: '.9rem', borderRadius: '10px' }} onClick={onBackHome}>
+                            <p style={{ fontStyle: 'italic', color: 'var(--orange)', fontWeight: 600 }}>
+                                "The best algorithms start with great inputs — and yours are brilliant."
+                            </p>
+                            <button className="btn-signin btn-signin-fill" style={{ backgroundColor: 'var(--orange)', color: '#fff', border: 'none', padding: '.8rem 2rem', fontSize: '1rem', borderRadius: '10px', fontWeight: 600 }} onClick={onBackHome}>
                                 Back to Home
                             </button>
                         </div>
