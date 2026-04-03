@@ -8,6 +8,7 @@ interface ProgramCardProps {
   isComingSoon?: boolean;
   onAction?: () => void;
   colorClass: string;
+  cardClass?: string; // ✅ NEW
 }
 
 const ProgramCard: React.FC<ProgramCardProps> = ({
@@ -17,9 +18,12 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   isComingSoon,
   onAction,
   colorClass,
+  cardClass,
 }) => (
   <div
-    className={`home-card ${isComingSoon ? "coming-soon" : ""}`}
+    className={`home-card ${cardClass || ""} ${
+      isComingSoon ? "coming-soon" : ""
+    }`}
     onClick={!isComingSoon ? onAction : undefined}
   >
     {isComingSoon && <div className="home-card-badge">Coming Soon</div>}
@@ -28,7 +32,12 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
     <p>{description}</p>
     <span className="home-card-arrow">
       {isComingSoon ? "Notify Me" : "Explore Now"}
-      <svg viewBox="0 0 14 14" fill="none" width="14" style={{ marginLeft: '8px' }}>
+      <svg
+        viewBox="0 0 14 14"
+        fill="none"
+        width="14"
+        style={{ marginLeft: "8px" }}
+      >
         <path
           d="M3 7h8M8 4l3 3-3 3"
           stroke="currentColor"
@@ -110,6 +119,7 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
             description="Intensive, industry-curated AI courses — from prompt engineering to autonomous agents, built for speed and depth."
             onAction={onSelectAccelerated}
             colorClass="icon-green"
+            cardClass="card-green" // ✅ ADD THIS
             icon={
               <svg
                 width="30"

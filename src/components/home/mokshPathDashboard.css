@@ -74,21 +74,51 @@
 }
 
 /* Cards */
+/* DEFAULT CARD */
 .home-card {
   background: #ffffff;
   padding: 2.5rem 2rem;
   border-radius: 14px;
   border: 2px solid #e5ddd4;
-  transition: all 0.3s ease;
   position: relative;
-  cursor: pointer;
-  text-align: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* TOP BAR */
+.home-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.home-card.card-green:hover::before {
+  width: 100%;
+  background: #4caf50;
+}
+
+.home-card.card-green:hover {
+  border-color: #4caf50;
 }
 
 .home-card:hover {
   transform: translateY(-8px);
-  border-color: var(--green);
   box-shadow: 0 16px 48px rgba(43, 45, 66, 0.12);
+}
+
+.home-card.coming-soon {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.home-card.coming-soon:hover {
+  transform: none;
+  border-color: #e5ddd4;
+  box-shadow: none;
 }
 
 .home-card h3 {
@@ -103,17 +133,6 @@
   color: #6b6d7b;
   line-height: 1.6;
   margin-bottom: 1rem;
-}
-
-.home-card.coming-soon {
-  opacity: 0.7;
-  cursor: default;
-}
-
-.home-card.coming-soon:hover {
-  transform: none;
-  border-color: #e5ddd4;
-  box-shadow: none;
 }
 
 /* Badges and Icons */
