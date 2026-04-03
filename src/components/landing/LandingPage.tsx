@@ -668,7 +668,7 @@ function LandingPage({
               Copyright 2026 MokshPath - Guided Path to True Learning
             </span>
           </div>
-          <div className="footer-links">
+          <div className="footer-links cursor-pointer">
             <a target="_blank" rel="noreferrer">
               All Programs
             </a>

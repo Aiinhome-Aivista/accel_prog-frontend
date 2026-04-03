@@ -72,7 +72,7 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
         </div>
       </nav>
 
-      <div className="home-hero">
+      <div className="home-hero cursor-pointer">
         <div className="home-path-badge">CHOOSE YOUR PATH</div>
 
         <h1>
