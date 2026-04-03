@@ -1,4 +1,5 @@
 import React from "react";
+import "./mokshPathDashboard.css"; // Import the specific CSS file here
 
 interface ProgramCardProps {
   title: string;
@@ -27,7 +28,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
     <p>{description}</p>
     <span className="home-card-arrow">
       {isComingSoon ? "Notify Me" : "Explore Now"}
-      <svg viewBox="0 0 14 14" fill="none" width="14">
+      <svg viewBox="0 0 14 14" fill="none" width="14" style={{ marginLeft: '8px' }}>
         <path
           d="M3 7h8M8 4l3 3-3 3"
           stroke="currentColor"
@@ -45,7 +46,6 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
 }) => {
   return (
     <div className="home-page">
-      {/* Centered Logo Section */}
       <nav className="home-nav-fixed">
         <div className="nav-logo-main">
           <svg className="nav-logo-icon-large" viewBox="0 0 42 42" fill="none">
@@ -73,7 +73,6 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
       </nav>
 
       <div className="home-hero">
-        {/* Updated "Choose Your Path" Capsule Badge */}
         <div className="home-path-badge">CHOOSE YOUR PATH</div>
 
         <h1>
