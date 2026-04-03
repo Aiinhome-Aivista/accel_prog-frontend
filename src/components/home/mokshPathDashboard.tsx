@@ -53,15 +53,15 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
 const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
   onSelectAccelerated,
 }) => {
-  useEffect(() => {
-    // disable scroll
-    document.body.style.overflow = "hidden";
+  // useEffect(() => {
+  //   // disable scroll
+  //   document.body.style.overflow = "hidden";
 
-    return () => {
-      // restore scroll when leaving page
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+  //   return () => {
+  //     // restore scroll when leaving page
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, []);
 
   return (
     <div className="home-page">
