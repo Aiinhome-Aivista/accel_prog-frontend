@@ -399,7 +399,9 @@ section {
 #pathway {
   background: var(--bg-light);
 }
-
+#instructor {
+  background: #fcf8f1;
+}
 .pathway-track {
   display: flex;
   align-items: stretch;
@@ -688,7 +690,7 @@ section {
 }
 
 .instructor-card {
-  background: var(--navy-dark);
+  background: var(--navy);
   color: #fff;
   border-radius: var(--radius);
   padding: 2.5rem;
