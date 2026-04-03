@@ -87,9 +87,16 @@ body {
   text-decoration: none;
 }
 
+.nav-logo img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
 .nav-logo-icon {
-  width: 42px;
-  height: 42px;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .nav-logo-text {
@@ -286,11 +293,9 @@ body {
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(232, 122, 46, 0.08),
-    rgba(232, 122, 46, 0.03)
-  );
+  background: linear-gradient(135deg,
+      rgba(232, 122, 46, 0.08),
+      rgba(232, 122, 46, 0.03));
   position: absolute;
   top: 50%;
   left: 50%;
@@ -410,13 +415,11 @@ section {
   left: 12.5%;
   right: 12.5%;
   height: 3px;
-  background: linear-gradient(
-    90deg,
-    var(--orange),
-    var(--orange-light),
-    #66bb6a,
-    var(--green)
-  );
+  background: linear-gradient(90deg,
+      var(--orange),
+      var(--orange-light),
+      #66bb6a,
+      var(--green));
   border-radius: 2px;
   z-index: 0;
 }
@@ -943,13 +946,13 @@ footer {
 }
 
 .modal-brand svg {
-  width: 30px;
-  height: 30px;
+  width: 200px;
+  height: 20px;
 }
 
 .modal-brand span {
   font-family: "DM Serif Display", serif;
-  font-size: 1.1rem;
+  font-size: 1.8rem;
   color: var(--navy);
 }
 
@@ -1655,6 +1658,7 @@ footer {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -1666,6 +1670,7 @@ footer {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1691,20 +1696,23 @@ footer {
 
 /* Container for the whole card */
 .feature {
-  text-align: left; /* Ensures the h4 and p stay aligned to the left */
+  text-align: left;
+  /* Ensures the h4 and p stay aligned to the left */
   /* Add your card padding, background, borders here */
 }
 
 /* Container for the whole card */
 .feature {
-  text-align: left; /* Ensures the h4 and p stay aligned to the left */
+  text-align: left;
+  /* Ensures the h4 and p stay aligned to the left */
   /* Add your card padding, background, borders here */
 }
 
 /* Container for the icon */
 .feature-icon {
   /* 2. Sizing */
-  width: 56px; /* A fixed width is required for margin: auto to work */
+  width: 56px;
+  /* A fixed width is required for margin: auto to work */
   height: 56px;
 
   /* 3. Icon Alignment within the box */
@@ -1713,7 +1721,8 @@ footer {
   align-items: center;
 
   /* 4. Colors are now injected dynamically via React's style prop! */
-  border-radius: 12px; /* Rounded corners */
+  border-radius: 12px;
+  /* Rounded corners */
 }
 
 /* Ensure the SVG scales nicely inside */
@@ -1849,4 +1858,8 @@ footer {
   .reg-import {
     flex-direction: column;
   }
+}
+
+.text-2xl {
+  font-size: 1.5rem;
 }

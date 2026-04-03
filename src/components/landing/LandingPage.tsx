@@ -3,7 +3,7 @@ import { COURSE_DATA } from '../../data/courseData'
 import { courseService } from '../../services/courseService'
 import BrandLogo from '../shared/BrandLogo'
 import type { CourseItem, ProgramStats } from '../../types/registration'
-
+import LogoIcon from '../../assets/logogod.svg'
 interface LandingPageProps {
   onSignInClick: () => void;
   onExploreCourse: (index: number) => void;
@@ -88,6 +88,18 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
         </a>
 
         <div className={`nav-links ${navOpen ? "open" : ""}`} id="navLinks">
+        {/* <a
+            href="javascript:void(0)"
+            className="display: inline-flex; align-items: center; gap: 0.3rem">
+            <svg width="14" height="13" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M9 3L4 7l5 4"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              /></svg>
+            All Programs</a> */}
           <a href="#pathway" onClick={onCloseNav}>
             Program
           </a>
@@ -100,14 +112,14 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
           <a href="#instructor" onClick={onCloseNav}>
             Instructors
           </a>
-          <a
+          {/* <a
             href="https://mokshpath.org/"
             target="_blank"
             rel="noreferrer"
             onClick={onCloseNav}
           >
             Home
-          </a>
+          </a> */}
           <button
             className="btn-signin btn-signin-fill"
             onClick={onSignInClick}
@@ -307,7 +319,7 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             </div>
           </div>
         </div>
-       
+
       </section>
 
       <section id="courses">
@@ -607,25 +619,12 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
       <footer>
         <div className="footer-inner">
           <div className="footer-left">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 42 42"
-              fill="none"
+            <img
+              src={LogoIcon}
+              className="nav-logo-icon"
+              alt="Logo"
               aria-hidden="true"
-            >
-              <circle cx="21" cy="14" r="6" fill="#E87A2E" />
-              <path
-                d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z"
-                fill="#E87A2E"
-              />
-              <path
-                d="M11 31c0 0 2 4 10 4s10-4 10-4"
-                stroke="#E87A2E"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
+            />
             <span className="footer-copy">
               Copyright 2026 MokshPath - Guided Path to True Learning
             </span>

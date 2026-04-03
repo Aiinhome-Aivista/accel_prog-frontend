@@ -120,7 +120,7 @@ function RegistrationPage({
                     Back to Home
                 </button>
 
-                <a href="https://mokshpath.org/" className="nav-logo" style={{ textDecoration: 'none' }}>
+                <a className="nav-logo" style={{ textDecoration: 'none' }}>
                     <BrandLogo compact />
                 </a>
             </div>

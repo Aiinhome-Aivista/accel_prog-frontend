@@ -2,7 +2,7 @@ import { useState } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../Firebase";
 import { authService } from "../../services/authService";
-
+import LogoIcon from '../../assets/logogod.svg'
 
 
 interface SignInModalProps {
@@ -100,11 +100,13 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 </button>
 
                 <div className="modal-brand">
-                    <svg width="30" height="30" viewBox="0 0 42 42" fill="none" aria-hidden="true">
-                        <circle cx="21" cy="14" r="6" fill="#E87A2E" />
-                        <path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E" />
-                    </svg>
-                    <span>
+                    <img 
+                        src={LogoIcon} 
+                        className="nav-logo-icon" 
+                        alt="Logo"
+                        aria-hidden="true"
+                    />
+                    <span className="text-2xl">
                         Moksh<em>Path</em>
                     </span>
                 </div>
