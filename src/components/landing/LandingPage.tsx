@@ -108,12 +108,7 @@ function LandingPage({
               textDecoration: "none",
             }}
             className="display: inline-flex; align-items: center; gap: 0.3rem"
-
-            onClick={(e) => {
-              e.preventDefault();
-              onCloseNav();
-              onGoHome();
-            }}
+href="#" onClick={onCloseNav}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
