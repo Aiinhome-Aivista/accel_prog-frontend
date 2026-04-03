@@ -89,10 +89,11 @@ function App() {
   }, [formData, submitted]);
 
   // Navigation Handlers
-  const handleSignIn = (isNewUser: boolean) => {
+  const handleSignIn = (isNewUser: boolean, email: string) => {
     setIsSignInOpen(false);
     if (isNewUser) {
       setView("REGISTRATION");
+      setFormData((prev) => ({ ...prev, email: email }));
     } else {
       setView("DASHBOARD");
     }
@@ -118,7 +119,6 @@ function App() {
   };
 
   const handleSubmit = () => {
-    console.log(formData);
     const incomplete: string[] = [];
     REG_SCHEMA.forEach((section) => {
       section.fields.filter((field) => field.required).forEach((field) => {
@@ -138,7 +138,7 @@ function App() {
   return (
     <>
       {/* 2. Logic-driven Rendering: Only one view shows at a time */}
-      
+
       {view === "HOME" && (
         <ProgramSelector onSelectAccelerated={() => setView("LANDING")} />
       )}
@@ -176,16 +176,16 @@ function App() {
       )}
 
       {/* Global Modals */}
-      <SignInModal 
-        open={isSignInOpen} 
-        onClose={() => setIsSignInOpen(false)} 
-        onSignIn={handleSignIn} 
+      <SignInModal
+        open={isSignInOpen}
+        onClose={() => setIsSignInOpen(false)}
+        onSignIn={handleSignIn}
       />
-      
-      <DetailModal 
-        courseIndex={courseIndex} 
-        courseData={courseData} 
-        onClose={() => setCourseIndex(null)} 
+
+      <DetailModal
+        courseIndex={courseIndex}
+        courseData={courseData}
+        onClose={() => setCourseIndex(null)}
       />
     </>
   );

@@ -27,10 +27,11 @@ function renderField(
         return (
             <input
                 type={field.type}
-                disabled = {field.type === 'email'? true : false}
                 placeholder={field.placeholder || ''}
-                value={typeof value === 'string' ? value : field.type === 'email' ? 'arendu@gmail.com' :''}
+                value={typeof value === 'string' ? value : ''}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => onUpdateField(field.id, event.target.value)}
+                disabled={field.id === 'email'}
+                className={field.id === 'email' ? 'opacity-60 cursor-not-allowed bg-gray-50' : ''}
             />
         )
     }
