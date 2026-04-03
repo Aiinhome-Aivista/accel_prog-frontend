@@ -9,6 +9,7 @@ interface ProgramCardProps {
   isComingSoon?: boolean;
   onAction?: () => void;
   colorClass: string;
+  cardClass?: string; // ✅ NEW
 }
 
 const ProgramCard: React.FC<ProgramCardProps> = ({
@@ -18,9 +19,12 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   isComingSoon,
   onAction,
   colorClass,
+  cardClass,
 }) => (
   <div
-    className={`home-card ${isComingSoon ? "coming-soon" : ""}`}
+    className={`home-card ${cardClass || ""} ${
+      isComingSoon ? "coming-soon" : ""
+    }`}
     onClick={!isComingSoon ? onAction : undefined}
   >
     {isComingSoon && <div className="home-card-badge">Coming Soon</div>}
@@ -106,6 +110,7 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
             description="Intensive, industry-curated AI courses — from prompt engineering to autonomous agents, built for speed and depth."
             onAction={onSelectAccelerated}
             colorClass="icon-green"
+            cardClass="card-green" // ✅ ADD THIS
             icon={
               <svg
                 width="30"
