@@ -1,6 +1,7 @@
 
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../Firebase";
+import { useToast } from "../../context/ToastContext";
 
 
 interface SignInModalProps {
@@ -10,6 +11,7 @@ interface SignInModalProps {
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
+    const { showError } = useToast();
     if (!open) return null
 
     const handleGoogleSignIn = async () => {
@@ -21,12 +23,12 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         } catch (error: any) {
             if (error.code === 'auth/configuration-not-found') {
                 console.error("Firebase Configuration Error: Auth not enabled or project/domain mismatch.");
-                alert("Sign-in configuration not found. Please verify Firebase project settings.");
+                showError("Sign-in error", "Sign-in configuration not found. Please verify Firebase project settings.");
             } else if (error.code === 'auth/popup-closed-by-user') {
                 console.warn("User closed the Google sign-in popup.");
             } else {
                 console.error("Error signing in with Google:", error);
-                alert(`Error signing in: ${error.message}`);
+                showError("Sign-in error", `Error signing in: ${error.message}`);
             }
         }
     };
