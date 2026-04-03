@@ -21,4 +21,10 @@ export const authService = {
       method: "POST",
       data,
     }),
+  googleSignIn:(data: { email: string; full_name: string; is_google_verified: boolean }) =>
+    apiRequest({
+      url: API_ENDPOINTS.GOOGLE_SIGNIN,
+      method: "POST",
+      data,
+    }),
 };
