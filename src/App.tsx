@@ -9,7 +9,9 @@ import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
 import ProgramSelector from "./components/home/mokshPathDashboard";
 
 function App() {
-  const [showRegistration, setShowRegistration] = useState(false);
+  // 1. Unified navigation state
+  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION">("HOME");
+  
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
@@ -31,7 +33,6 @@ function App() {
       { threshold: 0.12 },
     );
 
-    // Observe all current .fade-in elements
     const observeAll = () => {
       document.querySelectorAll(".fade-in:not(.visible)").forEach((el) => {
         intersectionObserver.observe(el);
@@ -40,7 +41,6 @@ function App() {
 
     observeAll();
 
-    // Watch for new .fade-in elements added to the DOM (e.g., after API calls)
     const mutationObserver = new MutationObserver(() => {
       observeAll();
     });
@@ -51,12 +51,11 @@ function App() {
       intersectionObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [showRegistration]);
+  }, [view]); // Run observer logic whenever the view switches
 
   const isSectionComplete = (idx: number) => {
     const section = REG_SCHEMA[idx];
     const requiredFields = section.fields.filter((field) => field.required);
-
     if (requiredFields.length === 0) {
       return section.fields.some((field) => {
         const val = formData[field.id];
@@ -64,7 +63,6 @@ function App() {
         return val !== undefined && String(val).trim() !== "";
       });
     }
-
     return requiredFields.every((field) => {
       const val = formData[field.id];
       if (Array.isArray(val)) return val.length > 0;
@@ -75,33 +73,26 @@ function App() {
   const progressPct = useMemo(() => {
     let filled = 0;
     let total = 0;
-
     REG_SCHEMA.forEach((section) => {
       section.fields.forEach((field) => {
         total += 1;
         const val = formData[field.id];
-        if (Array.isArray(val) && val.length > 0) {
-          filled += 1;
-        } else if (val !== undefined && String(val).trim() !== "") {
-          filled += 1;
-        }
+        if (Array.isArray(val) && val.length > 0) filled += 1;
+        else if (val !== undefined && String(val).trim() !== "") filled += 1;
       });
     });
-
-    if (total === 0) return 0;
-    return submitted ? 100 : Math.round((filled / total) * 100);
+    return total === 0 ? 0 : (submitted ? 100 : Math.round((filled / total) * 100));
   }, [formData, submitted]);
 
+  // Navigation Handlers
   const handleSignInAndRegister = () => {
     setIsSignInOpen(false);
-    setShowRegistration(true);
-    setNavOpen(false);
+    setView("REGISTRATION");
     window.scrollTo(0, 0);
   };
 
   const handleBackToLanding = () => {
-    setShowRegistration(false);
-    setNavOpen(false);
+    setView("LANDING");
     window.scrollTo(0, 0);
   };
 
@@ -111,60 +102,39 @@ function App() {
 
   const handleToggleChip = (fieldId: string, value: string) => {
     setFormData((prev) => {
-      const existing = Array.isArray(prev[fieldId])
-        ? [...(prev[fieldId] as string[])]
-        : [];
+      const existing = Array.isArray(prev[fieldId]) ? [...(prev[fieldId] as string[])] : [];
       const idx = existing.indexOf(value);
-      if (idx >= 0) {
-        existing.splice(idx, 1);
-      } else {
-        existing.push(value);
-      }
-
+      idx >= 0 ? existing.splice(idx, 1) : existing.push(value);
       return { ...prev, [fieldId]: existing };
     });
   };
 
   const handleSubmit = () => {
-    console.log("From Submit click");
     const incomplete: string[] = [];
-
-    console.log(formData);
-
     REG_SCHEMA.forEach((section) => {
-      section.fields
-        .filter((field) => field.required)
-        .forEach((field) => {
-          const val = formData[field.id];
-          const filled = Array.isArray(val)
-            ? val.length > 0
-            : val !== undefined && String(val).trim() !== "";
-          if (!filled) incomplete.push(field.label);
-        });
+      section.fields.filter((field) => field.required).forEach((field) => {
+        const val = formData[field.id];
+        const filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
+        if (!filled) incomplete.push(field.label);
+      });
     });
 
     if (incomplete.length > 0) {
-      alert(
-        `Please complete these required fields:\n\n- ${incomplete.slice(0, 5).join("\n- ")}${
-          incomplete.length > 5
-            ? `\n- ... and ${incomplete.length - 5} more`
-            : ""
-        }`,
-      );
+      alert(`Please complete required fields:\n\n- ${incomplete.slice(0, 5).join("\n- ")}`);
       return;
     }
-
     setSubmitted(true);
   };
 
-  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION">("HOME");
-
   return (
     <>
+      {/* 2. Logic-driven Rendering: Only one view shows at a time */}
+      
       {view === "HOME" && (
         <ProgramSelector onSelectAccelerated={() => setView("LANDING")} />
       )}
-      {/* {!showRegistration ? (
+
+      {view === "LANDING" && (
         <LandingPage
           onSignInClick={() => setIsSignInOpen(true)}
           onExploreCourse={(index) => setCourseIndex(index)}
@@ -173,7 +143,9 @@ function App() {
           onToggleNav={() => setNavOpen((prev) => !prev)}
           onCloseNav={() => setNavOpen(false)}
         />
-      ) : (
+      )}
+
+      {view === "REGISTRATION" && (
         <RegistrationPage
           currentSection={currentSection}
           schema={REG_SCHEMA}
@@ -187,10 +159,20 @@ function App() {
           onSubmit={handleSubmit}
           isSectionComplete={isSectionComplete}
         />
-      )} */}
+      )}
 
-      {/* <SignInModal open={isSignInOpen} onClose={() => setIsSignInOpen(false)} onSignIn={handleSignInAndRegister} />
-      <DetailModal courseIndex={courseIndex} courseData={courseData} onClose={() => setCourseIndex(null)} /> */}
+      {/* Global Modals */}
+      <SignInModal 
+        open={isSignInOpen} 
+        onClose={() => setIsSignInOpen(false)} 
+        onSignIn={handleSignInAndRegister} 
+      />
+      
+      <DetailModal 
+        courseIndex={courseIndex} 
+        courseData={courseData} 
+        onClose={() => setCourseIndex(null)} 
+      />
     </>
   );
 }
