@@ -142,6 +142,7 @@ function App() {
           navOpen={navOpen}
           onToggleNav={() => setNavOpen((prev) => !prev)}
           onCloseNav={() => setNavOpen(false)}
+          onGoHome={() => setView("HOME")}
         />
       )}
 
