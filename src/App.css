@@ -1850,3 +1850,255 @@ footer {
     flex-direction: column;
   }
 }
+
+/* Home Page Layout */
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0rem 2rem;
+  text-align: center;
+}
+
+.home-hero h1 {
+  font-family: "DM Serif Display", serif;
+  font-size: 3rem;
+  color: var(--navy);
+  margin-bottom: 1rem;
+}
+
+.home-hero h1 em {
+  color: var(--orange);
+  font-style: normal;
+}
+
+/* Grid */
+/* Base Grid - Desktop First */
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* Three equal columns */
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  /* Padding prevents cards from touching screen edges */
+}
+
+/* Tablet Responsive (e.g., iPads) */
+@media (max-width: 992px) {
+  .home-cards {
+    grid-template-columns: repeat(2, 1fr);
+    /* Switch to 2 columns */
+    max-width: 800px;
+  }
+}
+
+/* Mobile Responsive (Phones) */
+@media (max-width: 768px) {
+  .home-cards {
+    grid-template-columns: 1fr;
+    /* Single column stack */
+    gap: 1.2rem;
+    padding: 0 1.5rem;
+  }
+
+  .home-hero h1 {
+    font-size: 2.2rem;
+    /* Shrink title size for smaller screens */
+    padding: 0 0.5rem;
+  }
+
+  .home-hero-sub {
+    font-size: 0.95rem;
+    padding: 0 1rem;
+  }
+
+  .home-card {
+    padding: 2rem 1.5rem;
+    /* Slightly less padding on mobile */
+  }
+}
+
+/* Cards */
+.home-card {
+  background: var(--bg-card);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.home-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--orange);
+  box-shadow: var(--shadow-lg);
+}
+
+.home-card.coming-soon {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.home-card.coming-soon:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+/* Centered Logo Header */
+.home-nav-centered {
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  background: var(--bg-card);
+  /* White background as per image */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nav-logo-main {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nav-logo-icon-large {
+  width: 42px;
+  height: 42px;
+}
+
+.nav-logo-text-stack {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.nav-logo-name {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.6rem;
+  color: #2b2d42;
+}
+
+.nav-logo-name span {
+  color: #e87a2e;
+}
+
+.nav-logo-tagline {
+  font-size: 0.75rem;
+  color: #9597a6;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Navigation with Shadow */
+.home-nav-fixed {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: center;
+  background: #ffffff;
+  /* Subtle shadow between nav and content */
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(229, 221, 212, 0.5);
+}
+
+/* Updated Choose Your Path Badge */
+.home-path-badge {
+  display: inline-block;
+  margin: 1rem 0 1.5rem;
+  margin-bottom: 1.5 rem;
+  padding: 0.6rem 1.4rem;
+  /* The exact tan/beige background from the image */
+  background-color: rgba(232, 122, 46, 0.12);
+  color: #e87a2e;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Hero Typography */
+.home-hero h1 {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  color: #2b2d42;
+  line-height: 1.1;
+  margin-top: 0.5rem;
+  font-weight: 400;
+}
+
+.home-hero h1 em {
+  font-style: normal;
+  color: #e87a2e;
+}
+
+.home-hero-sub {
+  color: #6b6d7b;
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 1.2rem auto 0;
+  line-height: 1.6;
+}
+
+/* Icons */
+.home-card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.icon-orange {
+  background: var(--orange-glow);
+  color: var(--orange);
+}
+
+.icon-green {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--green);
+}
+
+.icon-blue {
+  background: rgba(66, 133, 244, 0.1);
+  color: #4285f4;
+}
+
+.home-card-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--navy-dark);
+  color: #fff;
+  font-size: 0.6rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 50px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.home-footer-middle {
+  font-size: 0.75rem; /* Changed text size as requested */
+  color: #9597a6;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+/* End Home page css */
