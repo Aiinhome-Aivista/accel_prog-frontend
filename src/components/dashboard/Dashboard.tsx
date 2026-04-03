@@ -3,9 +3,10 @@ import LogoIcon from '../../assets/logogod.svg';
 
 interface DashboardProps {
   onLogout: () => void;
+  userName?: string;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onLogout, userName }) => {
   return (
     <div className="min-h-screen bg-[#f3ede7] flex flex-col">
       {/* Navigation */}
@@ -28,8 +29,36 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       <main className="flex-1 p-8 md:p-12 flex justify-center">
         <div className="max-w-[900px] w-full">
           <div className="mb-10">
-            <h1 className="font-serif text-4xl text-[#2b2d42] mb-2">Welcome to your Dashboard</h1>
+            <h1 className="font-serif text-4xl text-[#2b2d42] mb-4">
+              You are already registered, <span className="text-[#e87a2e]">{userName || 'User'}</span>
+            </h1>
             <p className="text-[#6b6d7b] text-lg">Your guided path to mastering AI-Native development starts here.</p>
+          </div>
+
+          <div className="mt-12 p-10 rounded-3xl bg-white border border-[#e5ddd4] shadow-md relative overflow-hidden group">
+            <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#fef3c7] rounded-full opacity-20 group-hover:scale-110 transition-transform duration-500"></div>
+            
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fff7ed] border border-[#ffedd5] text-[#e87a2e] text-xs font-bold uppercase tracking-widest mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#e87a2e] animate-pulse"></span>
+                In Development
+              </div>
+              
+              <h2 className="text-3xl font-serif text-[#2b2d42] mb-4">Building Your Future</h2>
+              <p className="text-[#6b6d7b] text-lg mb-8 max-w-lg leading-relaxed">
+                We're currently crafting a personalized learning experience just for you. 
+                Our team is working on intensive modules, interactive AI sandboxes, and expert mentorship tools.
+              </p>
+              
+              <button className="group relative px-8 py-4 rounded-xl bg-[#2b2d42] text-white font-semibold hover:bg-[#1a1c2c] transition-all shadow-xl hover:shadow-2xl active:scale-95">
+                <span className="flex items-center gap-2">
+                  Notify Me
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </main>

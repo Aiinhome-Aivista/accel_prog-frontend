@@ -19,6 +19,10 @@ function App() {
     return (localStorage.getItem("app_view") as any) || "HOME";
   });
 
+  const [userName, setUserName] = useState<string>(() => {
+    return localStorage.getItem("user_name") || "";
+  });
+
   const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
@@ -116,8 +120,12 @@ function App() {
   }, [formData, submitted]);
 
   // Navigation Handlers
-  const handleSignIn = (isNewUser: boolean, email: string) => {
+  const handleSignIn = (isNewUser: boolean, email: string, name?: string) => {
     setIsSignInOpen(false);
+    if (name) {
+      setUserName(name);
+      localStorage.setItem("user_name", name);
+    }
     if (isNewUser) {
       setView("REGISTRATION");
       setFormData((prev) => ({ ...prev, email: email }));
@@ -134,12 +142,14 @@ function App() {
     setSubmitted(false);
     setCurrentSection(0);
     setNavOpen(false);
+    setUserName("");
     
     // 2. Clear browser cache/storage
     localStorage.removeItem("token");
     localStorage.removeItem("app_view");
     localStorage.removeItem("reg_form");
     localStorage.removeItem("reg_section");
+    localStorage.removeItem("user_name");
     
     // 3. Reset scroll
     window.scrollTo(0, 0);
@@ -261,7 +271,7 @@ function App() {
       )}
 
       {view === "DASHBOARD" && (
-        <Dashboard onLogout={handleLogout} />
+        <Dashboard onLogout={handleLogout} userName={userName} />
       )}
 
       {/* Global Modals */}
@@ -270,6 +280,7 @@ function App() {
         onClose={() => setIsSignInOpen(false)}
         onSignIn={handleSignIn}
       />
+
 
       <DetailModal
         courseIndex={courseIndex}

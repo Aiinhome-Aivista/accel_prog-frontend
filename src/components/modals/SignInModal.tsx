@@ -9,7 +9,7 @@ import { useToast } from "../../context/ToastContext";
 interface SignInModalProps {
     open: boolean
     onClose: () => void
-    onSignIn: (isNewUser: boolean, email: string) => void
+    onSignIn: (isNewUser: boolean, email: string, name?: string) => void
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -51,7 +51,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             if (response.status === "success") {
                 // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
                 const isExistingUser = response.is_new_user === false || response.data?.is_new_user === false;
-                onSignIn(!isExistingUser, result.user.email || ""); 
+                const name = response.data?.full_name || result.user.displayName || "Google User";
+                onSignIn(!isExistingUser, result.user.email || "", name); 
             } else {
                 showError("Sign-in error", response.message || "Backend verification failed.");
             }
@@ -107,7 +108,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             if (response.status === "success") {
                 // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
                 const isExistingUser = response.is_new_user === false || response.data?.is_new_user === false;
-                onSignIn(!isExistingUser, email); 
+                const name = response.data?.full_name || "User";
+                onSignIn(!isExistingUser, email, name); 
             } else {
                 alert(response.message || "Invalid OTP code.");
             }
@@ -115,7 +117,6 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             console.error("Verify OTP Error:", error);
             alert(error.message || "Verification failed. Please try again.");
         } finally {
-            setIsVerifying(true); // Should probably be false
             setIsVerifying(false);
         }
     };
