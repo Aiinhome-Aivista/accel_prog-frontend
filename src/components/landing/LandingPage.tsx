@@ -13,15 +13,21 @@ interface LandingPageProps {
   onCloseNav: () => void;
 }
 
-function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen, onToggleNav, onCloseNav }: LandingPageProps) {
-
-  const [courseData, setCourseData] = useState<CourseItem[]>(COURSE_DATA)
+function LandingPage({
+  onSignInClick,
+  onExploreCourse,
+  onCoursesLoaded,
+  navOpen,
+  onToggleNav,
+  onCloseNav,
+}: LandingPageProps) {
+  const [courseData, setCourseData] = useState<CourseItem[]>(COURSE_DATA);
   const [programStats, setProgramStats] = useState<ProgramStats>({
     total_courses: 4,
     total_modules: 12,
     total_capstones: 4,
     years_experience: 20,
-  })
+  });
 
   const mapCourseData = (apiResponse: any): CourseItem[] => {
     const courses = apiResponse?.data?.courses || [];
@@ -37,7 +43,7 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
           name: `Module ${i + 1}: ${mod.module_name}`,
           desc: mod.module_description,
         })),
-      outcome: `${course.capstone?.title || ''} - ${course.capstone?.description || ''}`,
+      outcome: `${course.capstone?.title || ""} - ${course.capstone?.description || ""}`,
       tags: course.tags || [],
     }));
   };
@@ -61,14 +67,13 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
         });
       }
     } catch (err: any) {
-      console.error('Error fetching course data:', err);
+      console.error("Error fetching course data:", err);
     }
   };
 
   useEffect(() => {
-    handleGetCourseData()
-  }, [])
-
+    handleGetCourseData();
+  }, []);
 
   return (
     <div className="landing-page" id="landingPage">
@@ -178,30 +183,38 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             <div className="hero-stats-float">
               <div
                 className="hero-stat-card"
-                style={{ animation: 'float 3s ease-in-out infinite' }}
+                style={{ animation: "float 3s ease-in-out infinite" }}
               >
-                <div className="hero-stat-num">{programStats.total_courses}</div>
+                <div className="hero-stat-num">
+                  {programStats.total_courses}
+                </div>
                 <div className="hero-stat-label">Courses</div>
               </div>
               <div
                 className="hero-stat-card"
-                style={{ animation: 'float 3s ease-in-out .4s infinite' }}
+                style={{ animation: "float 3s ease-in-out .4s infinite" }}
               >
-                <div className="hero-stat-num">{programStats.total_modules}</div>
+                <div className="hero-stat-num">
+                  {programStats.total_modules}
+                </div>
                 <div className="hero-stat-label">Modules</div>
               </div>
               <div
                 className="hero-stat-card"
-                style={{ animation: 'float 3s ease-in-out .8s infinite' }}
+                style={{ animation: "float 3s ease-in-out .8s infinite" }}
               >
-                <div className="hero-stat-num">{programStats.total_capstones}</div>
+                <div className="hero-stat-num">
+                  {programStats.total_capstones}
+                </div>
                 <div className="hero-stat-label">Capstones</div>
               </div>
               <div
                 className="hero-stat-card"
-                style={{ animation: 'float 3s ease-in-out 1.2s infinite' }}
+                style={{ animation: "float 3s ease-in-out 1.2s infinite" }}
               >
-                <div className="hero-stat-num">{programStats.years_experience}+</div>
+                <div className="hero-stat-num">
+                  {programStats.years_experience}+
+                </div>
                 <div className="hero-stat-label">Yrs Expertise</div>
               </div>
             </div>
@@ -209,12 +222,12 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
         </div>
       </section>
 
-      <section id="instructor">
+      <section id="pathway">
         <div className="container">
           <div className="section-header">
             <div className="section-label">
               <div className="ico">
-                <svg viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <svg viewBox="0 0 10 10" fill="none">
                   <path
                     d="M1 5h8M5 1v8"
                     stroke="currentColor"
@@ -225,7 +238,9 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
               </div>
               Learning Pathway
             </div>
+
             <div className="section-title">Your AI-Native Journey</div>
+
             <p className="section-sub">
               Four progressive courses - each building on the last - from using
               AI to building autonomous systems.
@@ -239,18 +254,21 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
               <div className="pathway-name">AI Consumer & Builder</div>
               <div className="pathway-sessions">Foundation</div>
             </div>
+
             <div className="pathway-step">
               <div className="pathway-num">2</div>
               <div className="pathway-week">Course 2</div>
               <div className="pathway-name">Data & ML Architect</div>
               <div className="pathway-sessions">Core</div>
             </div>
+
             <div className="pathway-step">
               <div className="pathway-num">3</div>
               <div className="pathway-week">Course 3</div>
               <div className="pathway-name">Gen AI & RAG Specialist</div>
               <div className="pathway-sessions">Applied</div>
             </div>
+
             <div className="pathway-step">
               <div className="pathway-num">4</div>
               <div className="pathway-week">Course 4</div>
@@ -258,10 +276,14 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
               <div className="pathway-sessions">Advanced</div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="instructor-card fade-in" >
+      <section id="instructor">
+        <div className="container">
+          <div className="instructor-card fade-in">
             <div className="instructor-icon-wrap">
-              <svg viewBox="0 0 50 50" fill="none" aria-hidden="true">
+              <svg viewBox="0 0 50 50" fill="none">
                 <circle cx="25" cy="15" r="7" stroke="#fff" strokeWidth="2" />
                 <path
                   d="M12 38c0-5.5 5.8-10 13-10s13 4.5 13 10"
@@ -301,13 +323,16 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
                 />
               </svg>
             </div>
+
             <div className="instructor-info">
               <h3>Curated by Industry Leaders</h3>
+
               <div className="instructor-role">
                 Designed and delivered by seasoned professionals with 20+ years
                 of hands-on experience in AI, Machine Learning, Data Science,
                 and Enterprise Technology.
               </div>
+
               <div className="instructor-creds">
                 <span className="instructor-cred">20+ Years Experience</span>
                 <span className="instructor-cred">Enterprise AI</span>
@@ -319,7 +344,6 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             </div>
           </div>
         </div>
-
       </section>
 
       <section id="courses">
@@ -343,13 +367,20 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             </div>
             <div className="section-title">
               {(() => {
-                const words: Record<number, string> = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six' };
-                return `${words[programStats.total_courses] ?? programStats.total_courses} Course${programStats.total_courses !== 1 ? 's' : ''}. One Transformation.`;
+                const words: Record<number, string> = {
+                  1: "One",
+                  2: "Two",
+                  3: "Three",
+                  4: "Four",
+                  5: "Five",
+                  6: "Six",
+                };
+                return `${words[programStats.total_courses] ?? programStats.total_courses} Course${programStats.total_courses !== 1 ? "s" : ""}. One Transformation.`;
               })()}
             </div>
             <p className="section-sub">
               From using AI to building autonomous, enterprise-grade systems —
-              each  the course ends with a real-world capstone.
+              each the course ends with a real-world capstone.
             </p>
           </div>
 
@@ -368,7 +399,9 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
                   <p>{course.modules[0]?.desc}</p>
 
                   <div className="course-meta">
-                    <div className="course-meta-item">{course.modules.length} Modules</div>
+                    <div className="course-meta-item">
+                      {course.modules.length} Modules
+                    </div>
                     <div className="course-meta-item">Capstone</div>
                   </div>
 
@@ -376,10 +409,16 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
                     {(course.tags && course.tags.length > 0
                       ? course.tags
                       : course.modules.map((m) =>
-                        m.name.replace(/Module \d+: /, '').split(' ').slice(0, 2).join(' ')
-                      )
+                          m.name
+                            .replace(/Module \d+: /, "")
+                            .split(" ")
+                            .slice(0, 2)
+                            .join(" "),
+                        )
                     ).map((tag) => (
-                      <span className="course-tag" key={tag}>{tag}</span>
+                      <span className="course-tag" key={tag}>
+                        {tag}
+                      </span>
                     ))}
                   </div>
 
@@ -650,4 +689,4 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
   );
 }
 
-export default LandingPage
+export default LandingPage;
