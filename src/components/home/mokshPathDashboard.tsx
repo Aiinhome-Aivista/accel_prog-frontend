@@ -1,5 +1,6 @@
 import React from "react";
-import "./mokshPathDashboard.css"; // Import the specific CSS file here
+import "./mokshPathDashboard.css";
+import logo from '../../assets/logogod.svg';
 
 interface ProgramCardProps {
   title: string;
@@ -30,14 +31,12 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
     <div className={`home-card-icon ${colorClass}`}>{icon}</div>
     <h3>{title}</h3>
     <p>{description}</p>
+
     <span className="home-card-arrow">
-      {isComingSoon ? "Notify Me" : "Explore Now"}
-      <svg
-        viewBox="0 0 14 14"
-        fill="none"
-        width="14"
-        style={{ marginLeft: "8px" }}
-      >
+      <span className="arrow-text">
+        {isComingSoon ? "Notify Me" : "Explore Now"}
+      </span>
+      <svg className="arrow-icon" viewBox="0 0 14 14" fill="none" width="14">
         <path
           d="M3 7h8M8 4l3 3-3 3"
           stroke="currentColor"
@@ -57,19 +56,11 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
     <div className="home-page">
       <nav className="home-nav-fixed">
         <div className="nav-logo-main">
-          <svg className="nav-logo-icon-large" viewBox="0 0 42 42" fill="none">
-            <circle cx="21" cy="14" r="6" fill="#E87A2E" />
-            <path
-              d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z"
-              fill="#E87A2E"
-            />
-            <path
-              d="M11 31c0 0 2 4 10 4s10-4 10-4"
-              stroke="#E87A2E"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
+          <img
+            src={logo}
+            alt="MokshPath Logo"
+            className="nav-logo-icon-large"
+          />
           <div className="nav-logo-text-stack">
             <span className="nav-logo-name">
               Moksh<span>Path</span>

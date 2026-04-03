@@ -9,9 +9,9 @@ import { getAnalytics } from "firebase/analytics";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyD_Uk4iDyBrgG7fnc9Jk0EQZyWaBOhVBvo",
-  authDomain: "accel-program.firebaseapp.com",
-  projectId: "accel-program",
-  storageBucket: "accel-program.firebasestorage.app",
+  authDomain: "accel-prog.firebaseapp.com",
+  projectId: "accel-prog",
+  storageBucket: "accel-prog.firebasestorage.app",
   messagingSenderId: "724942319477",
   appId: "1:724942319477:web:a5c0d6e4e90294fb7ced3c",
   measurementId: "G-E3H577P90L"
@@ -31,4 +31,4 @@ const analytics = getAnalytics(app);
 
 export { app, auth, analytics };
 
-
+
