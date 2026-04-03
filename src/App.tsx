@@ -90,10 +90,11 @@ function App() {
   }, [formData, submitted]);
 
   // Navigation Handlers
-  const handleSignIn = (isNewUser: boolean) => {
+  const handleSignIn = (isNewUser: boolean, email: string) => {
     setIsSignInOpen(false);
     if (isNewUser) {
       setView("REGISTRATION");
+      setFormData((prev) => ({ ...prev, email: email }));
     } else {
       setView("DASHBOARD");
     }
@@ -125,6 +126,12 @@ function App() {
 
    console.log("reg response", reg);
 
+   if(reg.status === "success"){
+
+      setSubmitted(true);
+
+   }
+
   }
 
   const buildCompletePayload = () => {
@@ -150,11 +157,7 @@ function App() {
   const handleSubmit = () => {
     console.log(formData);
 
-     const completeData = buildCompletePayload();
 
-  console.log("Final Payload:", completeData);
-
-  handleRegistrationUser(completeData);
       
      
     const incomplete: string[] = [];
@@ -170,15 +173,21 @@ function App() {
       showIncompleteFormToast(incomplete)
       return;
     }
+
+  const completeData = buildCompletePayload();
+
+  console.log("Final Payload:", completeData);
+
+  handleRegistrationUser(completeData);
   
 
-    // setSubmitted(true);
+  
   };
 
   return (
     <>
       {/* 2. Logic-driven Rendering: Only one view shows at a time */}
-      
+
       {view === "HOME" && (
         <ProgramSelector onSelectAccelerated={() => setView("LANDING")} />
       )}
@@ -216,16 +225,16 @@ function App() {
       )}
 
       {/* Global Modals */}
-      <SignInModal 
-        open={isSignInOpen} 
-        onClose={() => setIsSignInOpen(false)} 
-        onSignIn={handleSignIn} 
+      <SignInModal
+        open={isSignInOpen}
+        onClose={() => setIsSignInOpen(false)}
+        onSignIn={handleSignIn}
       />
-      
-      <DetailModal 
-        courseIndex={courseIndex} 
-        courseData={courseData} 
-        onClose={() => setCourseIndex(null)} 
+
+      <DetailModal
+        courseIndex={courseIndex}
+        courseData={courseData}
+        onClose={() => setCourseIndex(null)}
       />
     </>
   );

@@ -9,7 +9,7 @@ import { useToast } from "../../context/ToastContext";
 interface SignInModalProps {
     open: boolean
     onClose: () => void
-    onSignIn: (isNewUser: boolean) => void
+    onSignIn: (isNewUser: boolean, email: string) => void
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -30,7 +30,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             const result = await signInWithPopup(auth, provider);
             console.log("Success:", result.user);
             // Default to true (registration) for Google unless backend confirms
-            onSignIn(true); 
+            onSignIn(true, result.user.email || ""); 
         } catch (error: any) {
             if (error.code === 'auth/configuration-not-found') {
                 console.error("Firebase Configuration Error: Auth not enabled or project/domain mismatch.");
@@ -79,8 +79,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             const response = await authService.verifyOtp({ email, otp_code: otpCode });
             console.log("Verify OTP Success:", response);
             if (response.status === "success") {
-                // Pass the is_new_user flag to the parent handler
-                onSignIn(response.is_new_user === true); 
+                // Pass the is_new_user flag and the email address back to the parent
+                onSignIn(response.is_new_user === true, email); 
             } else {
                 alert(response.message || "Invalid OTP code.");
             }
