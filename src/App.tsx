@@ -110,6 +110,7 @@ function App() {
   };
 
   const handleSubmit = () => {
+    console.log(formData);
     const incomplete: string[] = [];
     REG_SCHEMA.forEach((section) => {
       section.fields.filter((field) => field.required).forEach((field) => {

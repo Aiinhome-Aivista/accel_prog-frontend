@@ -17,6 +17,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
+    
 
     if (!open) return null
 

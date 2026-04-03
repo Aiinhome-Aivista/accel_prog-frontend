@@ -26,8 +26,9 @@ function renderField(
         return (
             <input
                 type={field.type}
+                disabled = {field.type === 'email'? true : false}
                 placeholder={field.placeholder || ''}
-                value={typeof value === 'string' ? value : ''}
+                value={typeof value === 'string' ? value : field.type === 'email' ? 'arendu@gmail.com' :''}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => onUpdateField(field.id, event.target.value)}
             />
         )
