@@ -7,7 +7,7 @@ import SignInModal from "./components/modals/SignInModal";
 import RegistrationPage from "./components/registration/RegistrationPage";
 import { REG_SCHEMA } from "./data/registrationSchema";
 import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
-import ProgramSelector from "./components/home/mokshPathDashboard";
+
 import { useEffect, useMemo, useState } from 'react'
 import { useToast } from './context/ToastContext'
 import Dashboard from './components/dashboard/Dashboard'
@@ -15,7 +15,7 @@ import { authService } from './services/authService';
 
 function App() {
   // 1. Unified navigation state
-  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION" | "DASHBOARD">("HOME");
+  const [view, setView] = useState< "LANDING" | "REGISTRATION" | "DASHBOARD">("LANDING");
   const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
@@ -103,7 +103,7 @@ function App() {
 
   const handleLogout = () => {
     // 1. Reset all local state
-    setView("HOME");
+    setView("LANDING");
     setFormData({});
     setSubmitted(false);
     setCurrentSection(0);
@@ -199,9 +199,6 @@ function App() {
     <>
       {/* 2. Logic-driven Rendering: Only one view shows at a time */}
 
-      {view === "HOME" && (
-        <ProgramSelector onSelectAccelerated={() => setView("LANDING")} />
-      )}
 
       {view === "LANDING" && (
         <LandingPage
@@ -211,7 +208,7 @@ function App() {
           navOpen={navOpen}
           onToggleNav={() => setNavOpen((prev) => !prev)}
           onCloseNav={() => setNavOpen(false)}
-          onGoHome={() => setView("HOME")}
+          onGoHome={() => setView("LANDING")}
         />
       )}
 
