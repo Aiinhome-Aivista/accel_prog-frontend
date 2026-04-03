@@ -100,10 +100,21 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  const handleBackToLanding = () => {
-    setView("LANDING");
+  const handleLogout = () => {
+    // 1. Reset all local state
+    setView("HOME");
+    setFormData({});
+    setSubmitted(false);
+    setCurrentSection(0);
+    setNavOpen(false);
+    
+    // 2. Clear browser cache/storage
+    localStorage.removeItem("token");
+    
+    // 3. Reset scroll
     window.scrollTo(0, 0);
   };
+
 
   const handleUpdateField = (id: string, value: FormValue) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -162,7 +173,7 @@ function App() {
           formData={formData}
           submitted={submitted}
           progressPct={progressPct}
-          onBackHome={handleBackToLanding}
+          onBackHome={handleLogout}
           onGoToSection={setCurrentSection}
           onUpdateField={handleUpdateField}
           onToggleChip={handleToggleChip}
@@ -172,7 +183,7 @@ function App() {
       )}
 
       {view === "DASHBOARD" && (
-        <Dashboard onLogout={() => setView("HOME")} />
+        <Dashboard onLogout={handleLogout} />
       )}
 
       {/* Global Modals */}
