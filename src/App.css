@@ -861,7 +861,7 @@ section {
 
 footer {
   background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  /* border-top: 1px solid var(--border); */
   padding: 2rem;
 }
 
