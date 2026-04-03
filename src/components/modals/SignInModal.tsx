@@ -82,7 +82,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             console.log("Send OTP Success:", response);
             if (response.status === "success") {
                 setIsOtpSent(true);
-                alert("OTP sent successfully to your email!");
+                // alert("OTP sent successfully to your email!");
             } else {
                 alert(response.message || "Failed to send OTP.");
             }
