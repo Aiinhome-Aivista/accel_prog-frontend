@@ -14,15 +14,41 @@ import Dashboard from './components/dashboard/Dashboard'
 import { authService } from './services/authService';
 
 function App() {
-  // 1. Unified navigation state
-  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION" | "DASHBOARD">("HOME");
+  // 1. Unified navigation state from localStorage
+  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION" | "DASHBOARD">(() => {
+    return (localStorage.getItem("app_view") as any) || "HOME";
+  });
+
   const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState(0);
+
+  const [currentSection, setCurrentSection] = useState(() => {
+    return Number(localStorage.getItem("reg_section")) || 0;
+  });
+
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState<FormDataMap>({});
+
+  const [formData, setFormData] = useState<FormDataMap>(() => {
+    try {
+      const saved = localStorage.getItem("reg_form");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // Persist view changes
+  useEffect(() => {
+    localStorage.setItem("app_view", view);
+  }, [view]);
+
+  // Persist registration progress
+  useEffect(() => {
+    localStorage.setItem("reg_form", JSON.stringify(formData));
+    localStorage.setItem("reg_section", String(currentSection));
+  }, [formData, currentSection]);
   const [courseData, setCourseData] = useState<CourseItem[]>([]);
 
   useEffect(() => {
@@ -111,6 +137,9 @@ function App() {
     
     // 2. Clear browser cache/storage
     localStorage.removeItem("token");
+    localStorage.removeItem("app_view");
+    localStorage.removeItem("reg_form");
+    localStorage.removeItem("reg_section");
     
     // 3. Reset scroll
     window.scrollTo(0, 0);
