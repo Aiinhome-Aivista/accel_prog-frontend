@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../Firebase";
 import { authService } from "../../services/authService";
@@ -19,6 +19,16 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     const [isSending, setIsSending] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     
+    // Reset state when modal closes
+    useEffect(() => {
+        if (!open) {
+            setEmail("");
+            setOtpCode("");
+            setIsOtpSent(false);
+            setIsSending(false);
+            setIsVerifying(false);
+        }
+    }, [open]);
 
     const { showError } = useToast();
     if (!open) return null
@@ -79,8 +89,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             const response = await authService.verifyOtp({ email, otp_code: otpCode });
             console.log("Verify OTP Success:", response);
             if (response.status === "success") {
-                // Pass the is_new_user flag and the email address back to the parent
-                onSignIn(response.is_new_user === true, email); 
+                // Pass true for registration UNLESS the backend explicitly says is_new_user is false
+                onSignIn(response.is_new_user !== false, email); 
             } else {
                 alert(response.message || "Invalid OTP code.");
             }

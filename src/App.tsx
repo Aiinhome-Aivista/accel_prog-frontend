@@ -11,6 +11,7 @@ import ProgramSelector from "./components/home/mokshPathDashboard";
 import { useEffect, useMemo, useState } from 'react'
 import { useToast } from './context/ToastContext'
 import Dashboard from './components/dashboard/Dashboard'
+import { authService } from './services/authService';
 
 function App() {
   // 1. Unified navigation state
@@ -100,10 +101,21 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  const handleBackToLanding = () => {
-    setView("LANDING");
+  const handleLogout = () => {
+    // 1. Reset all local state
+    setView("HOME");
+    setFormData({});
+    setSubmitted(false);
+    setCurrentSection(0);
+    setNavOpen(false);
+    
+    // 2. Clear browser cache/storage
+    localStorage.removeItem("token");
+    
+    // 3. Reset scroll
     window.scrollTo(0, 0);
   };
+
 
   const handleUpdateField = (id: string, value: FormValue) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -118,7 +130,47 @@ function App() {
     });
   };
 
+  const handleRegistrationUser = async(body: any)=>  {
+
+  console.log("reg body", body); 
+   const reg  =  await authService.registration(body); 
+
+   console.log("reg response", reg);
+
+   if(reg.status === "success"){
+
+      setSubmitted(true);
+
+   }
+
+  }
+
+  const buildCompletePayload = () => {
+  const payload: FormDataMap = {};
+
+  REG_SCHEMA.forEach((section) => {
+    section.fields.forEach((field) => {
+      const val = formData[field.id];
+
+      if (val === undefined) {
+        // Default empty values
+        if (field.type === "chips") payload[field.id] = [];
+        else payload[field.id] = "";
+      } else {
+        payload[field.id] = val;
+      }
+    });
+  });
+
+  return payload;
+};
+
   const handleSubmit = () => {
+    console.log(formData);
+
+
+      
+     
     const incomplete: string[] = [];
     REG_SCHEMA.forEach((section) => {
       section.fields.filter((field) => field.required).forEach((field) => {
@@ -132,7 +184,15 @@ function App() {
       showIncompleteFormToast(incomplete)
       return;
     }
-    setSubmitted(true);
+
+  const completeData = buildCompletePayload();
+
+  console.log("Final Payload:", completeData);
+
+  handleRegistrationUser(completeData);
+  
+
+  
   };
 
   return (
@@ -162,7 +222,7 @@ function App() {
           formData={formData}
           submitted={submitted}
           progressPct={progressPct}
-          onBackHome={handleBackToLanding}
+          onBackHome={handleLogout}
           onGoToSection={setCurrentSection}
           onUpdateField={handleUpdateField}
           onToggleChip={handleToggleChip}
@@ -172,7 +232,7 @@ function App() {
       )}
 
       {view === "DASHBOARD" && (
-        <Dashboard onLogout={() => setView("HOME")} />
+        <Dashboard onLogout={handleLogout} />
       )}
 
       {/* Global Modals */}
