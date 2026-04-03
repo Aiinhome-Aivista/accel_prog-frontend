@@ -1865,3 +1865,40 @@ footer {
 .text-2xl {
   font-size: 1.5rem;
 }
+
+/* Toast Styling Fixes */
+.p-toast {
+  z-index: 9999 !important;
+  opacity: 1 !important;
+}
+
+.p-toast .p-toast-message {
+  background: #ffffff !important;
+  box-shadow: 0 12px 32px rgba(43, 45, 66, 0.15) !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--border) !important;
+  opacity: 1 !important;
+}
+
+.p-toast .p-toast-message.p-toast-message-warn {
+  border-left: 6px solid #f59e0b !important;
+}
+
+.p-toast .p-toast-message.p-toast-message-error {
+  border-left: 6px solid #ef4444 !important;
+}
+
+.p-toast .p-toast-message.p-toast-message-success {
+  border-left: 6px solid #10b981 !important;
+}
+
+.p-toast .p-toast-message .p-toast-message-content {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.p-toast .p-toast-message .p-toast-icon-close {
+  color: var(--text-muted) !important;
+  top: 1rem !important;
+  right: 1rem !important;
+}

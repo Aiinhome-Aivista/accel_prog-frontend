@@ -1,3 +1,5 @@
+import 'primereact/resources/primereact.min.css'
+import 'primereact/resources/themes/lara-light-cyan/theme.css'
 import "./App.css";
 import LandingPage from "./components/landing/LandingPage";
 import DetailModal from "./components/modals/DetailModal";
