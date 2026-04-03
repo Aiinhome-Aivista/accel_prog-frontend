@@ -1473,7 +1473,7 @@ footer {
 /* Banner */
 .reg-banner {
   background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
-  padding: 1.5rem 1.5rem;
+  padding: 0.6rem 1rem 1rem;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -1524,7 +1524,7 @@ footer {
 }
 
 .reg-banner p {
-  font-size: 0.88rem;
+  font-size: 0.79rem;
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.6;
   /* max-width: 560px; */
