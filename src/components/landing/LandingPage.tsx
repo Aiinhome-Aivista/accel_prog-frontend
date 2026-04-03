@@ -630,8 +630,8 @@ function LandingPage({ onSignInClick, onExploreCourse, onCoursesLoaded, navOpen,
             </span>
           </div>
           <div className="footer-links">
-            <a href="https://mokshpath.org/" target="_blank" rel="noreferrer">
-              Home
+            <a target="_blank" rel="noreferrer">
+              All Programs
             </a>
             <a href="#courses">Courses</a>
             <a
