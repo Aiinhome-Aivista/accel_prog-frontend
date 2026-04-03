@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import 'primereact/resources/primereact.min.css'
+import 'primereact/resources/themes/lara-light-cyan/theme.css'
 import "./App.css";
 import LandingPage from "./components/landing/LandingPage";
 import DetailModal from "./components/modals/DetailModal";
@@ -7,11 +8,14 @@ import RegistrationPage from "./components/registration/RegistrationPage";
 import { REG_SCHEMA } from "./data/registrationSchema";
 import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
 import ProgramSelector from "./components/home/mokshPathDashboard";
+import { useEffect, useMemo, useState } from 'react'
+import { useToast } from './context/ToastContext'
+import Dashboard from './components/dashboard/Dashboard'
 
 function App() {
   // 1. Unified navigation state
-  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION">("HOME");
-  
+  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION" | "DASHBOARD">("HOME");
+  const { showIncompleteFormToast } = useToast()
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
@@ -85,9 +89,13 @@ function App() {
   }, [formData, submitted]);
 
   // Navigation Handlers
-  const handleSignInAndRegister = () => {
+  const handleSignIn = (isNewUser: boolean) => {
     setIsSignInOpen(false);
-    setView("REGISTRATION");
+    if (isNewUser) {
+      setView("REGISTRATION");
+    } else {
+      setView("DASHBOARD");
+    }
     window.scrollTo(0, 0);
   };
 
@@ -121,7 +129,7 @@ function App() {
     });
 
     if (incomplete.length > 0) {
-      alert(`Please complete required fields:\n\n- ${incomplete.slice(0, 5).join("\n- ")}`);
+      showIncompleteFormToast(incomplete)
       return;
     }
     setSubmitted(true);
@@ -143,6 +151,7 @@ function App() {
           navOpen={navOpen}
           onToggleNav={() => setNavOpen((prev) => !prev)}
           onCloseNav={() => setNavOpen(false)}
+          onGoHome={() => setView("HOME")}
         />
       )}
 
@@ -162,11 +171,15 @@ function App() {
         />
       )}
 
+      {view === "DASHBOARD" && (
+        <Dashboard onLogout={() => setView("HOME")} />
+      )}
+
       {/* Global Modals */}
       <SignInModal 
         open={isSignInOpen} 
         onClose={() => setIsSignInOpen(false)} 
-        onSignIn={handleSignInAndRegister} 
+        onSignIn={handleSignIn} 
       />
       
       <DetailModal 

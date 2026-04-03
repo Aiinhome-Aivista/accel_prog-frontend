@@ -3,12 +3,13 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../Firebase";
 import { authService } from "../../services/authService";
 import LogoIcon from '../../assets/logogod.svg'
+import { useToast } from "../../context/ToastContext";
 
 
 interface SignInModalProps {
     open: boolean
     onClose: () => void
-    onSignIn: () => void
+    onSignIn: (isNewUser: boolean) => void
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -19,6 +20,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     const [isVerifying, setIsVerifying] = useState(false);
     
 
+    const { showError } = useToast();
     if (!open) return null
 
 
@@ -27,16 +29,17 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         try {
             const result = await signInWithPopup(auth, provider);
             console.log("Success:", result.user);
-            onSignIn(); // Close modal or handle logic
+            // Default to true (registration) for Google unless backend confirms
+            onSignIn(true); 
         } catch (error: any) {
             if (error.code === 'auth/configuration-not-found') {
                 console.error("Firebase Configuration Error: Auth not enabled or project/domain mismatch.");
-                alert("Sign-in configuration not found. Please verify Firebase project settings.");
+                showError("Sign-in error", "Sign-in configuration not found. Please verify Firebase project settings.");
             } else if (error.code === 'auth/popup-closed-by-user') {
                 console.warn("User closed the Google sign-in popup.");
             } else {
                 console.error("Error signing in with Google:", error);
-                alert(`Error signing in: ${error.message}`);
+                showError("Sign-in error", `Error signing in: ${error.message}`);
             }
         }
     };
@@ -76,7 +79,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             const response = await authService.verifyOtp({ email, otp_code: otpCode });
             console.log("Verify OTP Success:", response);
             if (response.status === "success") {
-                onSignIn(); // Success!
+                // Pass the is_new_user flag to the parent handler
+                onSignIn(response.is_new_user === true); 
             } else {
                 alert(response.message || "Invalid OTP code.");
             }

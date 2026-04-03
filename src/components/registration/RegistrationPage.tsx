@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react'
+import { useToast } from '../../context/ToastContext'
 import BrandLogo from '../shared/BrandLogo'
 import type { FieldSchema, FormDataMap, FormValue, SectionSchema } from '../../types/registration'
 
@@ -109,6 +110,7 @@ function RegistrationPage({
     onSubmit,
     isSectionComplete,
 }: RegistrationPageProps) {
+    const { showSuccess, showInfo } = useToast()
     const section = schema[currentSection]
 
     return (
@@ -182,7 +184,7 @@ function RegistrationPage({
                                                 onChange={(event) => {
                                                     const fileName = event.target.files?.[0]?.name
                                                     if (fileName) {
-                                                        alert(`Resume ${fileName} uploaded successfully! In a production system, we would parse this to pre-fill your details.`)
+                                                        showSuccess('Resume Uploaded', `Resume ${fileName} uploaded successfully! In a production system, we would parse this to pre-fill your details.`)
                                                     }
                                                 }}
                                             />
@@ -191,7 +193,7 @@ function RegistrationPage({
                                         <button
                                             type="button"
                                             className="reg-import-btn"
-                                            onClick={() => alert('LinkedIn import would redirect to LinkedIn OAuth in a production system. For now, please fill in the details manually.')}
+                                            onClick={() => showInfo('LinkedIn Import', 'LinkedIn import would redirect to LinkedIn OAuth in a production system. For now, please fill in the details manually.')}
                                         >
                                             <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
                                                 <rect x="1" y="1" width="16" height="16" rx="3" stroke="#0077B5" strokeWidth="1.3" />

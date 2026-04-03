@@ -1,6 +1,6 @@
 import React from "react";
 import "./mokshPathDashboard.css";
-import logo from '../../assets/logogod.svg';
+import logo from "../../assets/logogod.svg";
 
 interface ProgramCardProps {
   title: string;
@@ -72,7 +72,7 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
         </div>
       </nav>
 
-      <div className="home-hero">
+      <div className="home-hero cursor-pointer">
         <div className="home-path-badge">CHOOSE YOUR PATH</div>
 
         <h1>
