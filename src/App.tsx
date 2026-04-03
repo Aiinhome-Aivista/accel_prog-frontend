@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
+import { PrimeReactProvider } from 'primereact/api'
+import { Toast } from 'primereact/toast'
+import 'primereact/resources/primereact.min.css'
+import 'primereact/resources/themes/lara-light-cyan/theme.css'
 import './App.css'
 import LandingPage from './components/landing/LandingPage'
 import DetailModal from './components/modals/DetailModal'
@@ -8,6 +12,7 @@ import { REG_SCHEMA } from './data/registrationSchema'
 import type { CourseItem, FormDataMap, FormValue } from './types/registration'
 
 function App() {
+  const toast = useRef<Toast>(null)
   const [showRegistration, setShowRegistration] = useState(false)
   const [isSignInOpen, setIsSignInOpen] = useState(false)
   const [courseIndex, setCourseIndex] = useState<number | null>(null)
@@ -145,10 +150,55 @@ function App() {
     
 
     if (incomplete.length > 0) {
-      alert(
-        `Please complete these required fields:\n\n- ${incomplete.slice(0, 5).join('\n- ')}${incomplete.length > 5 ? `\n- ... and ${incomplete.length - 5} more` : ''
-        }`,
-      )
+      toast.current?.show({
+        severity: 'warn',
+        life: 6000,
+        content: () => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.9rem 1.1rem', width: '100%' }}>
+            <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#b45309' }}>
+              Incomplete Form
+            </span>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: '#6b7280', lineHeight: 1.5 }}>
+              Please fill in the following required fields before submitting:
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+              {incomplete.slice(0, 5).map((f) => (
+                <span
+                  key={f}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    padding: '0.2rem 0.6rem',
+                    borderRadius: '50px',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    background: 'rgba(234, 88, 12, 0.08)',
+                    color: '#ea580c',
+                    border: '1px solid rgba(234, 88, 12, 0.2)',
+                  }}
+                >
+                  <span style={{ fontSize: '0.65rem' }}>●</span> {f}
+                </span>
+              ))}
+              {incomplete.length > 5 && (
+                <span
+                  style={{
+                    padding: '0.2rem 0.6rem',
+                    borderRadius: '50px',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    background: '#f3f4f6',
+                    color: '#6b7280',
+                  }}
+                >
+                  +{incomplete.length - 5} more
+                </span>
+              )}
+            </div>
+          </div>
+        ),
+      })
       return
     }
 
@@ -158,7 +208,8 @@ function App() {
   }
 
   return (
-    <>
+    <PrimeReactProvider>
+      <Toast ref={toast} />
       {!showRegistration ? (
         <LandingPage
           onSignInClick={() => setIsSignInOpen(true)}
@@ -186,7 +237,7 @@ function App() {
 
       <SignInModal open={isSignInOpen} onClose={() => setIsSignInOpen(false)} onSignIn={handleSignInAndRegister} />
       <DetailModal courseIndex={courseIndex} courseData={courseData} onClose={() => setCourseIndex(null)} />
-    </>
+    </PrimeReactProvider>
   )
 }
 
