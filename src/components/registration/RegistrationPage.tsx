@@ -114,7 +114,7 @@ function renderField(
               </button>
               {labels[n - 1] ? (
                 <div className="scale-label">{labels[n - 1]}</div>
-              ) : null}
+              ) : <div className="h-5"> </div>}
             </div>
           );
         })}

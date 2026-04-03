@@ -1974,3 +1974,26 @@ footer {
   right: 1rem !important;
 }
 
+/* Mobile: restore full-page scrolling for registration */
+@media (max-width: 768px) {
+  .reg-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .reg-layout {
+    grid-template-columns: 1fr;
+    flex: none;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .reg-sidebar {
+    position: static;
+  }
+
+  .reg-main {
+    overflow-y: visible;
+  }
+}
