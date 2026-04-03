@@ -11,6 +11,7 @@ import ProgramSelector from "./components/home/mokshPathDashboard";
 import { useEffect, useMemo, useState } from 'react'
 import { useToast } from './context/ToastContext'
 import Dashboard from './components/dashboard/Dashboard'
+import { authService } from './services/authService';
 
 function App() {
   // 1. Unified navigation state
@@ -117,8 +118,45 @@ function App() {
     });
   };
 
+  const handleRegistrationUser = async(body: any)=>  {
+
+  console.log("reg body", body); 
+   const reg  =  await authService.registration(body); 
+
+   console.log("reg response", reg);
+
+  }
+
+  const buildCompletePayload = () => {
+  const payload: FormDataMap = {};
+
+  REG_SCHEMA.forEach((section) => {
+    section.fields.forEach((field) => {
+      const val = formData[field.id];
+
+      if (val === undefined) {
+        // Default empty values
+        if (field.type === "chips") payload[field.id] = [];
+        else payload[field.id] = "";
+      } else {
+        payload[field.id] = val;
+      }
+    });
+  });
+
+  return payload;
+};
+
   const handleSubmit = () => {
     console.log(formData);
+
+     const completeData = buildCompletePayload();
+
+  console.log("Final Payload:", completeData);
+
+  handleRegistrationUser(completeData);
+      
+     
     const incomplete: string[] = [];
     REG_SCHEMA.forEach((section) => {
       section.fields.filter((field) => field.required).forEach((field) => {
@@ -132,7 +170,9 @@ function App() {
       showIncompleteFormToast(incomplete)
       return;
     }
-    setSubmitted(true);
+  
+
+    // setSubmitted(true);
   };
 
   return (
