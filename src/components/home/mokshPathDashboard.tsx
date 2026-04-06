@@ -1,6 +1,7 @@
 import React from "react";
 import "./mokshPathDashboard.css";
 import logo from "../../assets/logogod.svg";
+import heroImg from "../../assets/hero.svg";
 
 interface ProgramCardProps {
   title: string;
@@ -22,9 +23,8 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   cardClass,
 }) => (
   <div
-    className={`home-card ${cardClass || ""} ${
-      isComingSoon ? "coming-soon" : ""
-    }`}
+    className={`home-card ${cardClass || ""} ${isComingSoon ? "coming-soon" : ""
+      }`}
     onClick={!isComingSoon ? onAction : undefined}
   >
     {isComingSoon && <div className="home-card-badge">Coming Soon</div>}
@@ -53,7 +53,8 @@ const ProgramSelector: React.FC<{ onSelectAccelerated: () => void }> = ({
   onSelectAccelerated,
 }) => {
   return (
-    <div className="home-page">
+    <div className="home-page-auto-space">
+      <img src={heroImg} alt="" className="home-bg-illustration" aria-hidden="true" />
       <nav className="home-nav-fixed">
         <div className="nav-logo-main">
           <img
