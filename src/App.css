@@ -1477,11 +1477,8 @@ footer {
   position: relative;
   overflow: hidden;
   display: flex;
-<<<<<<< HEAD
-=======
   justify-content: center;
   align-items: center;
->>>>>>> cf21e86ffc2af58f2d267370cd7c4fe1d03ad804
 }
 
 .reg-banner::before {
