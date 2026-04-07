@@ -114,9 +114,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               description: course.description,
               features: course.features || [],
               meta: [
-                `🎓 Capstone: ${course.capstone}`,
+              
                 `⏱️ ${course.total_weeks} Weeks`,
-                `📂 ${course.total_subtopics} Subtopics`
+                `📂 ${course.total_subtopics} Subtopics`,
+                  `🎓 ${course.capstone}`,
               ],
               badgeBg: style.bg,
               badgeColor: style.color,
