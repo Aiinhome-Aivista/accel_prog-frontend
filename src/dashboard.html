@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MokshPath – My Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--o:#E87A2E;--od:#D06A20;--og:rgba(232,122,46,.12);--n:#2B2D42;--nd:#1A1B2E;--bg:#F3EDE7;--c:#FFF;--bl:#F9F5F0;--tp:#2B2D42;--ts:#6B6D7B;--tm:#9597A6;--bd:#E5DDD4;--g:#4CAF50;--gl:#E8F5E9;--b:#4285F4;--bb:rgba(66,133,244,.1);--r:14px;--rs:8px;--ss:0 2px 8px rgba(43,45,66,.06);--sm:0 8px 24px rgba(43,45,66,.08);--sl:0 16px 48px rgba(43,45,66,.12)}
+html{scroll-behavior:smooth}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tp);-webkit-font-smoothing:antialiased;min-height:100vh}
+/* Utility bar */
+.ubar{background:var(--nd);padding:.4rem 1.5rem;display:flex;justify-content:flex-end;gap:1.2rem}
+.ubar a{color:rgba(255,255,255,.55);font-size:.68rem;font-weight:500;text-decoration:none;transition:color .12s}.ubar a:hover{color:#fff}
+/* Nav */
+.nav{background:var(--c);border-bottom:1px solid var(--bd);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--ss)}
+.nav-l{display:flex;align-items:center;gap:1.5rem}
+.nav-logo{display:flex;align-items:center;gap:.5rem;text-decoration:none}
+.nav-logo svg{width:32px;height:32px}
+.nav-logo-name{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--n)}
+.nav-logo-name span{color:var(--o)}
+.nav-links{display:flex;align-items:center;gap:1rem}
+.nav-links a{font-size:.78rem;font-weight:500;color:var(--ts);text-decoration:none;transition:color .12s;padding:.3rem .5rem;border-radius:6px}.nav-links a:hover{color:var(--o);background:var(--og)}.nav-links a.act{color:var(--o);font-weight:600}
+.nav-r{display:flex;align-items:center;gap:.6rem}
+.nav-av{width:34px;height:34px;border-radius:50%;background:var(--og);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--o);cursor:pointer}
+.nav-name{font-size:.78rem;font-weight:600;color:var(--n)}
+/* Mobile */
+.mob-toggle{display:none;background:none;border:none;cursor:pointer;padding:.3rem}
+.mob-toggle span{display:block;width:18px;height:2px;background:var(--n);margin:3px 0;transition:all .2s}
+/* Main */
+.main{max-width:1060px;margin:0 auto;padding:2rem 1.5rem 4rem}
+/* Welcome */
+.welcome{margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.welcome-l h1{font-family:'DM Serif Display',serif;font-size:clamp(1.4rem,2.5vw,1.8rem);color:var(--n);margin-bottom:.2rem}
+.welcome-l p{font-size:.85rem;color:var(--ts);line-height:1.5}
+.welcome-r{display:flex;gap:.5rem}
+.welcome-btn{padding:.55rem 1.2rem;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:600;transition:all .15s}
+.welcome-btn.primary{background:var(--o);color:#fff}.welcome-btn.primary:hover{background:var(--od)}
+.welcome-btn.outline{background:var(--c);color:var(--ts);border:1.5px solid var(--bd)}.welcome-btn.outline:hover{border-color:var(--o);color:var(--o)}
+/* Stats row */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:2rem}
+.stat{background:var(--c);border-radius:var(--r);border:1px solid var(--bd);padding:1rem;display:flex;align-items:center;gap:.8rem;transition:box-shadow .15s}.stat:hover{box-shadow:var(--ss)}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.stat-num{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--n)}
+.stat-label{font-size:.68rem;color:var(--tm);font-weight:500}
+/* Section headers */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sec-head h2{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--n)}
+.sec-head .badge{font-size:.62rem;font-weight:700;padding:.2rem .6rem;border-radius:50px}
+/* Course cards */
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2.5rem}
+.course-card{background:var(--c);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;transition:all .2s;cursor:pointer;display:flex;flex-direction:column}
+.course-card:hover{box-shadow:var(--sm);transform:translateY(-2px)}
+.cc-banner{height:8px;width:100%}
+.cc-body{padding:1.2rem;flex:1;display:flex;flex-direction:column}
+.cc-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.2rem .5rem;border-radius:50px;margin-bottom:.6rem;width:fit-content}
+.cc-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--n);margin-bottom:.3rem;line-height:1.3}
+.cc-desc{font-size:.76rem;color:var(--ts);line-height:1.55;flex:1;margin-bottom:.8rem}
+.cc-meta{display:flex;gap:.8rem;margin-bottom:.8rem;flex-wrap:wrap}
+.cc-meta span{font-size:.66rem;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:.2rem}
+/* Progress bar */
+.cc-prog{margin-bottom:.8rem}
+.cc-prog-bar{height:5px;background:var(--bd);border-radius:3px;overflow:hidden;margin-bottom:.2rem}
+.cc-prog-fill{height:100%;border-radius:3px;transition:width .4s}
+.cc-prog-text{font-size:.64rem;color:var(--tm);font-weight:500}
+/* CTA buttons */
+.cc-cta{display:flex;gap:.5rem}
+.cc-btn{padding:.45rem .9rem;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:.74rem;font-weight:600;transition:all .12s;flex:1;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.3rem}
+.cc-btn.primary{background:var(--o);color:#fff}.cc-btn.primary:hover{background:var(--od)}
+.cc-btn.success{background:var(--g);color:#fff}.cc-btn.success:hover{background:#388E3C}
+.cc-btn.outline{background:var(--c);color:var(--ts);border:1.5px solid var(--bd)}.cc-btn.outline:hover{border-color:var(--o);color:var(--o)}
+.cc-btn.subscribe{background:linear-gradient(135deg,var(--o),var(--od));color:#fff;box-shadow:0 2px 10px rgba(232,122,46,.25)}.cc-btn.subscribe:hover{box-shadow:0 4px 16px rgba(232,122,46,.35)}
+/* Completed card overrides */
+.cc-completed{position:relative}
+.cc-completed::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.15);pointer-events:none;border-radius:var(--r)}
+.cc-cert{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:600;color:var(--g);margin-bottom:.5rem}
+/* Available course cards */
+.cc-available .cc-body{position:relative}
+.cc-price{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--o);margin-bottom:.3rem}
+.cc-features{display:flex;flex-direction:column;gap:.15rem;margin-bottom:.8rem}
+.cc-feat{font-size:.7rem;color:var(--ts);display:flex;align-items:center;gap:.3rem}
+.cc-feat svg{width:12px;height:12px;color:var(--g);flex-shrink:0}
+/* Activity feed */
+.activity{background:var(--c);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin-bottom:2rem}
+.act-item{display:flex;align-items:flex-start;gap:.7rem;padding:.8rem 1.2rem;border-bottom:1px solid rgba(0,0,0,.04);transition:background .1s}
+.act-item:last-child{border:none}
+.act-item:hover{background:var(--bl)}
+.act-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.act-body h4{font-size:.78rem;font-weight:600;color:var(--n);margin-bottom:.05rem}
+.act-body p{font-size:.7rem;color:var(--ts);line-height:1.45}
+.act-time{font-size:.6rem;color:var(--tm);margin-left:auto;flex-shrink:0;white-space:nowrap}
+/* Footer */
+.footer{background:var(--nd);padding:1.5rem;text-align:center}
+.footer p{font-size:.72rem;color:rgba(255,255,255,.4)}
+.footer a{color:var(--o);text-decoration:none;margin:0 .5rem}
+/* Subscribe modal */
+.sub-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
+.sub-modal-bg.show{display:flex}
+.sub-modal{background:var(--c);border-radius:var(--r);padding:2rem;max-width:400px;width:90%;text-align:center;box-shadow:var(--sl);position:relative}
+.sub-modal h3{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--n);margin-bottom:.3rem}
+.sub-modal p{font-size:.82rem;color:var(--ts);margin-bottom:1.5rem;line-height:1.5}
+.sub-modal .close{position:absolute;top:.8rem;right:.8rem;background:none;border:none;cursor:pointer;color:var(--tm);font-size:1rem}
+@media(max-width:768px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .course-grid{grid-template-columns:1fr}
+  .mob-toggle{display:block}
+  .nav-links{display:none;position:absolute;top:60px;left:0;right:0;background:var(--c);border-bottom:1px solid var(--bd);padding:1rem;flex-direction:column;box-shadow:var(--sm)}
+  .nav-links.open{display:flex}
+  .welcome{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="ubar"><a href="accelerated-ai-program.html">All Programs</a><a href="#">FAQs</a><a href="#">Help Center</a></div>
+<nav class="nav">
+<div class="nav-l">
+<a class="nav-logo" href="accelerated-ai-program.html"><svg viewBox="0 0 42 42" fill="none"><circle cx="21" cy="14" r="6" fill="#E87A2E"/><path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E"/></svg><span class="nav-logo-name">Moksh<span>Path</span></span></a>
+<div class="nav-links" id="navLinks">
+<a href="accelerated-ai-program.html">Programs</a>
+<a href="#" class="act">Dashboard</a>
+<a href="#myCourses">My Courses</a>
+<a href="#browse">Browse</a>
+</div>
+</div>
+<div class="nav-r">
+<span class="nav-name">Learner</span>
+<div class="nav-av">L</div>
+</div>
+<button class="mob-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="main">
+<!-- Welcome -->
+<div class="welcome">
+<div class="welcome-l">
+<h1>Welcome back, Learner!</h1>
+<p>You're on a 5-day streak. Keep the momentum going — your next sub-topic awaits.</p>
+</div>
+<div class="welcome-r">
+<a href="course-learning.html" class="welcome-btn primary">Continue Learning</a>
+<a href="#browse" class="welcome-btn outline">Browse Courses</a>
+</div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+<div class="stat"><div class="stat-icon" style="background:var(--og)">📚</div><div><div class="stat-num">1</div><div class="stat-label">In Progress</div></div></div>
+<div class="stat"><div class="stat-icon" style="background:var(--gl)">✅</div><div><div class="stat-num">0</div><div class="stat-label">Completed</div></div></div>
+<div class="stat"><div class="stat-icon" style="background:var(--bb)">🏆</div><div><div class="stat-num">5</div><div class="stat-label">Day Streak</div></div></div>
+<div class="stat"><div class="stat-icon" style="background:rgba(156,39,176,.08)">📊</div><div><div class="stat-num">42%</div><div class="stat-label">Progress</div></div></div>
+</div>
+
+<!-- In-Progress Courses -->
+<div id="myCourses">
+<div class="sec-head"><h2>My Courses — In Progress</h2><div class="badge" style="background:var(--og);color:var(--o)">1 Active</div></div>
+<div class="course-grid">
+<div class="course-card" onclick="window.location.href='course-learning.html'">
+<div class="cc-banner" style="background:linear-gradient(90deg,#E87A2E,#F5943E)"></div>
+<div class="cc-body">
+<div class="cc-badge" style="background:var(--og);color:var(--o)">Course 1 · Foundation</div>
+<div class="cc-title">The AI Consumer & Builder</div>
+<div class="cc-desc">Master prompt engineering, multimodal creativity, Python for AI, and responsible prompting through 4 intensive weeks.</div>
+<div class="cc-meta"><span>📅 4 Weeks</span><span>📄 28 Sub-Topics</span><span>🧩 4 Projects</span></div>
+<div class="cc-prog"><div class="cc-prog-bar"><div class="cc-prog-fill" style="width:42%;background:var(--o)"></div></div><div class="cc-prog-text">42% complete · Week 1: Advanced Prompt Engineering</div></div>
+<div class="cc-cta"><a href="course-learning.html" class="cc-btn primary">Continue Learning</a><a href="course-learning.html" class="cc-btn outline" onclick="event.stopPropagation()">View Grades</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Completed Courses -->
+<div class="sec-head"><h2>Completed Courses</h2><div class="badge" style="background:var(--gl);color:var(--g)">0 Done</div></div>
+<div style="background:var(--c);border-radius:var(--r);border:1px solid var(--bd);padding:2rem;text-align:center;margin-bottom:2.5rem">
+<div style="font-size:1.5rem;margin-bottom:.5rem">🎓</div>
+<p style="font-size:.82rem;color:var(--tm)">No completed courses yet. Keep going — your first certificate is within reach!</p>
+</div>
+
+<!-- Browse & Subscribe -->
+<div id="browse">
+<div class="sec-head"><h2>Browse More Courses</h2><div class="badge" style="background:var(--bb);color:var(--b)">3 Available</div></div>
+<div class="course-grid">
+
+<div class="course-card cc-available">
+<div class="cc-banner" style="background:linear-gradient(90deg,#E8A040,#F0C060)"></div>
+<div class="cc-body">
+<div class="cc-badge" style="background:rgba(232,160,64,.12);color:#C08830">Course 2 · Core</div>
+<div class="cc-title">The Data & ML Architect</div>
+<div class="cc-desc">Advanced data wrangling, ensemble ML methods, NLP foundations, time series forecasting, and Kaggle competition readiness.</div>
+<div class="cc-meta"><span>📅 4 Weeks</span><span>📄 28 Sub-Topics</span><span>🧩 Kaggle Challenge</span></div>
+<div class="cc-features">
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Hands-on Kaggle competitions</div>
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>GitHub portfolio building</div>
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Industry mentor sessions</div>
+</div>
+<div class="cc-cta"><button class="cc-btn subscribe" onclick="event.stopPropagation();showSubModal('The Data & ML Architect','Course 2')">Subscribe & Enroll</button></div>
+</div>
+</div>
+
+<div class="course-card cc-available">
+<div class="cc-banner" style="background:linear-gradient(90deg,#66BB6A,#81C784)"></div>
+<div class="cc-body">
+<div class="cc-badge" style="background:rgba(76,175,80,.1);color:var(--g)">Course 3 · Applied</div>
+<div class="cc-title">The Gen AI & RAG Specialist</div>
+<div class="cc-desc">LLM architecture, fine-tuning with LoRA/QLoRA, RAG systems with vector databases, diffusion models, and AI agents.</div>
+<div class="cc-meta"><span>📅 4 Weeks</span><span>📄 28 Sub-Topics</span><span>🧩 Gen AI App</span></div>
+<div class="cc-features">
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Build a RAG Q&A system</div>
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Fine-tune open-source LLMs</div>
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Deploy to cloud platforms</div>
+</div>
+<div class="cc-cta"><button class="cc-btn subscribe" onclick="event.stopPropagation();showSubModal('The Gen AI & RAG Specialist','Course 3')">Subscribe & Enroll</button></div>
+</div>
+</div>
+
+<div class="course-card cc-available">
+<div class="cc-banner" style="background:linear-gradient(90deg,#7E57C2,#9575CD)"></div>
+<div class="cc-body">
+<div class="cc-badge" style="background:rgba(156,39,176,.08);color:#7B1FA2">Course 4 · Advanced</div>
+<div class="cc-title">The Agentic & Deep Tech Engineer</div>
+<div class="cc-desc">Agentic AI architectures, enterprise AI platforms, industry verticals (healthcare, finance, manufacturing), AI governance, and career readiness.</div>
+<div class="cc-meta"><span>📅 4 Weeks</span><span>📄 28 Sub-Topics</span><span>🧩 Industry Capstone</span></div>
+<div class="cc-features">
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Real industry problem statements</div>
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>PwC mentor-led reviews</div>
+<div class="cc-feat"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3L10 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Demo day with industry panel</div>
+</div>
+<div class="cc-cta"><button class="cc-btn subscribe" onclick="event.stopPropagation();showSubModal('The Agentic & Deep Tech Engineer','Course 4')">Subscribe & Enroll</button></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- Recent Activity -->
+<div class="sec-head"><h2>Recent Activity</h2></div>
+<div class="activity">
+<div class="act-item"><div class="act-icon" style="background:var(--og)">📄</div><div class="act-body"><h4>Completed: What is Prompt Engineering?</h4><p>Finished Reading 1 of Week 1 — Advanced Prompt Engineering</p></div><span class="act-time">2 hours ago</span></div>
+<div class="act-item"><div class="act-icon" style="background:var(--gl)">✅</div><div class="act-body"><h4>Assessment submitted</h4><p>Week 1 Critical Thinking — scored 85%</p></div><span class="act-time">Yesterday</span></div>
+<div class="act-item"><div class="act-icon" style="background:var(--bb)">💬</div><div class="act-body"><h4>Posted in Discussion</h4><p>"How can prompt engineering transform rural education?"</p></div><span class="act-time">Yesterday</span></div>
+<div class="act-item"><div class="act-icon" style="background:rgba(156,39,176,.08)">🔥</div><div class="act-body"><h4>5-day learning streak!</h4><p>You've been consistent this week. Keep it up!</p></div><span class="act-time">Today</span></div>
+<div class="act-item"><div class="act-icon" style="background:var(--og)">🃏</div><div class="act-body"><h4>Flashcards mastered: 4/7</h4><p>RACE Framework, Zero-shot vs Few-shot, CoT, System Prompts</p></div><span class="act-time">Today</span></div>
+</div>
+
+</div>
+
+<!-- Subscribe modal -->
+<div class="sub-modal-bg" id="subModal">
+<div class="sub-modal">
+<button class="close" onclick="hideSubModal()">✕</button>
+<div style="font-size:2rem;margin-bottom:.8rem">🎉</div>
+<h3 id="subModalTitle">Subscribe to Course</h3>
+<p id="subModalDesc">You're about to enroll in this course. Once subscribed, it will appear in your dashboard and you can start learning immediately.</p>
+<button class="cc-btn subscribe" style="width:100%;padding:.7rem;font-size:.85rem" onclick="confirmSub()">Confirm Enrollment</button>
+<p style="font-size:.68rem;color:var(--tm);margin-top:.8rem">Free during Summer 2026 pilot program</p>
+</div>
+</div>
+
+<div class="footer"><p>&copy; 2026 MokshPath – Guided Path to True Learning<a href="accelerated-ai-program.html">Programs</a><a href="#">Terms</a><a href="#">Privacy</a></p></div>
+
+<script>
+let pendingSub='';
+function showSubModal(name,id){
+  pendingSub=id;
+  document.getElementById('subModalTitle').textContent='Subscribe to '+name;
+  document.getElementById('subModal').classList.add('show');
+}
+function hideSubModal(){document.getElementById('subModal').classList.remove('show')}
+function confirmSub(){
+  hideSubModal();
+  alert('Successfully enrolled in '+pendingSub+'! The course has been added to your dashboard. (In production, this would activate the course.)');
+  location.reload();
+}
+</script>
+</body>
+</html>

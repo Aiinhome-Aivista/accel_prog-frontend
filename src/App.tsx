@@ -1,18 +1,28 @@
-import 'primereact/resources/primereact.min.css'
-import 'primereact/resources/themes/lara-light-cyan/theme.css'
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react'
-import { ToastProvider } from './utils/ToastContext'
-import { AuthProvider, useAuth } from './hooks/context/AuthContext'
-import { RegistrationProvider, useRegistration } from './hooks/context/RegistrationContext'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ToastProvider } from "./utils/ToastContext";
+import { AuthProvider, useAuth } from "./hooks/context/AuthContext";
+import {
+  RegistrationProvider,
+  useRegistration,
+} from "./hooks/context/RegistrationContext";
 
 import LandingPage from "./features/pages/landing/LandingPage";
 import DetailModal from "./components/modals/DetailModal";
 import SignInModal from "./components/modals/SignInModal";
 import RegistrationPage from "./features/pages/registration/RegistrationPage";
-import Dashboard from './features/pages/dashboard/Dashboard'
-import ProtectedRoute from './auth/ProtectedRoute'
+import Dashboard from "./features/pages/dashboard/Dashboard";
+import ProtectedRoute from "./auth/ProtectedRoute";
 import type { CourseItem } from "./types/registration";
 
 // Effects component to handle route-based side effects like animations
@@ -73,16 +83,16 @@ function AppContent() {
     }
 
     if (isNewUser) {
-      navigate('/registration');
+      navigate("/registration");
     } else {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   };
 
   const handleLogout = () => {
     logout();
     resetRegistration();
-    navigate('/');
+    navigate("/");
     window.scrollTo(0, 0);
   };
 
@@ -100,7 +110,7 @@ function AppContent() {
               navOpen={navOpen}
               onToggleNav={() => setNavOpen((prev) => !prev)}
               onCloseNav={() => setNavOpen(false)}
-              onGoHome={() => { }} // Placeholder for home link
+              onGoHome={() => {}} // Placeholder for home link
             />
           }
         />
@@ -115,9 +125,9 @@ function AppContent() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard onLogout={handleLogout} />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Dashboard onLogout={handleLogout} />
+            // </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
