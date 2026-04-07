@@ -88,7 +88,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               Programs
             </a>
             <a
-              href="#/"
+              href="#"
               className="text-[13px] font-semibold text-[#E87A2E] py-1.5 px-2.5 rounded-md text-center inline-block"
             >
               Dashboard
