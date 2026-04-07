@@ -211,7 +211,7 @@ export const REG_SCHEMA: SectionSchema[] = [
       },
       {
         id: "disagreements",
-        label: "How do you handle disagreements in a team setting?",
+        label: "Please add one positive and one negative experience",
         type: "textarea",
         placeholder: "Describe your approach to conflict resolution...",
         required: false,
@@ -267,7 +267,7 @@ export const REG_SCHEMA: SectionSchema[] = [
   },
   {
     id: "psychometric",
-    title: "Psychometric & Exploratory",
+    title: "Blue Sky Ai",
     subtitle: "We'd love to understand how you think",
     fields: [
       {
@@ -338,7 +338,7 @@ export const REG_SCHEMA: SectionSchema[] = [
       {
         id: "hometownAI",
         label:
-          "Imagine you're designing an AI for your hometown. What problem would it solve?",
+          "What should be the key problems(hometown) you will solve using AI in your daily life",
         type: "textarea",
         placeholder:
           "Describe the problem, your solution idea, and the impact you envision...",

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import LogoIcon from "../../../assets/logogod.svg";
+// import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
 import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
-
+import BrandLogo from '../../../components/shared/BrandLogo';
 import type { DashboardData, CourseData, DashboardKPI, StatItem } from "./dashboard.models";
 
 const typedDashboardData = dashboardData as DashboardData;
@@ -194,16 +194,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       {/* Nav */}
       <nav className="bg-white border-b border-[#E5DDD4] px-6 h-[60px] flex items-center justify-between sticky top-0 z-50 shadow-[0_2px_8px_rgba(43,45,66,.06)]">
         <div className="flex items-center gap-6">
-          <a className="flex items-center gap-2" href="#/">
+          {/* <a className="flex items-center gap-2" href="#/">
             <img
               src={LogoIcon}
               className="w-[30px] h-[30px] object-contain"
               alt="MokshPath Logo"
             />
-            <span className=" text-[1.1rem] text-[#2B2D42]">
+            <span className="nav-logo">
               Moksh<span className="text-[#E87A2E]">Path</span>
             </span>
-          </a>
+          </a> */}
+           <a
+          href="#"
+          className="nav-logo"
+          onClick={(e) => {
+            e.preventDefault();
+            // onCloseNav();
+            // onGoHome();
+          }}
+        >
+          <BrandLogo />
+        </a>
           <div
             className={`md:flex items-center gap-4 ${navOpen ? "flex absolute top-[60px] left-0 right-0 bg-white border-b border-[#E5DDD4] p-4 flex-col shadow-lg" : "hidden md:flex"}`}
           >

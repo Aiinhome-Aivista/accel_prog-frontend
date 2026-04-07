@@ -170,11 +170,10 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
           </p>
         </div>
       </div>
-<img className='h-96 w-80 fixed top-64 left-10' src={swamiji} alt="swamiji" />
+<img className='h-96 w-80 fixed top-56 left-10' src={swamiji} alt="swamiji" />
       <div className="reg-layout">
         
         <div className="reg-sidebar">
-          <h3>Registration</h3>
           <div className="reg-progress-pct">{progressPct}% Complete</div>
           <div className="reg-progress-bar">
             <div

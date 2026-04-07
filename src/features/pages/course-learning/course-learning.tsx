@@ -12,8 +12,8 @@ import { FlashcardsTab } from './components/Tabs/FlashcardsTab';
 import { SupportTab } from './components/Tabs/SupportTab';
 import { WK } from './course-learning.data';
 import { Link, useSearchParams } from 'react-router-dom';
-import LogoIcon from '../../../assets/logogod.svg';
-
+// import LogoIcon from '../../../assets/logogod.svg';
+import BrandLogo from '../../../components/shared/BrandLogo';
 const CourseLearning: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "home";
@@ -82,14 +82,25 @@ const CourseLearning: React.FC = () => {
             <ChevronLeft size={12} /> Dashboard
           </Link>
 
-          <a href="#" className="flex items-center gap-[0.35rem] no-underline ml-2">
+          {/* <a href="#" className="flex items-center gap-[0.35rem] no-underline ml-2">
             <img
                          src={LogoIcon}
                          className="w-[30px] h-[30px] object-contain"
                          alt="MokshPath Logo"
                        />
             <span className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42]">Moksh<em className="not-italic text-[#E87A2E]">Path</em></span>
-          </a>
+          </a> */}
+          <a
+          href="#"
+          className="nav-logo"
+          onClick={(e) => {
+            e.preventDefault();
+            // onCloseNav();
+            // onGoHome();
+          }}
+        >
+          <BrandLogo />
+        </a>
         </div>
         <div className="flex items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem] px-[0.55rem] py-[0.2rem] rounded-full bg-gradient-to-br from-[#FF6B35] to-[#F7931E] text-white text-[0.62rem] font-bold">
