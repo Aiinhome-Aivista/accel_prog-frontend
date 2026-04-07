@@ -86,6 +86,11 @@ function AppContent() {
     window.scrollTo(0, 0);
   };
 
+  const handleGoHome = () => {
+    navigate('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       <RouteEffects />
@@ -100,7 +105,7 @@ function AppContent() {
               navOpen={navOpen}
               onToggleNav={() => setNavOpen((prev) => !prev)}
               onCloseNav={() => setNavOpen(false)}
-              onGoHome={() => { }} // Placeholder for home link
+              onGoHome={handleGoHome}
             />
           }
         />

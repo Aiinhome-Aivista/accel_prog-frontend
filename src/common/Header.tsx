@@ -49,6 +49,7 @@ const Header: React.FC<HeaderProps> = ({
             onClick={(e) => {
               e.preventDefault();
               onCloseNav();
+              onGoHome();
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
