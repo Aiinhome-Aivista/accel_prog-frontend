@@ -187,7 +187,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         )}
 
         {/* Browse More */}
-        <div id="browse">
+        <div id="browse" className="scroll-mt-20">
            <div className="flex items-center justify-between mb-4">
              <h2 className="font-serif text-[1.15rem] text-[#2B2D42]">Browse More Courses</h2>
              <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[rgba(66,133,244,.1)] text-[#4285F4]">
