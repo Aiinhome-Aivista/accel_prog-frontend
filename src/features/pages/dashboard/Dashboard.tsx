@@ -136,7 +136,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {/* Welcome */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1">
+            <h1
+              className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1 font-bold"
+              style={{ fontFamily: '"DM Serif Display", serif' }}
+            >
               {typedDashboardData.welcome.title}, {user?.name || "Learner"}!
             </h1>
             <p className="text-[13.5px] text-[#6B6D7B] leading-relaxed">
@@ -191,7 +194,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {/* In Progress Courses */}
         <div id="myCourses" className="scroll-mt-20">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[1.15rem] text-[#2B2D42]">
+            <h2
+              className="text-[1.15rem] text-[#2B2D42] font-bold"
+              style={{ fontFamily: '"DM Serif Display", serif' }}
+            >
               My Courses — In Progress
             </h2>
             <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E87A2E]/10 text-[#E87A2E]">
@@ -228,7 +234,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     >
                       {course.badge}
                     </div>
-                    <div className=" text-[1rem] text-[#2B2D42] mb-1 leading-[1.3]">
+                    <div
+                      className=" text-[1rem] text-[#2B2D42] mb-1 leading-[1.3] font-medium"
+                      style={{ fontFamily: '"DM Serif Display", serif' }}
+                    >
                       {course.title}
                     </div>
                     <div className="text-[12px] text-[#6B6D7B] leading-[1.55] flex-1 mb-3">
@@ -287,7 +296,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Completed Courses */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className=" text-[1.15rem] text-[#2B2D42]">
+          <h2
+            className=" text-[1.15rem] text-[#2B2D42] font-bold"
+            style={{ fontFamily: '"DM Serif Display", serif' }}
+          >
             Completed Courses
           </h2>
           <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E8F5E9] text-[#4CAF50]">
@@ -312,7 +324,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {/* Browse More */}
         <div id="browse" className="scroll-mt-20">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[1.15rem] text-[#2B2D42]">
+            <h2
+              className="text-[1.15rem] text-[#2B2D42] font-bold"
+              style={{ fontFamily: '"DM Serif Display", serif' }}
+            >
               Browse More Courses
             </h2>
             <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[rgba(66,133,244,.1)] text-[#4285F4]">
@@ -340,7 +355,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   >
                     {course.badge}
                   </div>
-                  <div className=" text-base text-[#2B2D42] mb-1 leading-[1.3]">
+                  <div
+                    className=" text-base text-[#2B2D42] mb-1 leading-[1.3] font-medium"
+                    style={{ fontFamily: '"DM Serif Display", serif' }}
+                  >
                     {course.title}
                   </div>
                   <div className="text-[12px] text-[#6B6D7B] leading-[1.55] flex-1 mb-3">
@@ -394,7 +412,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Recent Activity */}
         <div className="flex items-center justify-between mb-4 mt-2">
-          <h2 className=" text-[1.15rem] text-[#2B2D42]">
+          <h2
+            className=" text-[1.15rem] text-[#2B2D42] font-bold"
+            style={{ fontFamily: '"DM Serif Display", serif' }}
+          >
             Recent Activity
           </h2>
         </div>
