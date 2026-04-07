@@ -5,10 +5,12 @@ import { authService } from "../services/authService";
 import LogoIcon from '../assets/logogod.svg'
 import { useToast } from "../utils/ToastContext";
 
+import type { AccessControl } from "../hooks/context/AuthContext";
+
 interface SignInModalProps {
   open: boolean;
   onClose: () => void;
-  onSignIn: (isNewUser: boolean, email: string, name?: string, id?: number) => void;
+  onSignIn: (isNewUser: boolean, email: string, name?: string, id?: number, access_control?: AccessControl[]) => void;
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -53,9 +55,10 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           response.is_new_user === false ||
           response.data?.is_new_user === false;
         const name =
-          response.data?.full_name || result.user.displayName || "Google User";
+          response.data?.full_name || response.full_name || result.user.displayName || "Google User";
         const userId = response.data?.user_id || response.user_id;
-        onSignIn(!isExistingUser, result.user.email || "", name, userId);
+        const accessControl = response.access_control || response.data?.access_control || [];
+        onSignIn(!isExistingUser, result.user.email || "", name, userId, accessControl);
       } else {
         showError(
           "Sign-in error",
@@ -122,9 +125,10 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         const isExistingUser =
           response.is_new_user === false ||
           response.data?.is_new_user === false;
-        const name = response.data?.full_name || "User";
+        const name = response.data?.full_name || response.full_name || "User";
         const userId = response.data?.user_id || response.user_id;
-        onSignIn(!isExistingUser, email, name, userId);
+        const accessControl = response.access_control || response.data?.access_control || [];
+        onSignIn(!isExistingUser, email, name, userId, accessControl);
       } else {
         alert(response.message || "Invalid OTP code.");
       }

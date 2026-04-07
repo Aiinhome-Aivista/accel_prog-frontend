@@ -218,26 +218,39 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <div
             className={`md:flex items-center gap-4 ${navOpen ? "flex absolute top-[60px] left-0 right-0 bg-white border-b border-[#E5DDD4] p-4 flex-col shadow-lg" : "hidden md:flex"}`}
           >
-            <a
-              href="#/programs"
-              className="text-[13px] font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10 py-1.5 px-2.5 rounded-md transition-colors"
-            >
-              Programs
-            </a>
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={item.id === "dashboard" ? "#" : `#${item.id}`}
-                onClick={(e) => handleNavClick(e, item.id)}
-                className={`text-[13px] py-1.5 px-2.5 rounded-md transition-colors cursor-pointer ${
-                  activeSection === item.id
-                    ? "font-semibold text-[#E87A2E] bg-[#E87A2E]/10"
-                    : "font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
+            {(user?.access_control && user.access_control.length > 0
+              ? user.access_control.map((ac) => ({
+                  id: ac.name === "My Courses" ? "myCourses" : ac.name.toLowerCase().replace(/\s+/g, ''),
+                  label: ac.name,
+                }))
+              : navItems
+            ).map((item) => {
+              if (item.id === "programs") {
+                return (
+                  <a
+                    key={item.id}
+                    href="#/programs"
+                    className="text-[13px] font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10 py-1.5 px-2.5 rounded-md transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                );
+              }
+              return (
+                <a
+                  key={item.id}
+                  href={item.id === "dashboard" ? "#" : `#${item.id}`}
+                  onClick={(e) => handleNavClick(e, item.id)}
+                  className={`text-[13px] py-1.5 px-2.5 rounded-md transition-colors cursor-pointer ${
+                    activeSection === item.id
+                      ? "font-semibold text-[#E87A2E] bg-[#E87A2E]/10"
+                      : "font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
         </div>
         <div className="flex items-center gap-3">

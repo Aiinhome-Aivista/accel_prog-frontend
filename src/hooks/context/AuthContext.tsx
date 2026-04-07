@@ -1,12 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface User {
+export interface AccessControl {
+  id: number;
+  name: string;
+}
+
+export interface User {
   id?: number;
   name: string;
   email: string;
+  access_control?: AccessControl[];
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (userData: User, token?: string) => void;
