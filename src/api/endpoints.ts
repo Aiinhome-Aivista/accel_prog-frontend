@@ -10,4 +10,5 @@ export const API_ENDPOINTS = {
   DASHBOARD: "/api/v1/get_courses_dashboard",
   MODULES: "/api/v1/get_modules_dashboard",
   DASHBOARD_KPI: "/api/v1/dashboard_kpi_by_user",
+  COURSE_ENROLLMENT: "/api/v1/course_enrollment",
 };

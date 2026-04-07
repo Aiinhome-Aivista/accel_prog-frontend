@@ -1,9 +1,10 @@
 import { apiRequest } from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
+import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI } from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
   getDashboard: () =>
-    apiRequest({
+    apiRequest<ApiResponse<any[]>>({
       url: API_ENDPOINTS.DASHBOARD,
       method: "GET",
     }),
@@ -16,9 +17,16 @@ export const dashboardService = {
     }),
 
   getDashboardKPI: (userId: number) =>
-    apiRequest({
+    apiRequest<ApiResponse<DashboardKPI>>({
       url: API_ENDPOINTS.DASHBOARD_KPI,
       method: "POST",
       data: { user_id: userId },
+    }),
+
+  enrollInCourse: (data: EnrollmentRequest) =>
+    apiRequest<EnrollmentResponse>({
+      url: API_ENDPOINTS.COURSE_ENROLLMENT,
+      method: "POST",
+      data,
     }),
 };

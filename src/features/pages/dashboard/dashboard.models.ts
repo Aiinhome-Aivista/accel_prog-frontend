@@ -48,3 +48,23 @@ export interface DashboardKPI {
   overall_progress: number;
   streak_days: number;
 }
+
+export interface EnrollmentRequest {
+  user_id: number;
+  course_id: number;
+  role_id: number;
+}
+
+export interface ApiResponse<T> {
+  status: string;
+  message: string;
+  data: T;
+}
+
+export interface EnrollmentData {
+  course_id: number;
+  current_module_id: number;
+  first_subtopic_id: number;
+}
+
+export interface EnrollmentResponse extends ApiResponse<EnrollmentData> {}

@@ -7,7 +7,7 @@ import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from '../../../components/shared/BrandLogo';
-import type { DashboardData, CourseData, DashboardKPI, StatItem } from "./dashboard.models";
+import type { DashboardData, CourseData, DashboardKPI, StatItem, EnrollmentRequest, EnrollmentResponse } from "./dashboard.models";
 
 const typedDashboardData = dashboardData as DashboardData;
 
@@ -23,7 +23,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { user } = useAuth();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [navOpen, setNavOpen] = useState(false);
@@ -45,12 +45,37 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const confirmSub = () => {
     if (activeCourse) {
-      showSuccess(
-        "Enrollment Successful",
-        `You are now enrolled in ${activeCourse.name}.`,
-      );
+      handleEnrollment(activeCourse.id);
     }
-    closeModal();
+  };
+
+  const handleEnrollment = async (courseId: string | number) => {
+    const userId = user?.id || 1;
+    const roleId = 2; // Default role_id per requirement
+
+    try {
+      const response = await dashboardService.enrollInCourse({
+        user_id: userId,
+        course_id: Number(courseId),
+        role_id: roleId,
+      });
+
+      if (response.status === "success" && response.data) {
+        showSuccess("Enrolled Successfully", response.message);
+        const { course_id, current_module_id, first_subtopic_id } = response.data;
+        navigate(
+          `/course-learning?course_id=${course_id}&module_id=${current_module_id}&subtopic_id=${first_subtopic_id}`,
+          { replace: true }
+        );
+      } else {
+        showError("Enrollment Failed", response.message || "Could not enroll in course.");
+      }
+    } catch (error) {
+      console.error("Enrollment error:", error);
+      showError("Enrollment Error", "An unexpected error occurred during enrollment.");
+    } finally {
+      closeModal();
+    }
   };
 
   const handleNavClick = (
@@ -420,7 +445,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       <button
                         className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
                         onClick={() =>
-                          navigate("/course-learning?course_id=1", { replace: true })
+                          handleEnrollment(course.id)
                         }
                       >
                         Continue Learning
