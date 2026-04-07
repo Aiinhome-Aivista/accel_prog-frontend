@@ -125,9 +125,9 @@ function AppContent() {
         <Route
           path="/dashboard"
           element={
-            // <ProtectedRoute>
-            <Dashboard onLogout={handleLogout} />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Dashboard onLogout={handleLogout} />
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
