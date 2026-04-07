@@ -1,59 +1,23 @@
 import 'primereact/resources/primereact.min.css'
 import 'primereact/resources/themes/lara-light-cyan/theme.css'
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { ToastProvider } from './context/ToastContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { RegistrationProvider, useRegistration } from './context/RegistrationContext'
+
 import LandingPage from "./components/landing/LandingPage";
 import DetailModal from "./components/modals/DetailModal";
 import SignInModal from "./components/modals/SignInModal";
 import RegistrationPage from "./components/registration/RegistrationPage";
-import { REG_SCHEMA } from "./data/registrationSchema";
-import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
-
-import { useEffect, useMemo, useState } from 'react'
-import { useToast } from './context/ToastContext'
 import Dashboard from './components/dashboard/Dashboard'
-import { authService } from './services/authService';
+import ProtectedRoute from './components/auth/ProtectedRoute'
+import type { CourseItem } from "./types/registration";
 
-function App() {
-  // 1. Unified navigation state
-  const [view, setView] = useState< "LANDING" | "REGISTRATION" | "DASHBOARD">("LANDING");
-  // 1. Unified navigation state from localStorage
-
-
-  const [userName, setUserName] = useState<string>(() => {
-    return localStorage.getItem("user_name") || "";
-  });
-
-  const { showIncompleteFormToast } = useToast()
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const [courseIndex, setCourseIndex] = useState<number | null>(null);
-  const [navOpen, setNavOpen] = useState(false);
-
-  const [currentSection, setCurrentSection] = useState(() => {
-    return Number(localStorage.getItem("reg_section")) || 0;
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-
-  const [formData, setFormData] = useState<FormDataMap>(() => {
-    try {
-      const saved = localStorage.getItem("reg_form");
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  // Persist view changes
-  useEffect(() => {
-    localStorage.setItem("app_view", view);
-  }, [view]);
-
-  // Persist registration progress
-  useEffect(() => {
-    localStorage.setItem("reg_form", JSON.stringify(formData));
-    localStorage.setItem("reg_section", String(currentSection));
-  }, [formData, currentSection]);
-  const [courseData, setCourseData] = useState<CourseItem[]>([]);
+// Effects component to handle route-based side effects like animations
+function RouteEffects() {
+  const location = useLocation();
 
   useEffect(() => {
     const intersectionObserver = new IntersectionObserver(
@@ -86,198 +50,84 @@ function App() {
       intersectionObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [view]); // Run observer logic whenever the view switches
+  }, [location.pathname]);
 
-  const isSectionComplete = (idx: number) => {
-    const section = REG_SCHEMA[idx];
-    const requiredFields = section.fields.filter((field) => field.required);
-    if (requiredFields.length === 0) {
-      return section.fields.some((field) => {
-        const val = formData[field.id];
-        if (Array.isArray(val)) return val.length > 0;
-        return val !== undefined && String(val).trim() !== "";
-      });
-    }
-    return requiredFields.every((field) => {
-      const val = formData[field.id];
-      if (Array.isArray(val)) return val.length > 0;
-      return val !== undefined && String(val).trim() !== "";
-    });
-  };
+  return null;
+}
 
-  const progressPct = useMemo(() => {
-    let filled = 0;
-    let total = 0;
-    REG_SCHEMA.forEach((section) => {
-      section.fields.forEach((field) => {
-        total += 1;
-        const val = formData[field.id];
-        if (Array.isArray(val) && val.length > 0) filled += 1;
-        else if (val !== undefined && String(val).trim() !== "") filled += 1;
-      });
-    });
-    return total === 0 ? 0 : (submitted ? 100 : Math.round((filled / total) * 100));
-  }, [formData, submitted]);
+function AppContent() {
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [courseIndex, setCourseIndex] = useState<number | null>(null);
+  const [courseData, setCourseData] = useState<CourseItem[]>([]);
+  const [navOpen, setNavOpen] = useState(false);
+  
+  const { login, logout } = useAuth();
+  const { resetRegistration } = useRegistration();
 
-  // Navigation Handlers
+  const navigate = useNavigate();
+
   const handleSignIn = (isNewUser: boolean, email: string, name?: string) => {
     setIsSignInOpen(false);
     if (name) {
-      setUserName(name);
-      localStorage.setItem("user_name", name);
+      login({ name, email });
     }
+    
     if (isNewUser) {
-      setView("REGISTRATION");
-      setFormData((prev) => ({ ...prev, email: email }));
+      navigate('/registration');
     } else {
-      setView("DASHBOARD");
+      navigate('/dashboard');
     }
-    window.scrollTo(0, 0);
   };
 
   const handleLogout = () => {
-    // 1. Reset all local state
-    setView("LANDING");
-    setFormData({});
-    setSubmitted(false);
-    setCurrentSection(0);
-    setNavOpen(false);
-    setUserName("");
-    
-    // 2. Clear browser cache/storage
-    localStorage.removeItem("token");
-    localStorage.removeItem("app_view");
-    localStorage.removeItem("reg_form");
-    localStorage.removeItem("reg_section");
-    localStorage.removeItem("user_name");
-    
-    // 3. Reset scroll
+    logout();
+    resetRegistration(); 
+    navigate('/');
     window.scrollTo(0, 0);
-  };
-
-
-  const handleUpdateField = (id: string, value: FormValue) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleToggleChip = (fieldId: string, value: string) => {
-    setFormData((prev) => {
-      const existing = Array.isArray(prev[fieldId]) ? [...(prev[fieldId] as string[])] : [];
-      const idx = existing.indexOf(value);
-      idx >= 0 ? existing.splice(idx, 1) : existing.push(value);
-      return { ...prev, [fieldId]: existing };
-    });
-  };
-
-  const handleRegistrationUser = async(body: any)=>  {
-
-  console.log("reg body", body); 
-   const reg  =  await authService.registration(body); 
-
-   console.log("reg response", reg);
-
-   if(reg.status === "success"){
-
-      setSubmitted(true);
-
-   }
-
-  }
-
-  const buildCompletePayload = () => {
-  const payload: FormDataMap = {};
-
-  REG_SCHEMA.forEach((section) => {
-    section.fields.forEach((field) => {
-      const val = formData[field.id];
-
-      if (val === undefined) {
-        // Default empty values
-        if (field.type === "chips") payload[field.id] = [];
-        else payload[field.id] = "";
-      } else {
-        payload[field.id] = val;
-      }
-    });
-  });
-
-  return payload;
-};
-
-  const handleSubmit = () => {
-    console.log(formData);
-
-
-      
-     
-    const incomplete: string[] = [];
-    REG_SCHEMA.forEach((section) => {
-      section.fields.filter((field) => field.required).forEach((field) => {
-        const val = formData[field.id];
-        const filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
-        if (!filled) incomplete.push(field.label);
-      });
-    });
-
-    if (incomplete.length > 0) {
-      showIncompleteFormToast(incomplete)
-      return;
-    }
-
-  const completeData = buildCompletePayload();
-
-  console.log("Final Payload:", completeData);
-
-  handleRegistrationUser(completeData);
-  
-
-  
   };
 
   return (
     <>
-      {/* 2. Logic-driven Rendering: Only one view shows at a time */}
-
-
-      {view === "LANDING" && (
-        <LandingPage
-          onSignInClick={() => setIsSignInOpen(true)}
-          onExploreCourse={(index) => setCourseIndex(index)}
-          onCoursesLoaded={(data) => setCourseData(data)}
-          navOpen={navOpen}
-          onToggleNav={() => setNavOpen((prev) => !prev)}
-          onCloseNav={() => setNavOpen(false)}
-          onGoHome={() => setView("LANDING")}
+      <RouteEffects />
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <LandingPage
+              onSignInClick={() => setIsSignInOpen(true)}
+              onExploreCourse={(index) => setCourseIndex(index)}
+              onCoursesLoaded={(data) => setCourseData(data)}
+              navOpen={navOpen}
+              onToggleNav={() => setNavOpen((prev) => !prev)}
+              onCloseNav={() => setNavOpen(false)}
+              onGoHome={() => {}} // Placeholder for home link
+            />
+          } 
         />
-      )}
-
-      {view === "REGISTRATION" && (
-        <RegistrationPage
-          currentSection={currentSection}
-          schema={REG_SCHEMA}
-          formData={formData}
-          submitted={submitted}
-          progressPct={progressPct}
-          onBackHome={handleLogout}
-          onGoToSection={setCurrentSection}
-          onUpdateField={handleUpdateField}
-          onToggleChip={handleToggleChip}
-          onSubmit={handleSubmit}
-          isSectionComplete={isSectionComplete}
+        <Route 
+          path="/registration" 
+          element={
+            <ProtectedRoute>
+              <RegistrationPage onBackHome={handleLogout} />
+            </ProtectedRoute>
+          } 
         />
-      )}
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard onLogout={handleLogout} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
-      {view === "DASHBOARD" && (
-        <Dashboard onLogout={handleLogout} userName={userName} />
-      )}
-
-      {/* Global Modals */}
       <SignInModal
         open={isSignInOpen}
         onClose={() => setIsSignInOpen(false)}
         onSignIn={handleSignIn}
       />
-
 
       <DetailModal
         courseIndex={courseIndex}
@@ -288,4 +138,18 @@ function App() {
   );
 }
 
-export default App;
+function App() {
+  return (
+    <Router>
+      <ToastProvider>
+        <AuthProvider>
+          <RegistrationProvider>
+            <AppContent />
+          </RegistrationProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </Router>
+  );
+}
+
+export default App;

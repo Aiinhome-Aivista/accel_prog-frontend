@@ -1,25 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import type { ChangeEvent } from "react";
 import { useToast } from "../../context/ToastContext";
+import { useRegistration } from "../../context/RegistrationContext";
 import BrandLogo from "../shared/BrandLogo";
+import { REG_SCHEMA } from "../../data/registrationSchema";
 import type {
   FieldSchema,
-  FormDataMap,
   FormValue,
-  SectionSchema,
 } from "../../types/registration";
 
 interface RegistrationPageProps {
-  currentSection: number;
-  schema: SectionSchema[];
-  formData: FormDataMap;
-  submitted: boolean;
-  progressPct: number;
   onBackHome: () => void;
-  onGoToSection: (index: number) => void;
-  onUpdateField: (id: string, value: FormValue) => void;
-  onToggleChip: (fieldId: string, value: string) => void;
-  onSubmit: () => void;
-  isSectionComplete: (index: number) => boolean;
 }
 
 function renderField(
@@ -127,21 +118,24 @@ function renderField(
   return null;
 }
 
-function RegistrationPage({
-  currentSection,
-  schema,
-  formData,
-  submitted,
-  progressPct,
-  onBackHome,
-  onGoToSection,
-  onUpdateField,
-  onToggleChip,
-  onSubmit,
-  isSectionComplete,
-}: RegistrationPageProps) {
+function RegistrationPage({ onBackHome }: RegistrationPageProps) {
+  const navigate = useNavigate();
   const { showSuccess, showInfo } = useToast();
-  const section = schema[currentSection];
+  const {
+    currentSection,
+    formData,
+    submitted,
+    progressPct,
+    goToSection,
+    updateField,
+    toggleChip,
+    submitForm,
+    isSectionComplete
+  } = useRegistration();
+
+  const section = REG_SCHEMA[currentSection];
+
+  if (!section) return null;
 
   return (
     <div className="reg-page active" id="regPage">
@@ -188,14 +182,14 @@ function RegistrationPage({
           </div>
 
           <div className="reg-sections">
-            {schema.map((item, index) => {
+            {REG_SCHEMA.map((item, index) => {
               const active = index === currentSection;
               const completed = isSectionComplete(index);
               return (
                 <button
                   type="button"
                   className={`reg-sec-item ${active ? "active" : ""} ${completed && !active ? "completed" : ""}`}
-                  onClick={() => onGoToSection(index)}
+                  onClick={() => goToSection(index)}
                   key={item.id}
                 >
                   <div className="reg-sec-dot">
@@ -315,7 +309,7 @@ function RegistrationPage({
                         {field.label}
                         {field.required ? <span className="req">*</span> : null}
                       </label>
-                      {renderField(field, value, onUpdateField, onToggleChip)}
+                      {renderField(field, value, updateField, toggleChip)}
                       {field.hint ? (
                         <div className="hint">{field.hint}</div>
                       ) : null}
@@ -329,7 +323,7 @@ function RegistrationPage({
                   <button
                     type="button"
                     className="reg-nav-prev"
-                    onClick={() => onGoToSection(currentSection - 1)}
+                    onClick={() => goToSection(currentSection - 1)}
                   >
                     <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
                       <path
@@ -346,11 +340,11 @@ function RegistrationPage({
                   <div></div>
                 )}
 
-                {currentSection < schema.length - 1 ? (
+                {currentSection < REG_SCHEMA.length - 1 ? (
                   <button
                     type="button"
                     className="reg-nav-next"
-                    onClick={() => onGoToSection(currentSection + 1)}
+                    onClick={() => goToSection(currentSection + 1)}
                   >
                     Next
                     <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -367,7 +361,7 @@ function RegistrationPage({
                   <button
                     type="button"
                     className="reg-nav-next submit"
-                    onClick={onSubmit}
+                    onClick={submitForm}
                   >
                     Submit Registration
                     <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -424,9 +418,9 @@ function RegistrationPage({
                   borderRadius: "10px",
                   fontWeight: 600,
                 }}
-                onClick={onBackHome}
+                onClick={() => navigate('/dashboard')}
               >
-                Back to Home
+                Go to Dashboard
               </button>
             </div>
           )}
@@ -437,3 +431,4 @@ function RegistrationPage({
 }
 
 export default RegistrationPage;
+

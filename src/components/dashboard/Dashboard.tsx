@@ -1,12 +1,14 @@
 import React from 'react';
 import LogoIcon from '../../assets/logogod.svg';
+import { useAuth } from '../../context/AuthContext';
 
 interface DashboardProps {
   onLogout: () => void;
-  userName?: string;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onLogout, userName }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+  const { user } = useAuth();
+  
   return (
     <div className="min-h-screen bg-[#f3ede7] flex flex-col">
       {/* Navigation */}
@@ -30,7 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userName }) => {
         <div className="max-w-[900px] w-full">
           <div className="mb-10">
             <h1 className="font-serif text-4xl text-[#2b2d42] mb-4">
-              You are already registered, <span className="text-[#e87a2e]">{userName || 'User'}</span>
+              You are already registered, <span className="text-[#e87a2e]">{user?.name || 'User'}</span>
             </h1>
             <p className="text-[#6b6d7b] text-lg">Your guided path to mastering AI-Native development starts here.</p>
           </div>
@@ -67,3 +69,4 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userName }) => {
 };
 
 export default Dashboard;
+
