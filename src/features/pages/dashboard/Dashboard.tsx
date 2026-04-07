@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LogoIcon from '../../../assets/logogod.svg';
 import { useAuth } from '../../../hooks/context/AuthContext';
+import { useToast } from '../../../utils/ToastContext';
 import dashboardData from './dashboardData.json';
 
 import type { DashboardData } from './dashboard.models';
@@ -13,6 +14,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { user } = useAuth();
+  const { showSuccess } = useToast();
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeCourse, setActiveCourse] = useState<{name: string; id: string} | null>(null);
@@ -26,7 +28,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const confirmSub = () => {
     if (activeCourse) {
-      alert(`Successfully enrolled in ${activeCourse.name}! The course has been added to your dashboard. (In production, this would activate the course.)`);
+      showSuccess('Enrollment Successful', `You are now enrolled in ${activeCourse.name}.`);
     }
     closeModal();
   };
@@ -118,44 +120,51 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
              </div>
            </div>
            
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-             {typedDashboardData.inProgressCourses.map(course => (
-               <div key={course.id} className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all cursor-pointer group">
-                 <div className="h-2 w-full" style={{ background: course.bannerGradient }}></div>
-                 <div className="p-[1.2rem] flex-1 flex flex-col">
-                    <div 
-                       className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-wider px-2 py-1 rounded-full mb-2.5 w-fit"
-                       style={{ background: course.badgeBg, color: course.badgeColor }}
-                    >
-                      {course.badge}
-                    </div>
-                    <div className="font-serif text-[1rem] text-[#2B2D42] mb-1 leading-[1.3]">{course.title}</div>
-                    <div className="text-[12px] text-[#6B6D7B] leading-[1.55] flex-1 mb-3">{course.description}</div>
-                    <div className="flex gap-3 mb-3 flex-wrap">
-                      {course.meta.map((m, i) => (
-                        <span key={i} className="text-[10.5px] text-[#9597A6] font-medium flex items-center gap-1">{m}</span>
-                      ))}
-                    </div>
-                    {course.progress !== undefined && (
-                      <div className="mb-3">
-                        <div className="h-[5px] bg-[#E5DDD4] rounded-[3px] overflow-hidden mb-1">
-                          <div className="h-full rounded-[3px] transition-all duration-400" style={{ width: `${course.progress}%`, background: course.progressColor }}></div>
-                        </div>
-                        <div className="text-[10.2px] text-[#9597A6] font-medium">{course.progressText}</div>
+           {typedDashboardData.inProgressCourses.length === 0 ? (
+            <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-8 text-center mb-10">
+              <div className="text-2xl mb-2">📚</div>
+              <p className="text-[13px] text-[#9597A6]">No courses in progress yet. Browse available courses to start learning!</p>
+            </div>
+           ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+              {typedDashboardData.inProgressCourses.map(course => (
+                <div key={course.id} className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all cursor-pointer group">
+                  <div className="h-2 w-full" style={{ background: course.bannerGradient }}></div>
+                  <div className="p-[1.2rem] flex-1 flex flex-col">
+                      <div 
+                         className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-wider px-2 py-1 rounded-full mb-2.5 w-fit"
+                         style={{ background: course.badgeBg, color: course.badgeColor }}
+                      >
+                        {course.badge}
                       </div>
-                    )}
-                    <div className="flex gap-2">
-                       <button className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer">
-                         Continue Learning
-                       </button>
-                       <button className="flex-1 py-[7.5px] px-3 rounded-lg border-[1.5px] border-[#E5DDD4] bg-white text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer">
-                         View Grades
-                       </button>
-                    </div>
-                 </div>
-               </div>
-             ))}
-           </div>
+                      <div className="font-serif text-[1rem] text-[#2B2D42] mb-1 leading-[1.3]">{course.title}</div>
+                      <div className="text-[12px] text-[#6B6D7B] leading-[1.55] flex-1 mb-3">{course.description}</div>
+                      <div className="flex gap-3 mb-3 flex-wrap">
+                        {course.meta.map((m, i) => (
+                          <span key={i} className="text-[10.5px] text-[#9597A6] font-medium flex items-center gap-1">{m}</span>
+                        ))}
+                      </div>
+                      {course.progress !== undefined && (
+                        <div className="mb-3">
+                          <div className="h-[5px] bg-[#E5DDD4] rounded-[3px] overflow-hidden mb-1">
+                            <div className="h-full rounded-[3px] transition-all duration-400" style={{ width: `${course.progress}%`, background: course.progressColor }}></div>
+                          </div>
+                          <div className="text-[10.2px] text-[#9597A6] font-medium">{course.progressText}</div>
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                         <button className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer">
+                           Continue Learning
+                         </button>
+                         <button className="flex-1 py-[7.5px] px-3 rounded-lg border-[1.5px] border-[#E5DDD4] bg-white text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer">
+                           View Grades
+                         </button>
+                      </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+           )}
         </div>
 
         {/* Completed Courses */}
@@ -219,7 +228,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                          className="w-full py-[8.5px] rounded-lg border-none bg-gradient-to-br from-[#E87A2E] to-[#D06A20] text-white text-[12px] font-semibold hover:shadow-[0_4px_16px_rgba(232,122,46,.35)] shadow-[0_2px_10px_rgba(232,122,46,.25)] transition-all flex items-center justify-center cursor-pointer"
                          onClick={() => openModal(course.title, course.id)}
                        >
-                         Subscribe & Enroll
+                         Subscribe
                        </button>
                     </div>
                  </div>
