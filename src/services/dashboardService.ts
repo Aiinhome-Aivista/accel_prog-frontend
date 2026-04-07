@@ -14,4 +14,11 @@ export const dashboardService = {
       method: "POST",
       data: { course_id: Number(courseId) },
     }),
+
+  getDashboardKPI: (userId: number) =>
+    apiRequest({
+      url: API_ENDPOINTS.DASHBOARD_KPI,
+      method: "POST",
+      data: { user_id: userId },
+    }),
 };

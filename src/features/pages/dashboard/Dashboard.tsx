@@ -7,7 +7,7 @@ import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 
-import type { DashboardData, CourseData } from "./dashboard.models";
+import type { DashboardData, CourseData, DashboardKPI, StatItem } from "./dashboard.models";
 
 const typedDashboardData = dashboardData as DashboardData;
 
@@ -34,6 +34,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     name: string;
     id: string;
   } | null>(null);
+  const [stats, setStats] = useState<StatItem[]>(typedDashboardData.stats);
 
   const openModal = (name: string, id: string) => {
     setActiveCourse({ name, id });
@@ -117,7 +118,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               
                 `⏱️ ${course.total_weeks} Weeks`,
                 `📂 ${course.total_subtopics} Subtopics`,
-                  `🎓 ${course.capstone}`,
+                  `🧩 ${course.capstone}`,
               ],
               badgeBg: style.bg,
               badgeColor: style.color,
@@ -133,6 +134,38 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
     fetchDashboardData();
   }, []);
+
+  useEffect(() => {
+    const fetchKPI = async () => {
+      // Use fallback ID 2 if user ID is not available (for demonstration/testing as agreed)
+      const userId = user?.id || 2;
+      try {
+        const response = await dashboardService.getDashboardKPI(userId);
+        if (response.status === "success" && response.data) {
+          const kpi: DashboardKPI = response.data;
+          setStats((prevStats) =>
+            prevStats.map((s) => {
+              if (s.label === "In Progress")
+                return { ...s, value: kpi.in_progress_count.toString() };
+              if (s.label === "Completed")
+                return { ...s, value: kpi.completed_count.toString() };
+              if (s.label === "Day Streak")
+                return { ...s, value: kpi.streak_days.toString() };
+              if (s.label === "Progress")
+                return { ...s, value: `${kpi.overall_progress}%` };
+              return s;
+            }),
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching Dashboard KPI:", error);
+      }
+    };
+
+    if (user) {
+      fetchKPI();
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-[#F3EDE7] text-[#2B2D42] flex flex-col">
@@ -258,7 +291,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mb-8">
-          {typedDashboardData.stats.map((stat) => (
+          {stats.map((stat) => (
             <div
               key={stat.id}
               className="bg-white rounded-[14px] border border-[#E5DDD4] p-4 flex items-center gap-3.5 hover:shadow-[0_2px_8px_rgba(43,45,66,.06)] transition-shadow"

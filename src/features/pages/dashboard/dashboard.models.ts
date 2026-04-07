@@ -41,3 +41,10 @@ export interface DashboardData {
   availableCourses: CourseData[];
   activities: ActivityData[];
 }
+
+export interface DashboardKPI {
+  completed_count: number;
+  in_progress_count: number;
+  overall_progress: number;
+  streak_days: number;
+}

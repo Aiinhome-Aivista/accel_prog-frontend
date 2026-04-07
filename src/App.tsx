@@ -77,10 +77,10 @@ function AppContent() {
 
   const navigate = useNavigate();
 
-  const handleSignIn = (isNewUser: boolean, email: string, name?: string) => {
+  const handleSignIn = (isNewUser: boolean, email: string, name?: string, id?: number) => {
     setIsSignInOpen(false);
     if (name) {
-      login({ name, email });
+      login({ id, name, email });
     }
 
     if (isNewUser) {

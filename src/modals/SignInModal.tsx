@@ -8,7 +8,7 @@ import { useToast } from "../utils/ToastContext";
 interface SignInModalProps {
   open: boolean;
   onClose: () => void;
-  onSignIn: (isNewUser: boolean, email: string, name?: string) => void;
+  onSignIn: (isNewUser: boolean, email: string, name?: string, id?: number) => void;
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -54,7 +54,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           response.data?.is_new_user === false;
         const name =
           response.data?.full_name || result.user.displayName || "Google User";
-        onSignIn(!isExistingUser, result.user.email || "", name);
+        const userId = response.data?.user_id || response.user_id;
+        onSignIn(!isExistingUser, result.user.email || "", name, userId);
       } else {
         showError(
           "Sign-in error",
@@ -122,7 +123,8 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           response.is_new_user === false ||
           response.data?.is_new_user === false;
         const name = response.data?.full_name || "User";
-        onSignIn(!isExistingUser, email, name);
+        const userId = response.data?.user_id || response.user_id;
+        onSignIn(!isExistingUser, email, name, userId);
       } else {
         alert(response.message || "Invalid OTP code.");
       }

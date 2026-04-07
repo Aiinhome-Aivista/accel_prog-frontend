@@ -9,4 +9,5 @@ export const API_ENDPOINTS = {
   GOOGLE_SIGNIN: "/api/v1/google-signin",
   DASHBOARD: "/api/v1/get_courses_dashboard",
   MODULES: "/api/v1/get_modules_dashboard",
+  DASHBOARD_KPI: "/api/v1/dashboard_kpi_by_user",
 };
