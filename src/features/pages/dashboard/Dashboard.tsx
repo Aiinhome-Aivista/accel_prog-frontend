@@ -5,8 +5,9 @@ import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
 import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
+import { dashboardService } from "../../../services/dashboardService";
 
-import type { DashboardData } from "./dashboard.models";
+import type { DashboardData, CourseData } from "./dashboard.models";
 
 const typedDashboardData = dashboardData as DashboardData;
 
@@ -28,6 +29,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [availableCourses, setAvailableCourses] = useState<CourseData[]>([]);
   const [activeCourse, setActiveCourse] = useState<{
     name: string;
     id: string;
@@ -89,6 +91,46 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await dashboardService.getDashboard();
+        if (response.status === "success" && Array.isArray(response.data)) {
+          const mappedCourses = response.data.map((course: any, index: number) => {
+            const styles = [
+              { bg: "rgba(232,122,46,.1)", color: "#E87A2E", banner: "linear-gradient(to right, #E87A2E, #D06A20)" },
+              { bg: "rgba(66,133,244,.1)", color: "#4285F4", banner: "linear-gradient(to right, #4285F4, #2A66D8)" },
+              { bg: "rgba(52,168,83,.1)", color: "#34A853", banner: "linear-gradient(to right, #34A853, #2B8A45)" },
+              { bg: "rgba(251,188,5,.1)", color: "#B88E00", banner: "linear-gradient(to right, #FBBC05, #D4AF37)" },
+            ];
+            const style = styles[index % styles.length];
+
+            return {
+              id: course.course_id,
+              title: course.course_name,
+              badge: course.course_label,
+              description: course.description,
+              features: course.features || [],
+              meta: [
+                `🎓 Capstone: ${course.capstone}`,
+                `⏱️ ${course.total_weeks} Weeks`,
+                `📂 ${course.total_subtopics} Subtopics`
+              ],
+              badgeBg: style.bg,
+              badgeColor: style.color,
+              bannerGradient: style.banner
+            };
+          });
+          setAvailableCourses(mappedCourses);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
   return (
@@ -378,12 +420,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               Browse More Courses
             </h2>
             <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[rgba(66,133,244,.1)] text-[#4285F4]">
-              {typedDashboardData.availableCourses.length} Available
+              {availableCourses.length} Available
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {typedDashboardData.availableCourses.map((course) => (
+            {availableCourses.map((course) => (
               <div
                 key={course.id}
                 className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all"
@@ -422,7 +464,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     ))}
                   </div>
                   <div className="flex flex-col gap-1 mb-3 border-t border-[#E0E0E0] pt-3">
-                    {course.features?.map((feat, i) => (
+                    {course.features?.map((feat: string, i: number) => (
                       <div
                         key={i}
                         className="text-[11.2px] text-[#6B6D7B] flex items-center gap-[5px]"
