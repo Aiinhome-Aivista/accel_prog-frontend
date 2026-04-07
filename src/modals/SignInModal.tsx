@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../../Firebase";
-import { authService } from "../../services/authService";
+import { auth } from "../Firebase";
+import { authService } from "../services/authService";
 import LogoIcon from '../../assets/logogod.svg'
-import { useToast } from "../../utils/ToastContext";
+import { useToast } from "../utils/ToastContext";
 
 
 interface SignInModalProps {

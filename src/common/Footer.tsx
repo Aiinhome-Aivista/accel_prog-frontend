@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoIcon from '../../assets/logogod.svg';
+import LogoIcon from '../assets/logogod.svg';
 
 interface FooterProps {
   onSignInClick: () => void;

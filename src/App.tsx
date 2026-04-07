@@ -18,8 +18,8 @@ import {
 } from "./hooks/context/RegistrationContext";
 
 import LandingPage from "./features/pages/landing/LandingPage";
-import DetailModal from "./components/modals/DetailModal";
-import SignInModal from "./components/modals/SignInModal";
+import DetailModal from "./modals/DetailModal";
+import SignInModal from "./modals/SignInModal";
 import RegistrationPage from "./features/pages/registration/RegistrationPage";
 import Dashboard from "./features/pages/dashboard/Dashboard";
 import ProtectedRoute from "./auth/ProtectedRoute";
