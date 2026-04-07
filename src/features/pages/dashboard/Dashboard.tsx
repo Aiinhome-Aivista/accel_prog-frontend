@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
@@ -10,6 +10,12 @@ import type { DashboardData } from "./dashboard.models";
 
 const typedDashboardData = dashboardData as DashboardData;
 
+const navItems = [
+  { id: "dashboard", label: "Dashboard" },
+  { id: "myCourses", label: "My Courses" },
+  { id: "browse", label: "Browse" },
+];
+
 interface DashboardProps {
   onLogout: () => void;
 }
@@ -18,6 +24,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { user } = useAuth();
   const { showSuccess } = useToast();
   const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState("dashboard");
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -42,6 +49,47 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
     closeModal();
   };
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    sectionId: string,
+  ) => {
+    e.preventDefault();
+    const targetId = sectionId === "dashboard" ? "welcome-section" : sectionId;
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setNavOpen(false); // Close mobile nav on click
+  };
+
+  useEffect(() => {
+    const sectionIds = ["welcome-section", "myCourses", "browse"];
+    const sectionElements = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el != null);
+
+    const handleScroll = () => {
+      // Header is 60px, let's add a 20px buffer.
+      const scrollPosition = window.scrollY + 80;
+
+      let currentSectionId = "dashboard";
+      for (const section of sectionElements) {
+        if (section.offsetTop <= scrollPosition) {
+          currentSectionId = section.id;
+        } else {
+          break;
+        }
+      }
+
+      setActiveSection(
+        currentSectionId === "welcome-section" ? "dashboard" : currentSectionId,
+      );
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F3EDE7] text-[#2B2D42] flex flex-col">
@@ -89,24 +137,20 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             >
               Programs
             </a>
-            <a
-              href="#"
-              className="text-[13px] font-semibold text-[#E87A2E] py-1.5 px-2.5 rounded-md text-center inline-block"
-            >
-              Dashboard
-            </a>
-            <a
-              href="#myCourses"
-              className="text-[13px] font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10 py-1.5 px-2.5 rounded-md transition-colors"
-            >
-              My Courses
-            </a>
-            <a
-              href="#browse"
-              className="text-[13px] font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10 py-1.5 px-2.5 rounded-md transition-colors"
-            >
-              Browse
-            </a>
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={item.id === "dashboard" ? "#" : `#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`text-[13px] py-1.5 px-2.5 rounded-md transition-colors cursor-pointer ${
+                  activeSection === item.id
+                    ? "font-semibold text-[#E87A2E] bg-[#E87A2E]/10"
+                    : "font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10"
+                }`}
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -134,7 +178,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       {/* Main Container */}
       <main className="max-w-[1060px] w-full mx-auto px-6 py-8 pb-16 flex-1">
         {/* Welcome */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div
+          id="welcome-section"
+          className="scroll-mt-20 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+        >
           <div>
             <h1
               className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1 font-bold"
