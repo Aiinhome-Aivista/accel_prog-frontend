@@ -293,11 +293,9 @@ body {
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(232, 122, 46, 0.08),
-    rgba(232, 122, 46, 0.03)
-  );
+  background: linear-gradient(135deg,
+      rgba(232, 122, 46, 0.08),
+      rgba(232, 122, 46, 0.03));
   position: absolute;
   top: 50%;
   left: 50%;
@@ -401,9 +399,11 @@ section {
 #pathway {
   background: var(--bg-light);
 }
+
 #instructor {
   background: #fcf8f1;
 }
+
 .pathway-track {
   display: flex;
   align-items: stretch;
@@ -419,13 +419,11 @@ section {
   left: 12.5%;
   right: 12.5%;
   height: 3px;
-  background: linear-gradient(
-    90deg,
-    var(--orange),
-    var(--orange-light),
-    #66bb6a,
-    var(--green)
-  );
+  background: linear-gradient(90deg,
+      var(--orange),
+      var(--orange-light),
+      #66bb6a,
+      var(--green));
   border-radius: 2px;
   z-index: 0;
 }
@@ -1224,7 +1222,7 @@ footer {
 
 .reg-sidebar {
   position: sticky;
-  top: 80px;
+  top: 30px;
   align-self: start;
 }
 
@@ -1531,7 +1529,7 @@ footer {
   /* margin: 0 auto; */
 }
 
-.reg-bar{
+.reg-bar {
   border-radius: 25px;
 }
 
@@ -1736,6 +1734,7 @@ footer {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -1747,6 +1746,7 @@ footer {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
