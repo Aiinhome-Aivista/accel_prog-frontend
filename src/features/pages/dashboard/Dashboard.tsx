@@ -4,6 +4,7 @@ import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
 import dashboardData from "./dashboardData.json";
+import LogoutModal from "../../../modals/LogoutModal";
 
 import type { DashboardData } from "./dashboard.models";
 
@@ -19,6 +20,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [activeCourse, setActiveCourse] = useState<{
     name: string;
     id: string;
@@ -113,7 +115,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </span>
           <div
             className="w-[34px] h-[34px] rounded-full bg-[#E87A2E]/10 flex items-center justify-center text-[12px] font-bold text-[#E87A2E] cursor-pointer"
-            onClick={onLogout}
+            onClick={() => setIsLogoutModalOpen(true)}
             title="Click to Sign Out"
           >
             {user?.name?.[0].toUpperCase() || "L"}
@@ -479,6 +481,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </div>
         </div>
       )}
+
+      <LogoutModal
+        open={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={onLogout}
+      />
     </div>
   );
 };
