@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { COURSE_DATA } from '../../data/courseData'
-import { courseService } from '../../services/courseService'
-import Header from '../common/Header'
-import Footer from '../common/Footer'
-import type { CourseItem, ProgramStats } from '../../types/registration'
+import { COURSE_DATA } from '../../../data/courseData'
+import { courseService } from '../../../services/courseService'
+import Header from '../../../components/common/Header'
+import Footer from '../../../components/common/Footer'
+import type { CourseItem, ProgramStats } from '../../../types/registration'
 
 interface LandingPageProps {
   onSignInClick: () => void;
@@ -80,7 +80,7 @@ function LandingPage({
 
   return (
     <div className="landing-page" id="landingPage">
-      <Header 
+      <Header
         onSignInClick={onSignInClick}
         onToggleNav={onToggleNav}
         onCloseNav={onCloseNav}
@@ -599,7 +599,7 @@ function LandingPage({
         </div>
       </section>
 
-      <Footer 
+      <Footer
         onSignInClick={onSignInClick}
         onCloseNav={onCloseNav}
         onGoHome={onGoHome}

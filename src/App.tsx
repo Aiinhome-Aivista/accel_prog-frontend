@@ -3,16 +3,16 @@ import 'primereact/resources/themes/lara-light-cyan/theme.css'
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react'
-import { ToastProvider } from './context/ToastContext'
-import { AuthProvider, useAuth } from './context/AuthContext'
-import { RegistrationProvider, useRegistration } from './context/RegistrationContext'
+import { ToastProvider } from './utils/ToastContext'
+import { AuthProvider, useAuth } from './hooks/context/AuthContext'
+import { RegistrationProvider, useRegistration } from './hooks/context/RegistrationContext'
 
-import LandingPage from "./components/landing/LandingPage";
+import LandingPage from "./features/pages/landing/LandingPage";
 import DetailModal from "./components/modals/DetailModal";
 import SignInModal from "./components/modals/SignInModal";
-import RegistrationPage from "./components/registration/RegistrationPage";
-import Dashboard from './components/dashboard/Dashboard'
-import ProtectedRoute from './components/auth/ProtectedRoute'
+import RegistrationPage from "./features/pages/registration/RegistrationPage";
+import Dashboard from './features/pages/dashboard/Dashboard'
+import ProtectedRoute from './auth/ProtectedRoute'
 import type { CourseItem } from "./types/registration";
 
 // Effects component to handle route-based side effects like animations
@@ -60,7 +60,7 @@ function AppContent() {
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [courseData, setCourseData] = useState<CourseItem[]>([]);
   const [navOpen, setNavOpen] = useState(false);
-  
+
   const { login, logout } = useAuth();
   const { resetRegistration } = useRegistration();
 
@@ -71,7 +71,7 @@ function AppContent() {
     if (name) {
       login({ name, email });
     }
-    
+
     if (isNewUser) {
       navigate('/registration');
     } else {
@@ -81,7 +81,7 @@ function AppContent() {
 
   const handleLogout = () => {
     logout();
-    resetRegistration(); 
+    resetRegistration();
     navigate('/');
     window.scrollTo(0, 0);
   };
@@ -90,8 +90,8 @@ function AppContent() {
     <>
       <RouteEffects />
       <Routes>
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <LandingPage
               onSignInClick={() => setIsSignInOpen(true)}
@@ -100,25 +100,25 @@ function AppContent() {
               navOpen={navOpen}
               onToggleNav={() => setNavOpen((prev) => !prev)}
               onCloseNav={() => setNavOpen(false)}
-              onGoHome={() => {}} // Placeholder for home link
+              onGoHome={() => { }} // Placeholder for home link
             />
-          } 
+          }
         />
-        <Route 
-          path="/registration" 
+        <Route
+          path="/registration"
           element={
             <ProtectedRoute>
               <RegistrationPage onBackHome={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -152,4 +152,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;

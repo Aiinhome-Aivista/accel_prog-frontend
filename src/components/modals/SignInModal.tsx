@@ -3,7 +3,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../Firebase";
 import { authService } from "../../services/authService";
 import LogoIcon from '../../assets/logogod.svg'
-import { useToast } from "../../context/ToastContext";
+import { useToast } from "../../utils/ToastContext";
 
 
 interface SignInModalProps {
@@ -18,7 +18,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
-    
+
     // Reset state when modal closes
     useEffect(() => {
         if (!open) {
@@ -45,14 +45,14 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 full_name: result.user.displayName || "Google User",
                 is_google_verified: true
             });
-            
+
             console.log("Backend Success:", response);
 
             if (response.status === "success") {
                 // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
                 const isExistingUser = response.is_new_user === false || response.data?.is_new_user === false;
                 const name = response.data?.full_name || result.user.displayName || "Google User";
-                onSignIn(!isExistingUser, result.user.email || "", name); 
+                onSignIn(!isExistingUser, result.user.email || "", name);
             } else {
                 showError("Sign-in error", response.message || "Backend verification failed.");
             }
@@ -109,7 +109,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
                 const isExistingUser = response.is_new_user === false || response.data?.is_new_user === false;
                 const name = response.data?.full_name || "User";
-                onSignIn(!isExistingUser, email, name); 
+                onSignIn(!isExistingUser, email, name);
             } else {
                 alert(response.message || "Invalid OTP code.");
             }
@@ -133,9 +133,9 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 </button>
 
                 <div className="modal-brand">
-                    <img 
-                        src={LogoIcon} 
-                        className="nav-logo-icon" 
+                    <img
+                        src={LogoIcon}
+                        className="nav-logo-icon"
                         alt="Logo"
                         aria-hidden="true"
                     />
@@ -150,18 +150,18 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 <div className="form-group email-group">
                     <label htmlFor="signin-email">Email</label>
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <input 
-                            id="signin-email" 
-                            type="email" 
-                            placeholder="you@example.com" 
+                        <input
+                            id="signin-email"
+                            type="email"
+                            placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             style={{ flex: 1 }}
                             disabled={isOtpSent}
                         />
-                        <button 
-                            type="button" 
-                            className="btn-otp" 
+                        <button
+                            type="button"
+                            className="btn-otp"
                             onClick={() => {
                                 if (isOtpSent) {
                                     setIsOtpSent(false);
@@ -171,11 +171,11 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                                 }
                             }}
                             disabled={isSending}
-                            style={{ 
-                                padding: '0 15px', 
-                                border: '1px solid #E87A2E', 
-                                color: '#E87A2E', 
-                                borderRadius: '6px', 
+                            style={{
+                                padding: '0 15px',
+                                border: '1px solid #E87A2E',
+                                color: '#E87A2E',
+                                borderRadius: '6px',
                                 fontSize: '13px',
                                 fontWeight: 500,
                                 whiteSpace: 'nowrap'
@@ -189,18 +189,18 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
                 {isOtpSent && (
                     <div className="form-group">
                         <label htmlFor="signin-otp">OTP Code</label>
-                        <input 
-                            id="signin-otp" 
-                            type="text" 
-                            placeholder="Enter 6-digit code" 
+                        <input
+                            id="signin-otp"
+                            type="text"
+                            placeholder="Enter 6-digit code"
                             value={otpCode}
                             onChange={(e) => setOtpCode(e.target.value)}
                         />
                     </div>
                 )}
 
-                <button 
-                    className="form-submit" 
+                <button
+                    className="form-submit"
                     onClick={handleVerifyOtp}
                     disabled={isVerifying || !isOtpSent}
                 >

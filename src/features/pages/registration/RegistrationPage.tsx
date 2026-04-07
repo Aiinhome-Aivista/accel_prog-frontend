@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import type { ChangeEvent } from "react";
-import { useToast } from "../../context/ToastContext";
-import { useRegistration } from "../../context/RegistrationContext";
-import BrandLogo from "../shared/BrandLogo";
-import { REG_SCHEMA } from "../../data/registrationSchema";
+import { useToast } from "../../../utils/ToastContext";
+import { useRegistration } from "../../../hooks/context/RegistrationContext";
+import BrandLogo from "../../../components/shared/BrandLogo";
+import { REG_SCHEMA } from "../../../data/registrationSchema";
 import type {
   FieldSchema,
   FormValue,
-} from "../../types/registration";
+} from "../../../types/registration";
 
 interface RegistrationPageProps {
   onBackHome: () => void;

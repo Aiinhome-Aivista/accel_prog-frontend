@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import type { FormDataMap, FormValue } from '../types/registration';
-import { REG_SCHEMA } from '../data/registrationSchema';
-import { authService } from '../services/authService';
-import { useToast } from './ToastContext';
+import type { FormDataMap, FormValue } from '../../types/registration';
+import { REG_SCHEMA } from '../../data/registrationSchema';
+import { authService } from '../../services/authService';
+import { useToast } from '../../utils/ToastContext';
 import { useAuth } from './AuthContext';
 
 interface RegistrationContextType {
@@ -23,7 +23,7 @@ const RegistrationContext = createContext<RegistrationContextType | undefined>(u
 export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { showIncompleteFormToast } = useToast();
   const { user } = useAuth();
-  
+
   const [formData, setFormData] = useState<FormDataMap>(() => {
     try {
       const saved = localStorage.getItem("reg_form");
@@ -75,7 +75,7 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const isSectionComplete = (idx: number) => {
     const section = REG_SCHEMA[idx];
     if (!section) return false;
-    
+
     const requiredFields = section.fields.filter((field) => field.required);
     if (requiredFields.length === 0) {
       return section.fields.some((field) => {
