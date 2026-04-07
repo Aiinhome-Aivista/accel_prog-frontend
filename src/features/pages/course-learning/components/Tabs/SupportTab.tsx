@@ -1,6 +1,9 @@
 import React from 'react';
+import { useToast } from '../../../../../utils/ToastContext';
 
 export const SupportTab: React.FC = () => {
+  const toast = useToast();
+
   return (
     <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
       <div className="font-['DM_Serif_Display'] text-[1.3rem] text-[#2B2D42] mb-[1.2rem]">Support</div>
@@ -14,7 +17,7 @@ export const SupportTab: React.FC = () => {
           <div 
             key={idx} 
             className="bg-white rounded-[14px] border border-[#E5DDD4] cursor-pointer transition-shadow hover:shadow-[0_8px_24px_rgba(43,45,66,0.08)]"
-            onClick={() => alert(`${t} — coming soon!`)}
+            onClick={() => toast.showInfo(`${t} — coming soon!`)}
           >
             <div className="p-[1rem] text-center">
               <div className="text-[1.3rem] mb-[0.25rem]">{ic}</div>
