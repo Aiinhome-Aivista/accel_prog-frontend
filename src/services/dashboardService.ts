@@ -8,4 +8,10 @@ export const dashboardService = {
       method: "GET",
     }),
 
+  getModules: (courseId: string | number) =>
+    apiRequest({
+      url: API_ENDPOINTS.MODULES,
+      method: "POST",
+      data: { course_id: Number(courseId) },
+    }),
 };

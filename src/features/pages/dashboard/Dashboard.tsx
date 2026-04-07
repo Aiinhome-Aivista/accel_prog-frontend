@@ -239,7 +239,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <div className="flex flex-wrap gap-2">
             <button
               className="px-5 py-2.5 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[13px] font-semibold transition-colors cursor-pointer"
-              onClick={() => navigate("/course-learning", { replace: true })}
+              onClick={() => navigate("/course-learning?course_id=1", { replace: true })}
             >
               Continue Learning
             </button>
@@ -363,7 +363,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       <button
                         className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
                         onClick={() =>
-                          navigate("/course-learning", { replace: true })
+                          navigate("/course-learning?course_id=1", { replace: true })
                         }
                       >
                         Continue Learning
@@ -371,7 +371,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       <button
                         className="flex-1 py-[7.5px] px-3 rounded-lg border-[1.5px] border-[#E5DDD4] bg-white text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
                         onClick={() =>
-                          navigate("/course-learning", { replace: true })
+                          navigate("/course-learning?course_id=1", { replace: true })
                         }
                       >
                         View Grades
