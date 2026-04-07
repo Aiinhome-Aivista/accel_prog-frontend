@@ -1,5 +1,5 @@
 import React from 'react';
-import BrandLogo from '../shared/BrandLogo';
+import BrandLogo from '../components/shared/BrandLogo';
 
 interface HeaderProps {
   onSignInClick: () => void;
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
               gap: "0.5rem",
               textDecoration: "none",
             }}
-            href="#" 
+            href="#"
             onClick={(e) => {
               e.preventDefault();
               onCloseNav();
@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({
           <a href="#instructor" onClick={onCloseNav}>
             Instructors
           </a>
-          
+
           <button
             className="btn-signin btn-signin-fill"
             onClick={onSignInClick}
