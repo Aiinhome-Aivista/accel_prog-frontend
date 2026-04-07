@@ -12,6 +12,7 @@ import { FlashcardsTab } from './components/Tabs/FlashcardsTab';
 import { SupportTab } from './components/Tabs/SupportTab';
 import { WK } from './course-learning.data';
 import { Link } from 'react-router-dom';
+import LogoIcon from '../../../assets/logogod.svg';
 
 const CourseLearning: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -64,7 +65,7 @@ const CourseLearning: React.FC = () => {
   };
 
   return (
-    <div className="font-['Plus_Jakarta_Sans',sans-serif] bg-[#F3EDE7] text-[#2B2D42] antialiased overflow-hidden h-screen flex flex-col">
+    <div className=" bg-[#F3EDE7] text-[#2B2D42] antialiased overflow-hidden h-screen flex flex-col">
       {/* Top Navbar */}
       <div className="bg-white border-b border-[#E5DDD4] h-[50px] flex items-center justify-between px-[1rem] z-[60] relative shrink-0">
         <div className="flex items-center gap-[0.7rem]">
@@ -80,10 +81,11 @@ const CourseLearning: React.FC = () => {
           </Link>
 
           <a href="#" className="flex items-center gap-[0.35rem] no-underline ml-2">
-            <svg viewBox="0 0 42 42" fill="none" className="w-[24px] h-[24px]">
-              <circle cx="21" cy="14" r="6" fill="#E87A2E"/>
-              <path d="M21 20c-6 0-10 3-10 7 0 2 1 3 2 4l2-3c1-1.5 2.5-2 3-2h6c.5 0 2 .5 3 2l2 3c1-1 2-2 2-4 0-4-4-7-10-7z" fill="#E87A2E"/>
-            </svg>
+            <img
+                         src={LogoIcon}
+                         className="w-[30px] h-[30px] object-contain"
+                         alt="MokshPath Logo"
+                       />
             <span className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42]">Moksh<em className="not-italic text-[#E87A2E]">Path</em></span>
           </a>
         </div>
