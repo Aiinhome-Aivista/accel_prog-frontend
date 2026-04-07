@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useRef } from 'react';
-import type { ReactNode } from 'react';
-import { Toast } from 'primereact/toast';
-import type { ToastMessage } from 'primereact/toast';
+import React, { createContext, useContext, useRef } from "react";
+import type { ReactNode } from "react";
+import { Toast } from "primereact/toast";
+import type { ToastMessage } from "primereact/toast";
 
 interface ToastContextType {
   showToast: (message: ToastMessage) => void;
@@ -17,7 +17,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 };
@@ -34,64 +34,81 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   };
 
   const showSuccess = (summary: string, detail?: string) => {
-    showToast({ severity: 'success', summary, detail, life: 3000 });
+    showToast({ severity: "success", summary, detail, life: 3000 });
   };
 
   const showError = (summary: string, detail?: string) => {
-    showToast({ severity: 'error', summary, detail, life: 4000 });
+    showToast({ severity: "error", summary, detail, life: 4000 });
   };
 
   const showWarn = (summary: string, detail?: string) => {
-    showToast({ severity: 'warn', summary, detail, life: 3000 });
+    showToast({ severity: "warn", summary, detail, life: 3000 });
   };
 
   const showInfo = (summary: string, detail?: string) => {
-    showToast({ severity: 'info', summary, detail, life: 3000 });
+    showToast({ severity: "info", summary, detail, life: 3000 });
   };
 
   const showIncompleteFormToast = (incomplete: string[]) => {
     if (incomplete.length === 0) return;
 
     showToast({
-      severity: 'warn',
+      severity: "warn",
       life: 6000,
       content: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.9rem 1.1rem', width: '100%' }}>
-          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#b45309' }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+            padding: "0.9rem 1.1rem",
+            width: "100%",
+          }}
+        >
+          <span
+            style={{ fontWeight: 700, fontSize: "0.9rem", color: "#b45309" }}
+          >
             Incomplete Form
           </span>
-          <p style={{ margin: 0, fontSize: '0.82rem', color: '#6b7280', lineHeight: 1.5 }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.82rem",
+              color: "#6b7280",
+              lineHeight: 1.5,
+            }}
+          >
             Please fill in the following required fields before submitting:
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
             {incomplete.slice(0, 5).map((f) => (
               <span
                 key={f}
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.25rem',
-                  padding: '0.2rem 0.6rem',
-                  borderRadius: '50px',
-                  fontSize: '0.72rem',
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                  padding: "0.2rem 0.6rem",
+                  borderRadius: "50px",
+                  fontSize: "0.72rem",
                   fontWeight: 600,
-                  background: 'rgba(234, 88, 12, 0.08)',
-                  color: '#ea580c',
-                  border: '1px solid rgba(234, 88, 12, 0.2)',
+                  background: "rgba(234, 88, 12, 0.08)",
+                  color: "#ea580c",
+                  border: "1px solid rgba(234, 88, 12, 0.2)",
                 }}
               >
-                <span style={{ fontSize: '0.65rem' }}>●</span> {f}
+                <span style={{ fontSize: "0.65rem" }}>●</span> {f}
               </span>
             ))}
             {incomplete.length > 5 && (
               <span
                 style={{
-                  padding: '0.2rem 0.6rem',
-                  borderRadius: '50px',
-                  fontSize: '0.72rem',
+                  padding: "0.2rem 0.6rem",
+                  borderRadius: "50px",
+                  fontSize: "0.72rem",
                   fontWeight: 600,
-                  background: '#f3f4f6',
-                  color: '#6b7280',
+                  background: "#f3f4f6",
+                  color: "#6b7280",
                 }}
               >
                 +{incomplete.length - 5} more
@@ -104,7 +121,40 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   };
 
   return (
-    <ToastContext.Provider value={{ showToast, showSuccess, showError, showWarn, showInfo, showIncompleteFormToast }}>
+    <ToastContext.Provider
+      value={{
+        showToast,
+        showSuccess,
+        showError,
+        showWarn,
+        showInfo,
+        showIncompleteFormToast,
+      }}
+    >
+      <style>{`
+        /* Restore Tailwind-stripped PrimeReact spacings and fix vertical alignment */
+        .p-toast .p-toast-message .p-toast-message-content {
+          align-items: center;
+          padding: 1rem 1.25rem !important;
+        }
+        .p-toast .p-toast-message .p-toast-message-icon {
+          margin-right: 0.8rem;
+          font-size: 1.5rem;
+        }
+        .p-toast .p-toast-message .p-toast-summary {
+          display: block;
+        }
+        .p-toast .p-toast-message .p-toast-detail {
+          display: block;
+          margin-top: 0.25rem;
+        }
+        .p-toast .p-toast-icon-close {
+          /* Override Lara's absolute top: 1rem so it centers perfectly on small toasts */
+          top: 50% !important;
+          transform: translateY(-50%) !important;
+          margin-top: 0 !important;
+        }
+      `}</style>
       <Toast ref={toast} />
       {children}
     </ToastContext.Provider>
