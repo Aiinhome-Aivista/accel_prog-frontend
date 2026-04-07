@@ -24,6 +24,7 @@ import RegistrationPage from "./features/pages/registration/RegistrationPage";
 import Dashboard from "./features/pages/dashboard/Dashboard";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import type { CourseItem } from "./types/registration";
+import CourseLearning from "./features/pages/course-learning/course-learning";
 
 // Effects component to handle route-based side effects like animations
 function RouteEffects() {
@@ -130,6 +131,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route path="/course-learning" element={<CourseLearning />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
