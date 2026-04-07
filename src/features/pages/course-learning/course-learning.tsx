@@ -11,11 +11,13 @@ import { AnnouncementsTab } from './components/Tabs/AnnouncementsTab';
 import { FlashcardsTab } from './components/Tabs/FlashcardsTab';
 import { SupportTab } from './components/Tabs/SupportTab';
 import { WK } from './course-learning.data';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import LogoIcon from '../../../assets/logogod.svg';
 
 const CourseLearning: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('home');
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") || "home";
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Cross-tab state
