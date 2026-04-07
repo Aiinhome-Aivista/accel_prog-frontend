@@ -6,5 +6,6 @@ export const API_ENDPOINTS = {
   REGISTRATION: "api/v1/register",
   SEND_OTP: "/api/v1/send-otp",
   VERIFY_OTP: "/api/v1/verify-otp",
-  GOOGLE_SIGNIN: "/api/v1/google-signin"
+  GOOGLE_SIGNIN: "/api/v1/google-signin",
+  DASHBOARD: "/api/v1/dashboard",
 };
