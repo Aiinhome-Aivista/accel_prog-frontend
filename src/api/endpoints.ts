@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
   VERIFY_OTP: "/api/v1/verify-otp",
   GOOGLE_SIGNIN: "/api/v1/google-signin",
   DASHBOARD: "/api/v1/get_courses_dashboard",
+  DASHBOARD_KPI: "/api/v1/dashboard_kpi_by_user",
 };

@@ -7,5 +7,10 @@ export const dashboardService = {
       url: API_ENDPOINTS.DASHBOARD,
       method: "GET",
     }),
-
+  getDashboardKPI: (userId: number) =>
+    apiRequest({
+      url: API_ENDPOINTS.DASHBOARD_KPI,
+      method: "POST",
+      data: { user_id: userId },
+    }),
 };
