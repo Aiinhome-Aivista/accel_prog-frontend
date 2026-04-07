@@ -8,6 +8,7 @@ import swamiji from '../../../assets/hero.svg';
 import type {
   FieldSchema,
   FormValue,
+  FormDataMap,
 } from "../../../types/registration";
 
 interface RegistrationPageProps {
@@ -19,6 +20,7 @@ function renderField(
   value: FormValue | undefined,
   onUpdateField: (id: string, value: FormValue) => void,
   onToggleChip: (fieldId: string, value: string) => void,
+  formData: FormDataMap,
 ) {
   if (field.type === "text" || field.type === "email" || field.type === "tel") {
     return (
@@ -51,36 +53,58 @@ function renderField(
 
   if (field.type === "select") {
     return (
-      <select
-        value={typeof value === "string" ? value : ""}
-        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-          onUpdateField(field.id, event.target.value)
-        }
-      >
-        <option value="">Select...</option>
-        {(field.options || []).map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+      <div className="flex flex-col gap-2">
+        <select
+          value={typeof value === "string" ? value : ""}
+          onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+            onUpdateField(field.id, event.target.value)
+          }
+        >
+          <option value="">Select...</option>
+          {(field.options || []).map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {value === "Others" && (
+          <input
+            type="text"
+            placeholder="Please specify..."
+            value={typeof formData[`${field.id}_other`] === "string" ? formData[`${field.id}_other`] : ""}
+            onChange={(e) => onUpdateField(`${field.id}_other`, e.target.value)}
+            className="mt-2"
+          />
+        )}
+      </div>
     );
   }
 
   if (field.type === "chips") {
     const selected = Array.isArray(value) ? value : [];
     return (
-      <div className="chip-group">
-        {(field.options || []).map((option) => (
-          <button
-            type="button"
-            className={`chip ${selected.includes(option) ? "selected" : ""}`}
-            onClick={() => onToggleChip(field.id, option)}
-            key={option}
-          >
-            {option}
-          </button>
-        ))}
+      <div className="flex flex-col gap-3">
+        <div className="chip-group">
+          {(field.options || []).map((option) => (
+            <button
+              type="button"
+              className={`chip ${selected.includes(option) ? "selected" : ""}`}
+              onClick={() => onToggleChip(field.id, option)}
+              key={option}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        {selected.includes("Others") && (
+          <input
+            type="text"
+            placeholder="Please specify..."
+            value={typeof formData[`${field.id}_other`] === "string" ? formData[`${field.id}_other`] : ""}
+            onChange={(e) => onUpdateField(`${field.id}_other`, e.target.value)}
+            className="mt-1"
+          />
+        )}
       </div>
     );
   }
@@ -310,7 +334,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                         {field.label}
                         {field.required ? <span className="req">*</span> : null}
                       </label>
-                      {renderField(field, value, updateField, toggleChip)}
+                      {renderField(field, value, updateField, toggleChip, formData)}
                       {field.hint ? (
                         <div className="hint">{field.hint}</div>
                       ) : null}

@@ -86,8 +86,19 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
     return requiredFields.every((field) => {
       const val = formData[field.id];
-      if (Array.isArray(val)) return val.length > 0;
-      return val !== undefined && String(val).trim() !== "";
+      const filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
+      if (!filled) return false;
+
+      // Check if "Others" is selected and requires the supplemental input
+      if (Array.isArray(val) && val.includes("Others")) {
+        const otherVal = formData[`${field.id}_other`];
+        return otherVal !== undefined && String(otherVal).trim() !== "";
+      }
+      if (val === "Others") {
+        const otherVal = formData[`${field.id}_other`];
+        return otherVal !== undefined && String(otherVal).trim() !== "";
+      }
+      return true;
     });
   };
 
@@ -125,7 +136,18 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     REG_SCHEMA.forEach((section) => {
       section.fields.filter((field) => field.required).forEach((field) => {
         const val = formData[field.id];
-        const filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
+        let filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
+        
+        if (filled) {
+          if (Array.isArray(val) && val.includes("Others")) {
+            const otherVal = formData[`${field.id}_other`];
+            if (!otherVal || String(otherVal).trim() === "") filled = false;
+          } else if (val === "Others") {
+            const otherVal = formData[`${field.id}_other`];
+            if (!otherVal || String(otherVal).trim() === "") filled = false;
+          }
+        }
+
         if (!filled) incomplete.push(field.label);
       });
     });
