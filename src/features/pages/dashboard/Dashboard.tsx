@@ -187,7 +187,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
 
         {/* In Progress Courses */}
-        <div id="myCourses">
+        <div id="myCourses" className="scroll-mt-20">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-serif text-[1.15rem] text-[#2B2D42]">
               My Courses — In Progress
