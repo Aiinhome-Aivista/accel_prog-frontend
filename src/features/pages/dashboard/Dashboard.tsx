@@ -513,9 +513,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <div className="flex flex-wrap gap-2">
             <button
               className="px-5 py-2.5 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[13px] font-semibold transition-colors cursor-pointer"
-              // onClick={() =>
-              //   navigate("/course-learning?course_id=1", { replace: true })
-              // }
+              onClick={() =>
+                navigate("/course-learning?course_id=1", { replace: true })
+              }
             >
               Continue Learning
             </button>
