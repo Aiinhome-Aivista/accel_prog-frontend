@@ -433,8 +433,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-8 text-center mb-10">
               <div className="text-2xl mb-2">📚</div>
               <p className="text-[13px] text-[#9597A6]">
-                No courses in progress yet. Browse available courses to start
-                learning!
+               You’re not enrolled in any courses yet. Enroll now to start your learning journey!
               </p>
             </div>
           ) : (
