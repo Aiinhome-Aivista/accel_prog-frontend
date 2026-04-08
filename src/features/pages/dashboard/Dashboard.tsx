@@ -129,7 +129,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   }, [user]);
 
-
   const fetchEnrolledCourses = useCallback(async () => {
     const userId = user?.id || 1;
     setIsLoadingEnrolled(true);
@@ -167,7 +166,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           return {
             id: course.course_id.toString(),
             title: course.course_name,
-            badge: course.status,
+            // badge: course.status,
+            badge: `COURSE ${course.course_id} · ${course.badge}`,
+            status: course.status,
             description: course.description,
             meta: [
               `⏱️ ${course.total_weeks} Weeks`,
@@ -200,8 +201,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       }
 
       try {
-        const completedRes =
-          await dashboardService.getCompletedCourses(userId);
+        const completedRes = await dashboardService.getCompletedCourses(userId);
         if (
           completedRes.status === "success" &&
           Array.isArray(completedRes.data)
@@ -240,7 +240,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     refreshKPI();
     fetchEnrolledCourses();
     fetchRecentActivity();
-  }, [fetchDashboardData, refreshKPI, fetchEnrolledCourses, fetchRecentActivity]);
+  }, [
+    fetchDashboardData,
+    refreshKPI,
+    fetchEnrolledCourses,
+    fetchRecentActivity,
+  ]);
 
   useEffect(() => {
     if (kpiData) {
@@ -280,7 +285,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
       if (response.status === "success" && response.course_id) {
         showSuccess("Enrolled Successfully", response.message);
-        
+
         // Refresh all data to update My Courses and Browse sections
         refreshAllData();
 
@@ -361,7 +366,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       fetchDashboardData();
     }
   }, [user, fetchDashboardData]);
-
 
   useEffect(() => {
     if (user) {
@@ -494,12 +498,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           className="scroll-mt-20 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
         >
           <div className="flex gap-1 items-center">
-              <img
-                src={HeroIcon}
-                className="h-24 w-24"
-                alt="Logo"
-                aria-hidden="true"
-              />
+            <img
+              src={HeroIcon}
+              className="h-24 w-24"
+              alt="Logo"
+              aria-hidden="true"
+            />
             <div>
               <h1
                 className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1 font-bold"
@@ -566,7 +570,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               className="text-[1.15rem] text-[#2B2D42] font-bold"
               style={{ fontFamily: '"DM Serif Display", serif' }}
             >
-              My Courses — In Progress
+              My Courses — {enrolledCourses[0]?.status}
             </h2>
             <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E87A2E]/10 text-[#E87A2E]">
               {isLoadingEnrolled ? "-" : enrolledCourses.length} Active

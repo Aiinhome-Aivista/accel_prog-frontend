@@ -19,6 +19,7 @@ export interface CourseData {
   progressText?: string;
   progressColor?: string;
   features?: string[];
+  status?: string;
 }
 
 export interface ActivityData {
