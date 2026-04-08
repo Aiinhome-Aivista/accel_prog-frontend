@@ -129,7 +129,7 @@ export const ModulesTab: React.FC = () => {
                             <strong className="text-[#2B2D42]">
                               {tp.title}
                             </strong>
-                            {tp.is_locked ? " 🔒" : ""}
+                            {/* {tp.is_locked ? " 🔒" : ""} */}
                             {tp.subtitle && (
                               <>
                                 <br />

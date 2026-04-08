@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../Firebase";
 import { authService } from "../services/authService";
-import LogoIcon from '../assets/logogod.svg'
+import HeroIcon from '../assets/hero.svg'
 import { useToast } from "../utils/ToastContext";
 
 import type { AccessControl } from "../hooks/context/AuthContext";
@@ -164,16 +164,16 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           </svg>
         </button>
 
-        <div className="modal-brand">
+        <div className="modal-brand flex items-center justify-center w-full mx-auto">
           <img
-            src={LogoIcon}
-            className="nav-logo-icon"
+            src={HeroIcon}
+            className="mb-6 h-40 w-40"
             alt="Logo"
             aria-hidden="true"
           />
-          <span className="text-2xl">
+          {/* <span className="text-2xl">
             Moksh<em>Path</em>
-          </span>
+          </span> */}
         </div>
 
         <h2>Sign In</h2>

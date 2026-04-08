@@ -1,6 +1,8 @@
 import React from "react";
 import type { WeekData } from "../../course-learning.models";
 
+import HeroIcon from "../../../../../assets/hero.svg";
+
 interface HomeTabProps {
   weeks: WeekData[];
   goToCourseContent: (weekIndex: number) => void;
@@ -49,11 +51,19 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       </div>
 
       <div className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden mb-[1rem]">
-        <div className="p-[1rem_1.2rem] text-[0.82rem] text-[#6B6D7B] leading-[1.65]">
-          <strong className="text-[#2B2D42]">Welcome!</strong> Master prompt
-          engineering, multimodal AI, Python automation, and responsible AI
-          practices across 4 intensive weeks. Each sub-topic must be completed
-          before the next unlocks — building deep, sequential mastery.
+        <div className="flex items-center gap-4 p-[1rem_1.2rem] text-[0.82rem] text-[#6B6D7B] leading-[1.65]">
+            <img
+              src={HeroIcon}
+              className="h-16 w-16"
+              alt="Logo"
+              aria-hidden="true"
+            />
+          <p>
+            <strong className="text-[#2B2D42]">Welcome!</strong> Master prompt
+            engineering, multimodal AI, Python automation, and responsible AI
+            practices across 4 intensive weeks. Each sub-topic must be completed
+            before the next unlocks — building deep, sequential mastery.
+          </p>
         </div>
       </div>
 
