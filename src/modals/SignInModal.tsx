@@ -10,7 +10,7 @@ import type { AccessControl } from "../hooks/context/AuthContext";
 interface SignInModalProps {
   open: boolean;
   onClose: () => void;
-  onSignIn: (isNewUser: boolean, email: string, name?: string, id?: number, access_control?: AccessControl[]) => void;
+  onSignIn: (isNewUser: boolean, email: string, name?: string, isAdmin?: boolean, id?: number, access_control?: AccessControl[]) => void;
 }
 
 function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -58,7 +58,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           response.data?.full_name || response.full_name || result.user.displayName || "Google User";
         const userId = response.data?.user_id || response.user_id;
         const accessControl = response.access_control || response.data?.access_control || [];
-        onSignIn(!isExistingUser, result.user.email || "", name, userId, accessControl);
+        onSignIn(!isExistingUser, result.user.email || "", name, false, userId, accessControl);
       } else {
         showError(
           "Sign-in error",
@@ -128,7 +128,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         const name = response.data?.full_name || response.full_name || "User";
         const userId = response.data?.user_id || response.user_id;
         const accessControl = response.access_control || response.data?.access_control || [];
-        onSignIn(!isExistingUser, email, name, userId, accessControl);
+        onSignIn(!isExistingUser, email, name, false, userId, accessControl);
       } else {
         alert(response.message || "Invalid OTP code.");
       }

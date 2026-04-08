@@ -4,6 +4,7 @@ import { authService } from "../services/authService";
 import LogoIcon from "../assets/logogod.svg";
 import { useToast } from "../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
+import type { AccessControl } from "../hooks/context/AuthContext";
 
 interface SignInModalProps {
   open: boolean;
@@ -13,6 +14,8 @@ interface SignInModalProps {
     email: string,
     name?: string,
     isAdmin?: boolean,
+    id?: number,
+    access_control?: AccessControl[],
   ) => void;
 }
 
@@ -79,7 +82,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           response.is_new_user === false ||
           response.data?.is_new_user === false;
         const name = response.data?.full_name || "User";
-        onSignIn(!isExistingUser, email, name, true);
+        onSignIn(!isExistingUser, email, name, true, undefined, []);
       } else {
         alert(response.message || "Invalid OTP code.");
       }
