@@ -49,6 +49,13 @@ export const dashboardService = {
       url: `${API_ENDPOINTS.GRADES_INFO_BY_USER}?user_id=${userId}`,
       method: "GET",
     }),
+
+  getCompletedCourses: (userId: number) =>
+    apiRequest<EnrolledCoursesResponse>({
+      url: `${API_ENDPOINTS.GET_COMPLETED_COURSES}?user_id=${userId}`,
+      method: "GET",
+    }),
+
   getUserRecentActivity: (userId: number) =>
     apiRequest<RecentActivityResponse>({
       url: `${API_ENDPOINTS.GET_USER_RECENT_ACTIVITY}?user_id=${userId}`,
