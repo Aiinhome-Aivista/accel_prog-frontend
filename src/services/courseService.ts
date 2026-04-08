@@ -8,4 +8,9 @@ export const courseService = {
       method: "GET",
     }),
 
+  getContentDropdownData: () =>
+    apiRequest({
+      url: API_ENDPOINTS.content_dropdown,
+      method: "GET",
+    }),
 };

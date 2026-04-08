@@ -46,7 +46,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
 
     setIsSending(true);
     try {
-      const response = await authService.sendOtp({ email });
+      const response = await authService.adminSendOtp({ email });
       console.log("Send OTP Success:", response);
       if (response.status === "success") {
         setIsOtpSent(true);
@@ -69,7 +69,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
 
     setIsVerifying(true);
     try {
-      const response = await authService.verifyOtp({
+      const response = await authService.adminVerifyOtp({
         email,
         otp_code: otpCode,
       });
@@ -185,9 +185,10 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         )}
         <button
           className="btn-signin btn-signin-fill"
-          onClick={() => navigate("/admin/admin-dashboard")}
+          onClick={handleVerifyOtp}
+          disabled={!isOtpSent || !otpCode.trim() || isVerifying}
         >
-          Sign In
+          {isVerifying ? "Signing In..." : "Sign In"}
         </button>
       </div>
     </div>

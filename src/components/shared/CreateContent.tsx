@@ -1,7 +1,10 @@
 import React, { useMemo, useRef, useState } from "react";
-import Select, { type StylesConfig } from "react-select";
+import Select, { components, type MenuListProps, type StylesConfig } from "react-select";
+import { Search } from "lucide-react";
 import { useToast } from "../../utils/ToastContext";
+import { courseService } from "../../services/courseService";
 import TiptapEditor from "./TipTapEditor";
+import { useEffect } from "react";
 
 type SubtopicType =
   | "Lesson"
@@ -9,107 +12,52 @@ type SubtopicType =
   | "Assignment"
   | "Quiz"
   | "Notes"
-  | "Video";
-
-type ModuleOption = {
-  id: string;
-  label: string;
-  subtopics: string[];
-};
-
-type CourseOption = {
-  id: string;
-  label: string;
-  modules: ModuleOption[];
-};
+  | "Video"
+  | "reading"
+  | "discussion"// Typo in backend data, keeping for now
+  | "case_study"// Typo in backend data, keeping for now
+  | "assessment"
+  | "project";
 
 type SelectOption = {
   value: string;
   label: string;
 };
 
-const COURSE_OPTIONS: CourseOption[] = [
-  {
-    id: "ai-consumer-builder",
-    label: "The AI Consumer & Builder",
-    modules: [
-      {
-        id: "intro-ai",
-        label: "Introduction to AI",
-        subtopics: ["What is AI?", "History of AI", "AI in daily life"],
-      },
-      {
-        id: "prompting-basics",
-        label: "Prompting Basics",
-        subtopics: [
-          "Prompt structure",
-          "Zero-shot prompting",
-          "Few-shot prompting",
-        ],
-      },
-      {
-        id: "ai-tools-practice",
-        label: "AI Tools in Practice",
-        subtopics: ["Chat tools", "Image tools", "Workflow automation"],
-      },
-    ],
-  },
-  {
-    id: "genai-workflows",
-    label: "GenAI Workflows",
-    modules: [
-      {
-        id: "foundations",
-        label: "Foundations",
-        subtopics: ["LLM basics", "Embeddings", "Context windows"],
-      },
-      {
-        id: "automation",
-        label: "Automation",
-        subtopics: ["Task automation", "Agent basics", "Pipeline design"],
-      },
-      {
-        id: "deployment",
-        label: "Deployment",
-        subtopics: ["Hosting", "Monitoring", "Production readiness"],
-      },
-    ],
-  },
-  {
-    id: "content-systems",
-    label: "Content Systems",
-    modules: [
-      {
-        id: "planning",
-        label: "Planning",
-        subtopics: [
-          "Curriculum design",
-          "Content mapping",
-          "Audience intent",
-        ],
-      },
-      {
-        id: "authoring",
-        label: "Authoring",
-        subtopics: ["Writing lessons", "Rich media", "Assessment design"],
-      },
-      {
-        id: "publishing",
-        label: "Publishing",
-        subtopics: ["Versioning", "Release flow", "Content maintenance"],
-      },
-    ],
-  },
-];
+interface DropdownCourse {
+  course_id: number;
+  course_name: string;
+}
 
-const SUBTOPIC_TYPE_OPTIONS: SubtopicType[] = [
-  "Lesson",
-  "Announcement",
-  "Assignment",
-  "Quiz",
-  "Notes",
-  "Video",
-];
+interface DropdownModule {
+  course_id: number;
+  module_id: number;
+  module_name: string;
+}
+
+interface DropdownSubtopic {
+  module_id: number;
+  subtopic_id: number;
+  title: string;
+  type: string;
+}
+
+interface DropdownType {
+  type: string;
+}
+
+interface SearchableDropdownProps {
+  label: string;
+  required?: boolean;
+  value: string;
+  options: string[];
+  placeholder: string;
+  onChange: (value: string) => void;
+  error?: string;
+  menuKey: string;
+  openDropdownKey: string | null;
+  setOpenDropdownKey: (key: string | null) => void;
+}
 
 const selectStyles = (
   hasError: boolean,
@@ -157,22 +105,42 @@ const selectStyles = (
     overflow: "hidden",
     zIndex: 9999,
   }),
+  menuList: (base) => ({
+    ...base,
+    padding: 0,
+  }),
   option: (base, state) => ({
     ...base,
     backgroundColor: state.isFocused ? "#F9F5F0" : "#ffffff",
     color: "#2B2D42",
     cursor: "pointer",
+    padding: "8px 12px",
   }),
 });
 
-type SearchableDropdownProps = {
-  label: string;
-  required?: boolean;
-  value: string;
-  options: string[];
-  placeholder: string;
-  onChange: (value: string) => void;
-  error?: string;
+const CustomMenuList = (props: MenuListProps<SelectOption, false>) => {
+  const { selectProps } = props;
+
+  return (
+    <components.MenuList {...props}>
+      {/* Search Header inside the dropdown list */}
+      <div className="sticky top-0 bg-white z-20 p-2 border-b border-[#E5DDD4]">
+        <div className="flex items-center bg-[#F9F5F0] rounded-md px-2.5 py-1.5 border border-[#E5DDD4] focus-within:border-[#E87A2E] transition-colors">
+          <Search size={14} className="text-[#9597A6] mr-2 shrink-0" />
+          <input
+            type="text"
+            autoFocus
+            placeholder="Search..."
+            className="w-full bg-transparent border-none outline-none text-[13px] text-[#2B2D42] placeholder-[#9597A6]"
+            onMouseDown={(e) => e.stopPropagation()} 
+            value={selectProps.inputValue}
+            onChange={(e) => selectProps.onInputChange(e.currentTarget.value, { action: "input-change", prevInputValue: selectProps.inputValue })}
+          />
+        </div>
+      </div>
+      <div className="py-1">{props.children}</div>
+    </components.MenuList>
+  );
 };
 
 const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
@@ -183,14 +151,19 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   placeholder,
   onChange,
   error,
+  menuKey,
+  openDropdownKey,
+  setOpenDropdownKey,
 }) => {
-  const selectOptions: SelectOption[] = options.map((option) => ({
-    value: option,
-    label: option,
-  }));
+  const [inputValue, setInputValue] = useState("");
 
-  const selectedOption =
-    selectOptions.find((option) => option.value === value) ?? null;
+  const selectOptions: SelectOption[] = useMemo(() => 
+    options.map((option) => ({
+      value: option,
+      label: option,
+    })), [options]);
+
+  const selectedOption = selectOptions.find((opt) => opt.value === value) ?? null;
 
   return (
     <div>
@@ -201,11 +174,27 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
       <Select
         options={selectOptions}
         value={selectedOption}
-        onChange={(option) => onChange(option?.value ?? "")}
+        menuIsOpen={openDropdownKey === menuKey}
+        inputValue={inputValue}
+        onMenuOpen={() => setOpenDropdownKey(menuKey)}
+        onInputChange={(val) => setInputValue(val)}
+        onChange={(option) => {
+          onChange(option?.value ?? "");
+        }}
+        onMenuClose={() => {
+          setOpenDropdownKey(null);
+          setInputValue("");
+        }}
         placeholder={placeholder}
-        isSearchable
-        openMenuOnFocus
-        openMenuOnClick
+        
+        isSearchable={true} 
+        // blurInputOnSelect ensures the focus leaves the component after picking an item
+        blurInputOnSelect={true}
+        components={{ 
+          MenuList: CustomMenuList,
+          // Hides the search icon/input from the main select box
+          Input: () => null, 
+        }}
         noOptionsMessage={() => "No matching options"}
         styles={selectStyles(!!error)}
       />
@@ -216,71 +205,103 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
 };
 
 const CreateContent: React.FC = () => {
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const initialCourse = COURSE_OPTIONS[0];
-  const initialModule = initialCourse.modules[0];
-  const initialSubtopic = initialModule.subtopics[0];
+  const [allCourses, setAllCourses] = useState<DropdownCourse[]>([]);
+  const [allModules, setAllModules] = useState<DropdownModule[]>([]);
+  const [allSubtopics, setAllSubtopics] = useState<DropdownSubtopic[]>([]);
+  const [allSubtopicTypes, setAllSubtopicTypes] = useState<DropdownType[]>([]);
 
-  const [courseName, setCourseName] = useState(initialCourse.label);
-  const [moduleName, setModuleName] = useState(initialModule.label);
-  const [subtopic, setSubtopic] = useState(initialSubtopic);
-  const [subtopicType, setSubtopicType] = useState<SubtopicType>("Lesson");
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
+  const [courseName, setCourseName] = useState("");
+  const [moduleName, setModuleName] = useState("");
+  const [subtopic, setSubtopic] = useState("");
+  const [subtopicType, setSubtopicType] = useState<SubtopicType | "">("");
   const [editorContent, setEditorContent] = useState("<p></p>");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const selectedCourse = useMemo(
-    () => COURSE_OPTIONS.find((course) => course.label === courseName) ?? null,
-    [courseName],
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      setLoading(true);
+      setFetchError(null);
+      try {
+        const response = await courseService.getContentDropdownData();
+        if (response.status === "success" && response.data) {
+          const data = response.data;
+          setAllCourses(data.courses);
+          setAllModules(data.modules);
+          setAllSubtopics(data.subtopics);
+          setAllSubtopicTypes(data.types);
+        } else {
+          setFetchError(response.message || "Failed to fetch dropdown data.");
+          showError("Error", response.message || "Failed to fetch dropdown data.");
+        }
+      } catch (err: any) {
+        console.error("Error fetching dropdown data:", err);
+        setFetchError(err.message || "An unexpected error occurred.");
+        showError("Error", err.message || "An unexpected error occurred.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDropdownData();
+  }, []);
+
+  const selectedCourseData = useMemo(
+    () => allCourses.find((course) => course.course_name === courseName),
+    [allCourses, courseName],
   );
 
-  const moduleOptions = selectedCourse?.modules.map((module) => module.label) ?? [];
+  const moduleOptions = useMemo(() => {
+    if (!selectedCourseData) return allModules.map((module) => module.module_name);
+    return allModules
+      .filter((module) => module.course_id === selectedCourseData.course_id)
+      .map((module) => module.module_name);
+  }, [allModules, selectedCourseData]);
 
-  const selectedModule = useMemo(
+  const selectedModuleData = useMemo(
     () =>
-      selectedCourse?.modules.find((module) => module.label === moduleName) ??
-      null,
-    [selectedCourse, moduleName],
+      allModules.find(
+        (module) =>
+          module.module_name === moduleName &&
+          module.course_id === selectedCourseData?.course_id,
+      ),
+    [allModules, moduleName, selectedCourseData],
   );
 
-  const subtopicOptions = selectedModule?.subtopics ?? [];
+  const subtopicOptions = useMemo(() => {
+    if (!selectedModuleData) return allSubtopics.map((sub) => sub.title);
+    return allSubtopics
+      .filter((sub) => sub.module_id === selectedModuleData.module_id)
+      .map((sub) => sub.title);
+  }, [allSubtopics, selectedModuleData]);
+
+  const subtopicTypeOptions = useMemo(() => {
+    return allSubtopicTypes.map(type => type.type);
+  }, [allSubtopicTypes]);
 
   const handleCourseChange = (value: string) => {
     setCourseName(value);
-
-    const nextCourse = COURSE_OPTIONS.find((course) => course.label === value);
-
-    if (nextCourse) {
-      const firstModule = nextCourse.modules[0];
-      setModuleName(firstModule?.label ?? "");
-      setSubtopic(firstModule?.subtopics[0] ?? "");
-    } else {
-      setModuleName("");
-      setSubtopic("");
-    }
+    setModuleName("");
+    setSubtopic("");
   };
 
   const handleModuleChange = (value: string) => {
     setModuleName(value);
-
-    const nextModule = selectedCourse?.modules.find(
-      (module) => module.label === value,
-    );
-
-    if (nextModule) {
-      setSubtopic(nextModule.subtopics[0] ?? "");
-    } else {
-      setSubtopic("");
-    }
+    setSubtopic("");
   };
 
   const handleCancel = () => {
-    setCourseName(initialCourse.label);
-    setModuleName(initialModule.label);
-    setSubtopic(initialSubtopic);
-    setSubtopicType("Lesson");
+    setCourseName("");
+    setModuleName("");
+    setSubtopic("");
+    setSubtopicType("");
     setEditorContent("<p></p>");
     setMediaFile(null);
     setErrors({});
@@ -293,27 +314,43 @@ const CreateContent: React.FC = () => {
   const validateForm = () => {
     const nextErrors: Record<string, string> = {};
 
+    // Validate Course Name
+    const currentCourse = allCourses.find((c) => c.course_name === courseName);
     if (!courseName.trim()) {
       nextErrors.courseName = "Course Name is required.";
-    } else if (!COURSE_OPTIONS.some((course) => course.label === courseName)) {
+    } else if (!currentCourse) {
       nextErrors.courseName = "Please select a valid Course Name.";
     }
 
+    // Validate Module Name
+    const currentModule = allModules.find(
+      (m) =>
+        m.module_name === moduleName &&
+        m.course_id === currentCourse?.course_id,
+    );
     if (!moduleName.trim()) {
-      nextErrors.moduleName = "Model Name is required.";
-    } else if (!moduleOptions.includes(moduleName)) {
-      nextErrors.moduleName = "Please select a valid Model Name.";
+      nextErrors.moduleName = "Module Name is required.";
+    } else if (!currentModule) {
+      nextErrors.moduleName = "Please select a valid Module Name.";
     }
 
+    // Validate Subtopic
+    const currentSubtopic = allSubtopics.find(
+      (s) => s.title === subtopic && s.module_id === currentModule?.module_id,
+    );
     if (!subtopic.trim()) {
       nextErrors.subtopic = "Subtopic is required.";
-    } else if (!subtopicOptions.includes(subtopic)) {
+    } else if (!currentSubtopic) {
       nextErrors.subtopic = "Please select a valid Subtopic.";
     }
 
+    // Validate Subtopic Type
+    const currentSubtopicType = allSubtopicTypes.find(
+      (t) => t.type === subtopicType,
+    );
     if (!subtopicType.trim()) {
       nextErrors.subtopicType = "Subtopic Type is required.";
-    } else if (!SUBTOPIC_TYPE_OPTIONS.includes(subtopicType)) {
+    } else if (!currentSubtopicType) {
       nextErrors.subtopicType = "Please select a valid Subtopic Type.";
     }
 
@@ -335,18 +372,39 @@ const CreateContent: React.FC = () => {
 
     if (!validateForm()) return;
 
+    const selectedCourseId = allCourses.find(c => c.course_name === courseName)?.course_id;
+    const selectedModuleId = allModules.find(m => m.module_name === moduleName && m.course_id === selectedCourseId)?.module_id;
+    const selectedSubtopicId = allSubtopics.find(s => s.title === subtopic && s.module_id === selectedModuleId)?.subtopic_id;
+
     const payload = {
-      courseName,
-      moduleName,
-      subtopic,
-      subtopicType,
+      course_id: selectedCourseId,
+      module_id: selectedModuleId,
+      subtopic_id: selectedSubtopicId,
+      subtopic_type: subtopicType,
       content: editorContent,
       mediaFileName: mediaFile?.name ?? null,
     };
 
     console.log("Create Content Payload:", payload);
     showSuccess("Submitted", "Content submitted successfully.");
+    // Here you would typically call an API to save the content
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-48">
+        <p className="text-gray-600">Loading dropdown data...</p>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex justify-center items-center h-48 text-red-500">
+        <p>Error: {fetchError}</p>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -364,26 +422,35 @@ const CreateContent: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
         <SearchableDropdown
+          menuKey="courseName"
+          openDropdownKey={openDropdownKey}
+          setOpenDropdownKey={setOpenDropdownKey}
           label="Course Name"
           required
           value={courseName}
-          options={COURSE_OPTIONS.map((course) => course.label)}
+          options={allCourses.map((course) => course.course_name)}
           placeholder="Select course"
           onChange={handleCourseChange}
           error={errors.courseName}
         />
 
         <SearchableDropdown
+          menuKey="moduleName"
+          openDropdownKey={openDropdownKey}
+          setOpenDropdownKey={setOpenDropdownKey}
           label="Model Name"
           required
           value={moduleName}
           options={moduleOptions}
-          placeholder="Select model"
+          placeholder="Select module"
           onChange={handleModuleChange}
           error={errors.moduleName}
         />
 
         <SearchableDropdown
+          menuKey="subtopic"
+          openDropdownKey={openDropdownKey}
+          setOpenDropdownKey={setOpenDropdownKey}
           label="Subtopic"
           required
           value={subtopic}
@@ -394,10 +461,13 @@ const CreateContent: React.FC = () => {
         />
 
         <SearchableDropdown
+          menuKey="subtopicType"
+          openDropdownKey={openDropdownKey}
+          setOpenDropdownKey={setOpenDropdownKey}
           label="Subtopic Type"
           required
           value={subtopicType}
-          options={SUBTOPIC_TYPE_OPTIONS}
+          options={subtopicTypeOptions}
           placeholder="Select type"
           onChange={(value) => setSubtopicType(value as SubtopicType)}
           error={errors.subtopicType}
@@ -421,7 +491,7 @@ const CreateContent: React.FC = () => {
       <div className="mb-6">
         <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">
           Media Upload{" "}
-          {subtopicType === "Video" ? (
+          {subtopicType === "Video"? (
             <span className="text-red-500">*</span>
           ) : (
             <span className="text-[#9597A6]">(Optional)</span>

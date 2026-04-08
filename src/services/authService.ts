@@ -27,4 +27,16 @@ export const authService = {
       method: "POST",
       data,
     }),
+  adminSendOtp:(data: { email: string }) =>
+    apiRequest({
+      url: API_ENDPOINTS.admin_generate_otp,
+      method: "POST",
+      data,
+    }),
+  adminVerifyOtp:(data: { email: string; otp_code: string }) =>
+    apiRequest({
+      url: API_ENDPOINTS.admin_verify_otp,
+      method: "POST",
+      data,
+    }),
 };
