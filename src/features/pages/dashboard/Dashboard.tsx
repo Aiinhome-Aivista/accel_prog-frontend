@@ -39,6 +39,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [stats, setStats] = useState<StatItem[]>(typedDashboardData.stats);
   const [isLoadingEnrolled, setIsLoadingEnrolled] = useState(true);
   const [isLoadingAvailable, setIsLoadingAvailable] = useState(true);
+  const [isEnrolling, setIsEnrolling] = useState(false);
 
   const openModal = (name: string, id: string) => {
     setActiveCourse({ name, id });
@@ -62,6 +63,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     const userId = user.id;
     const roleId = 2; // Default role_id per requirement
 
+    setIsEnrolling(true);
+
     try {
       const response = await dashboardService.enrollInCourse({
         user_id: userId,
@@ -83,6 +86,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       console.error("Enrollment error:", error);
       showError("Enrollment Error", "An unexpected error occurred during enrollment.");
     } finally {
+      setIsEnrolling(false);
       closeModal();
     }
   };
@@ -816,10 +820,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               appear in your dashboard and you can start learning immediately.
             </p>
             <button
-              className="w-full py-[11px] rounded-lg border-none bg-gradient-to-br from-[#E87A2E] to-[#D06A20] text-white text-[13.5px] font-semibold hover:shadow-[0_4px_16px_rgba(232,122,46,.35)] shadow-[0_2px_10px_rgba(232,122,46,.25)] transition-all cursor-pointer"
+              className="w-full py-[11px] rounded-lg border-none bg-gradient-to-br from-[#E87A2E] to-[#D06A20] text-white text-[13.5px] font-semibold hover:shadow-[0_4px_16px_rgba(232,122,46,.35)] shadow-[0_2px_10px_rgba(232,122,46,.25)] transition-all flex items-center justify-center cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
               onClick={confirmSub}
+              disabled={isEnrolling}
             >
-              Confirm Enrollment
+              {isEnrolling ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Enrolling...
+                </>
+              ) : (
+                "Confirm Enrollment"
+              )}
             </button>
             <p className="text-[11px] text-[#9597A6] mt-3 mb-0">
               Free during Summer 2026 pilot program
