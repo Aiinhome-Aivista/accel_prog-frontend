@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { ChangeEvent } from "react";
+import { useState } from "react";
 import { useToast } from "../../../utils/ToastContext";
 import { useRegistration } from "../../../hooks/context/RegistrationContext";
 import BrandLogo from "../../../components/shared/BrandLogo";
@@ -159,11 +160,29 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
   } = useRegistration();
 
   const section = REG_SCHEMA[currentSection];
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true); // START LOADER
+
+      await submitForm(); // your API call
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false); // STOP LOADER
+    }
+  };
 
   if (!section) return null;
 
   return (
     <div className="reg-page active" id="regPage">
+      {/* {isLoading && (
+        <div className="fullscreen-loader">
+          <div className="spinner"></div>
+        </div>
+      )} */}
       <div className="reg-topbar">
         <button className="reg-back" onClick={onBackHome}>
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -385,19 +404,24 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 ) : (
                   <button
                     type="button"
-                    className="reg-nav-next submit"
-                    onClick={submitForm}
+                    className="reg-nav-next submit btn-loader"
+                    onClick={handleSubmit}
+                    disabled={isLoading}
                   >
-                    Submit Registration
-                    <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path
-                        d="M2 7l3.5 3.5L12 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <span className={`btn-text ${isLoading ? "hide" : ""} btn-inline`}>
+                      Submit Registration
+                      <svg viewBox="0 0 14 14" fill="none">
+                        <path
+                          d="M2 7l3.5 3.5L12 4"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+
+                    {isLoading && <span className="loader-center"></span>}
                   </button>
                 )}
               </div>
