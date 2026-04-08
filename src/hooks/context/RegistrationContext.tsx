@@ -1,9 +1,15 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import type { FormDataMap, FormValue } from '../../types/registration';
-import { REG_SCHEMA } from '../../data/registrationSchema';
-import { authService } from '../../services/authService';
-import { useToast } from '../../utils/ToastContext';
-import { useAuth } from './AuthContext';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+import type { FormDataMap, FormValue } from "../../types/registration";
+import { REG_SCHEMA } from "../../data/registrationSchema";
+import { authService } from "../../services/authService";
+import { useToast } from "../../utils/ToastContext";
+import { useAuth } from "./AuthContext";
 
 interface RegistrationContextType {
   formData: FormDataMap;
@@ -18,11 +24,15 @@ interface RegistrationContextType {
   resetRegistration: () => void;
 }
 
-const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
+const RegistrationContext = createContext<RegistrationContextType | undefined>(
+  undefined,
+);
 
-export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { showIncompleteFormToast } = useToast();
-  const { user } = useAuth();
+  const { user, login } = useAuth();
 
   const [formData, setFormData] = useState<FormDataMap>(() => {
     try {
@@ -48,7 +58,7 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Pre-fill email if user is logged in
   useEffect(() => {
     if (user?.email && !formData.email) {
-      setFormData(prev => ({ ...prev, email: user.email }));
+      setFormData((prev) => ({ ...prev, email: user.email }));
     }
   }, [user, formData.email]);
 
@@ -58,7 +68,9 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   const toggleChip = (fieldId: string, value: string) => {
     setFormData((prev) => {
-      const existing = Array.isArray(prev[fieldId]) ? [...(prev[fieldId] as string[])] : [];
+      const existing = Array.isArray(prev[fieldId])
+        ? [...(prev[fieldId] as string[])]
+        : [];
       const idx = existing.indexOf(value);
       idx >= 0 ? existing.splice(idx, 1) : existing.push(value);
       return { ...prev, [fieldId]: existing };
@@ -86,7 +98,9 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
     return requiredFields.every((field) => {
       const val = formData[field.id];
-      const filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
+      const filled = Array.isArray(val)
+        ? val.length > 0
+        : val !== undefined && String(val).trim() !== "";
       if (!filled) return false;
 
       // Check if "Others" is selected and requires the supplemental input
@@ -113,7 +127,11 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         else if (val !== undefined && String(val).trim() !== "") filled += 1;
       });
     });
-    return total === 0 ? 0 : (submitted ? 100 : Math.round((filled / total) * 100));
+    return total === 0
+      ? 0
+      : submitted
+        ? 100
+        : Math.round((filled / total) * 100);
   }, [formData, submitted]);
 
   const buildCompletePayload = () => {
@@ -134,22 +152,26 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const submitForm = async () => {
     const incomplete: string[] = [];
     REG_SCHEMA.forEach((section) => {
-      section.fields.filter((field) => field.required).forEach((field) => {
-        const val = formData[field.id];
-        let filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
-        
-        if (filled) {
-          if (Array.isArray(val) && val.includes("Others")) {
-            const otherVal = formData[`${field.id}_other`];
-            if (!otherVal || String(otherVal).trim() === "") filled = false;
-          } else if (val === "Others") {
-            const otherVal = formData[`${field.id}_other`];
-            if (!otherVal || String(otherVal).trim() === "") filled = false;
-          }
-        }
+      section.fields
+        .filter((field) => field.required)
+        .forEach((field) => {
+          const val = formData[field.id];
+          let filled = Array.isArray(val)
+            ? val.length > 0
+            : val !== undefined && String(val).trim() !== "";
 
-        if (!filled) incomplete.push(field.label);
-      });
+          if (filled) {
+            if (Array.isArray(val) && val.includes("Others")) {
+              const otherVal = formData[`${field.id}_other`];
+              if (!otherVal || String(otherVal).trim() === "") filled = false;
+            } else if (val === "Others") {
+              const otherVal = formData[`${field.id}_other`];
+              if (!otherVal || String(otherVal).trim() === "") filled = false;
+            }
+          }
+
+          if (!filled) incomplete.push(field.label);
+        });
     });
 
     if (incomplete.length > 0) {
@@ -161,6 +183,17 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       const response = await authService.registration(completeData);
       if (response.status === "success") {
+        console.log("rrr Registration successful", response);
+
+        const name = response.data?.full_name || response.full_name || user?.name || "User";
+        const email = formData.email || user?.email || "";
+        const userId = response.data?.user_id || response.user_id || user?.id;
+        const accessControl = response.access_control || response.data?.access_control || [];
+        
+        if (email) {
+          login({ id: userId, name, email: email as string, access_control: accessControl });
+        }
+
         setSubmitted(true);
       }
     } catch (error) {
@@ -186,16 +219,22 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     goToSection,
     isSectionComplete,
     submitForm,
-    resetRegistration
+    resetRegistration,
   };
 
-  return <RegistrationContext.Provider value={value}>{children}</RegistrationContext.Provider>;
+  return (
+    <RegistrationContext.Provider value={value}>
+      {children}
+    </RegistrationContext.Provider>
+  );
 };
 
 export const useRegistration = () => {
   const context = useContext(RegistrationContext);
   if (context === undefined) {
-    throw new Error('useRegistration must be used within a RegistrationProvider');
+    throw new Error(
+      "useRegistration must be used within a RegistrationProvider",
+    );
   }
   return context;
 };
