@@ -91,3 +91,29 @@ export interface EnrolledCourse {
 }
 
 export interface EnrolledCoursesResponse extends ApiResponse<EnrolledCourse[]> {}
+
+export interface GradesCompetency {
+  name: string;
+  value: number;
+}
+export interface GradesKpi {
+  avg_score: number;
+  completed: string;
+  progress_percent: number;
+  rank: number;
+  streak_days: number;
+}
+export interface GradesWeekItem {
+  name: string;
+  value: number | null;
+}
+export interface GradesWeek {
+  items: GradesWeekItem[];
+  progress: number;
+  week: string;
+}
+export interface GradesInfoData {
+  competency: GradesCompetency[];
+  kpi: GradesKpi;
+  weeks: GradesWeek[];
+}
