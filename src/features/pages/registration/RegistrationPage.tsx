@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import type { ChangeEvent } from "react";
 import { useEffect, useRef } from "react";
+import { useState, type ChangeEvent } from "react";
 import { useToast } from "../../../utils/ToastContext";
 import { useRegistration } from "../../../hooks/context/RegistrationContext";
 import BrandLogo from "../../../components/shared/BrandLogo";
@@ -165,15 +165,10 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
     toggleChip,
     submitForm,
     isSectionComplete,
+    isSubmitting,
   } = useRegistration();
 
-  const formBodyRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (formBodyRef.current) {
-      formBodyRef.current.scrollTop = 0;
-    }
-  }, [currentSection]);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const section = REG_SCHEMA[currentSection];
 
@@ -266,7 +261,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 <p>{section.subtitle}</p>
               </div>
 
-              <div className="reg-form-body" ref={formBodyRef}>
+              <div className="reg-form-body">
                 {currentSection === 0 ? (
                   <div className="reg-import">
                     <label className="reg-import-btn">
@@ -407,19 +402,29 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 ) : (
                   <button
                     type="button"
-                    className="reg-nav-next submit"
+                    className={`reg-nav-next submit ${isSubmitting ? "loading" : ""}`}
                     onClick={submitForm}
+                    disabled={isSubmitting}
                   >
-                    Submit Registration
-                    <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path
-                        d="M2 7l3.5 3.5L12 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    {isSubmitting ? (
+                      <div className="btn-loader">
+                        <div className="spinner"></div>
+                        Submitting...
+                      </div>
+                    ) : (
+                      <>
+                        Submit Registration
+                        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                          <path
+                            d="M2 7l3.5 3.5L12 4"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </>
+                    )}
                   </button>
                 )}
               </div>
@@ -465,10 +470,26 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                   fontSize: "1rem",
                   borderRadius: "10px",
                   fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "180px",
                 }}
-                onClick={() => navigate("/dashboard")}
+                disabled={isNavigating}
+                onClick={() => {
+                  setIsNavigating(true);
+                  // Brief delay to show loader before navigation
+                  setTimeout(() => navigate("/dashboard"), 600);
+                }}
               >
-                Go to Dashboard
+                {isNavigating ? (
+                  <div className="btn-loader">
+                    <div className="spinner"></div>
+                    Going to Dashboard...
+                  </div>
+                ) : (
+                  "Go to Dashboard"
+                )}
               </button>
             </div>
           )}

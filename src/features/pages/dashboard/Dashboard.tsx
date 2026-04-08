@@ -10,11 +10,11 @@ import BrandLogo from "../../../components/shared/BrandLogo";
 import type {
   DashboardData,
   CourseData,
-  DashboardKPI,
+  // DashboardKPI,
   StatItem,
   RawDashboardCourse,
   ActivityData,
-  RecentActivityResponse,
+  // RecentActivityResponse,
 } from "./dashboard.models";
 import { useDashboard } from "../../../hooks/context/DashboardContext";
 

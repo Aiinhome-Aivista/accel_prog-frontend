@@ -22,6 +22,7 @@ interface RegistrationContextType {
   isSectionComplete: (index: number) => boolean;
   submitForm: () => Promise<void>;
   resetRegistration: () => void;
+  isSubmitting: boolean;
 }
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(
@@ -48,6 +49,7 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sync with localStorage
   useEffect(() => {
@@ -179,6 +181,8 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
+    setIsSubmitting(true);
+
     const completeData = buildCompletePayload();
     try {
       const response = await authService.registration(completeData);
@@ -198,6 +202,8 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch (error) {
       console.error("Registration failed", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -220,6 +226,7 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({
     isSectionComplete,
     submitForm,
     resetRegistration,
+    isSubmitting,
   };
 
   return (
