@@ -1,5 +1,5 @@
-import type { CourseItem } from '../../types/registration'
-import { DETAIL_BG, DETAIL_BORDER, DETAIL_TEXT } from '../../data/courseData'
+import type { CourseItem } from '../types/registration'
+import { DETAIL_BG, DETAIL_BORDER, DETAIL_TEXT } from '../data/courseData'
 
 interface DetailModalProps {
     courseIndex: number | null

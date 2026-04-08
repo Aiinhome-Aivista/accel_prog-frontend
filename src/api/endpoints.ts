@@ -3,7 +3,16 @@ export const API_ENDPOINTS = {
   REGISTER: "/auth/register",
   USERS: "/users",
   COURSE: "/api/v1/courses",
-  REGISTRATION: "auth/register",
+  REGISTRATION: "api/v1/register",
   SEND_OTP: "/api/v1/send-otp",
-  VERIFY_OTP: "/api/v1/verify-otp"
+  VERIFY_OTP: "/api/v1/verify-otp",
+  GOOGLE_SIGNIN: "/api/v1/google-signin",
+  DASHBOARD: "/api/v1/get_courses_dashboard",
+  MODULES: "/api/v1/get_modules_dashboard",
+  DASHBOARD_KPI: "/api/v1/dashboard_kpi_by_user",
+  COURSE_ENROLLMENT: "/api/v1/course_enrollment",
+  GET_ENROLLED_COURSES: "/api/v1/get-enrolled-courses-by-user-id",
+  GRADES_INFO_BY_USER: "/api/v1/grades_info_by_user",
+  GET_COMPLETED_COURSES: "/api/v1/get-completed-courses-by-user-id",
+  GET_USER_RECENT_ACTIVITY: "/api/v1/get-user-recent-activity",
 };

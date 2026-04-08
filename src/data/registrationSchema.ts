@@ -51,7 +51,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "3rd Year",
           "4th Year",
           "Post-Graduate",
-          "Other",
+          "Others",
         ],
         required: true,
       },
@@ -74,6 +74,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "75-85%",
           "85-95%",
           "Above 95%",
+          "Others",
         ],
         required: true,
       },
@@ -161,6 +162,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "Data Analysis",
           "Ethics & Society",
           "Automation",
+          "Others",
         ],
         required: true,
       },
@@ -177,6 +179,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "Robotics",
           "Entertainment",
           "Government",
+          "Others",
         ],
         required: true,
       },
@@ -191,6 +194,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "Innovation",
           "Research",
           "Entrepreneurship",
+          "Others",
         ],
         required: true,
       },
@@ -211,7 +215,7 @@ export const REG_SCHEMA: SectionSchema[] = [
       },
       {
         id: "disagreements",
-        label: "How do you handle disagreements in a team setting?",
+        label: "Please add one positive and one negative experience",
         type: "textarea",
         placeholder: "Describe your approach to conflict resolution...",
         required: false,
@@ -229,7 +233,7 @@ export const REG_SCHEMA: SectionSchema[] = [
         id: "workStyle",
         label: "Do you prefer working independently or collaboratively?",
         type: "select",
-        options: ["Independently", "Collaboratively", "A mix of both"],
+        options: ["Independently", "Collaboratively", "A mix of both", "Others"],
         required: true,
       },
     ],
@@ -249,6 +253,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "Reading",
           "Group Discussions",
           "One-on-One Mentoring",
+          "Others",
         ],
         required: true,
       },
@@ -260,6 +265,7 @@ export const REG_SCHEMA: SectionSchema[] = [
           "Firm deadlines push me to perform",
           "Flexible timelines help me think deeper",
           "Depends on the task",
+          "Others",
         ],
         required: true,
       },
@@ -267,7 +273,7 @@ export const REG_SCHEMA: SectionSchema[] = [
   },
   {
     id: "psychometric",
-    title: "Psychometric & Exploratory",
+    title: "Blue Sky AI",
     subtitle: "We'd love to understand how you think",
     fields: [
       {
@@ -304,7 +310,7 @@ export const REG_SCHEMA: SectionSchema[] = [
         id: "taskPreference",
         label: "Do you prefer structured tasks or open-ended challenges?",
         type: "select",
-        options: ["Structured tasks", "Open-ended challenges", "A healthy mix"],
+        options: ["Structured tasks", "Open-ended challenges", "A healthy mix", "Others"],
         required: false,
       },
       {
@@ -318,7 +324,7 @@ export const REG_SCHEMA: SectionSchema[] = [
         id: "groupRole",
         label: "What role do you naturally take in a group?",
         type: "select",
-        options: ["Leader", "Analyst", "Executor", "Innovator", "Mediator"],
+        options: ["Leader", "Analyst", "Executor", "Innovator", "Mediator", "Others"],
         required: true,
       },
       {
@@ -338,7 +344,7 @@ export const REG_SCHEMA: SectionSchema[] = [
       {
         id: "hometownAI",
         label:
-          "Imagine you're designing an AI for your hometown. What problem would it solve?",
+          "What should be the key problems(hometown) you will solve using AI in your daily life",
         type: "textarea",
         placeholder:
           "Describe the problem, your solution idea, and the impact you envision...",

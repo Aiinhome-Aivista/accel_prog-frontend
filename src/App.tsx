@@ -1,27 +1,34 @@
-import 'primereact/resources/primereact.min.css'
-import 'primereact/resources/themes/lara-light-cyan/theme.css'
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "./App.css";
-import LandingPage from "./components/landing/LandingPage";
-import DetailModal from "./components/modals/DetailModal";
-import SignInModal from "./components/modals/SignInModal";
-import RegistrationPage from "./components/registration/RegistrationPage";
-import { REG_SCHEMA } from "./data/registrationSchema";
-import type { CourseItem, FormDataMap, FormValue } from "./types/registration";
-import ProgramSelector from "./components/home/mokshPathDashboard";
-import { useEffect, useMemo, useState } from 'react'
-import { useToast } from './context/ToastContext'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ToastProvider } from "./utils/ToastContext";
+import { AuthProvider, useAuth } from "./hooks/context/AuthContext";
+import {
+  RegistrationProvider,
+  useRegistration,
+} from "./hooks/context/RegistrationContext";
 
-function App() {
-  // 1. Unified navigation state
-  const [view, setView] = useState<"HOME" | "LANDING" | "REGISTRATION">("HOME");
-  const { showIncompleteFormToast } = useToast()
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const [courseIndex, setCourseIndex] = useState<number | null>(null);
-  const [navOpen, setNavOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState<FormDataMap>({});
-  const [courseData, setCourseData] = useState<CourseItem[]>([]);
+import LandingPage from "./features/pages/landing/LandingPage";
+import DetailModal from "./modals/DetailModal";
+import SignInModal from "./modals/SignInModal";
+import RegistrationPage from "./features/pages/registration/RegistrationPage";
+import Dashboard from "./features/pages/dashboard/Dashboard";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import type { CourseItem } from "./types/registration";
+import CourseLearning from "./features/pages/course-learning/course-learning";
+
+// Effects component to handle route-based side effects like animations
+function RouteEffects() {
+  const location = useLocation();
 
   useEffect(() => {
     const intersectionObserver = new IntersectionObserver(
@@ -54,130 +61,111 @@ function App() {
       intersectionObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [view]); // Run observer logic whenever the view switches
+  }, [location.pathname]);
 
-  const isSectionComplete = (idx: number) => {
-    const section = REG_SCHEMA[idx];
-    const requiredFields = section.fields.filter((field) => field.required);
-    if (requiredFields.length === 0) {
-      return section.fields.some((field) => {
-        const val = formData[field.id];
-        if (Array.isArray(val)) return val.length > 0;
-        return val !== undefined && String(val).trim() !== "";
-      });
-    }
-    return requiredFields.every((field) => {
-      const val = formData[field.id];
-      if (Array.isArray(val)) return val.length > 0;
-      return val !== undefined && String(val).trim() !== "";
-    });
-  };
+  return null;
+}
 
-  const progressPct = useMemo(() => {
-    let filled = 0;
-    let total = 0;
-    REG_SCHEMA.forEach((section) => {
-      section.fields.forEach((field) => {
-        total += 1;
-        const val = formData[field.id];
-        if (Array.isArray(val) && val.length > 0) filled += 1;
-        else if (val !== undefined && String(val).trim() !== "") filled += 1;
-      });
-    });
-    return total === 0 ? 0 : (submitted ? 100 : Math.round((filled / total) * 100));
-  }, [formData, submitted]);
+function AppContent() {
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [courseIndex, setCourseIndex] = useState<number | null>(null);
+  const [courseData, setCourseData] = useState<CourseItem[]>([]);
+  const [navOpen, setNavOpen] = useState(false);
 
-  // Navigation Handlers
-  const handleSignInAndRegister = () => {
+  const { login, logout } = useAuth();
+  const { resetRegistration } = useRegistration();
+
+  const navigate = useNavigate();
+
+  const handleSignIn = (isNewUser: boolean, email: string, name?: string, id?: number, access_control?: any[]) => {
     setIsSignInOpen(false);
-    setView("REGISTRATION");
-    window.scrollTo(0, 0);
-  };
-
-  const handleBackToLanding = () => {
-    setView("LANDING");
-    window.scrollTo(0, 0);
-  };
-
-  const handleUpdateField = (id: string, value: FormValue) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleToggleChip = (fieldId: string, value: string) => {
-    setFormData((prev) => {
-      const existing = Array.isArray(prev[fieldId]) ? [...(prev[fieldId] as string[])] : [];
-      const idx = existing.indexOf(value);
-      idx >= 0 ? existing.splice(idx, 1) : existing.push(value);
-      return { ...prev, [fieldId]: existing };
-    });
-  };
-
-  const handleSubmit = () => {
-    const incomplete: string[] = [];
-    REG_SCHEMA.forEach((section) => {
-      section.fields.filter((field) => field.required).forEach((field) => {
-        const val = formData[field.id];
-        const filled = Array.isArray(val) ? val.length > 0 : val !== undefined && String(val).trim() !== "";
-        if (!filled) incomplete.push(field.label);
-      });
-    });
-
-    if (incomplete.length > 0) {
-      showIncompleteFormToast(incomplete)
-      return;
+    if (name) {
+      login({ id, name, email, access_control });
     }
-    setSubmitted(true);
+
+    if (isNewUser) {
+      navigate("/registration");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    resetRegistration();
+    navigate("/");
+    window.scrollTo(0, 0);
+  };
+
+  const handleGoHome = () => {
+    navigate('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <>
-      {/* 2. Logic-driven Rendering: Only one view shows at a time */}
-      
-      {view === "HOME" && (
-        <ProgramSelector onSelectAccelerated={() => setView("LANDING")} />
-      )}
-
-      {view === "LANDING" && (
-        <LandingPage
-          onSignInClick={() => setIsSignInOpen(true)}
-          onExploreCourse={(index) => setCourseIndex(index)}
-          onCoursesLoaded={(data) => setCourseData(data)}
-          navOpen={navOpen}
-          onToggleNav={() => setNavOpen((prev) => !prev)}
-          onCloseNav={() => setNavOpen(false)}
-          onGoHome={() => setView("HOME")}
+      <RouteEffects />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <LandingPage
+              onSignInClick={() => setIsSignInOpen(true)}
+              onExploreCourse={(index) => setCourseIndex(index)}
+              onCoursesLoaded={(data) => setCourseData(data)}
+              navOpen={navOpen}
+              onToggleNav={() => setNavOpen((prev) => !prev)}
+              onCloseNav={() => setNavOpen(false)}
+              onGoHome={handleGoHome}
+            />
+          }
         />
-      )}
-
-      {view === "REGISTRATION" && (
-        <RegistrationPage
-          currentSection={currentSection}
-          schema={REG_SCHEMA}
-          formData={formData}
-          submitted={submitted}
-          progressPct={progressPct}
-          onBackHome={handleBackToLanding}
-          onGoToSection={setCurrentSection}
-          onUpdateField={handleUpdateField}
-          onToggleChip={handleToggleChip}
-          onSubmit={handleSubmit}
-          isSectionComplete={isSectionComplete}
+        <Route
+          path="/registration"
+          element={
+            <ProtectedRoute>
+              <RegistrationPage onBackHome={handleLogout} />
+            </ProtectedRoute>
+          }
         />
-      )}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/course-learning" element={<CourseLearning />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
-      {/* Global Modals */}
-      <SignInModal 
-        open={isSignInOpen} 
-        onClose={() => setIsSignInOpen(false)} 
-        onSignIn={handleSignInAndRegister} 
+      <SignInModal
+        open={isSignInOpen}
+        onClose={() => setIsSignInOpen(false)}
+        onSignIn={handleSignIn}
       />
-      
-      <DetailModal 
-        courseIndex={courseIndex} 
-        courseData={courseData} 
-        onClose={() => setCourseIndex(null)} 
+
+      <DetailModal
+        courseIndex={courseIndex}
+        courseData={courseData}
+        onClose={() => setCourseIndex(null)}
       />
     </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <ToastProvider>
+        <AuthProvider>
+          <RegistrationProvider>
+            <AppContent />
+          </RegistrationProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </Router>
   );
 }
 

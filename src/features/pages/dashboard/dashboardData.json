@@ -1,0 +1,117 @@
+{
+  "welcome": {
+    "title": "Welcome back",
+    "streakText": "You're on a 5-day streak. Keep the momentum going — your next sub-topic awaits."
+  },
+  "stats": [
+    { "id": 1, "icon": "📚", "iconBg": "rgba(232,122,46,.12)", "value": "0", "label": "In Progress" },
+    { "id": 2, "icon": "✅", "iconBg": "#E8F5E9", "value": "0", "label": "Completed" },
+    { "id": 3, "icon": "🏆", "iconBg": "rgba(66,133,244,.1)", "value": "0", "label": "Day Streak" },
+    { "id": 4, "icon": "📊", "iconBg": "rgba(156,39,176,.08)", "value": "0%", "label": "Progress" }
+  ],
+  "inProgressCourses": [
+    {
+      "id": "course-1",
+      "bannerGradient": "linear-gradient(90deg,#E87A2E,#F5943E)",
+      "badge": "Course 1 · Foundation",
+      "badgeBg": "rgba(232,122,46,.12)",
+      "badgeColor": "#E87A2E",
+      "title": "The AI Consumer & Builder",
+      "description": "Master prompt engineering, multimodal creativity, Python for AI, and responsible prompting through 4 intensive weeks.",
+      "meta": ["📅 4 Weeks", "📄 28 Sub-Topics", "🧩 4 Projects"],
+      "progress": 42,
+      "progressText": "42% complete · Week 1: Advanced Prompt Engineering",
+      "progressColor": "#E87A2E"
+    }
+  ],
+  "completedCourses": [],
+  "availableCourses": [
+    {
+      "id": "course-2",
+      "bannerGradient": "linear-gradient(90deg,#E8A040,#F0C060)",
+      "badge": "Course 2 · Core",
+      "badgeBg": "rgba(232,160,64,.12)",
+      "badgeColor": "#C08830",
+      "title": "The Data & ML Architect",
+      "description": "Advanced data wrangling, ensemble ML methods, NLP foundations, time series forecasting, and Kaggle competition readiness.",
+      "meta": ["📅 4 Weeks", "📄 28 Sub-Topics", "🧩 Kaggle Challenge"],
+      "features": [
+        "Hands-on Kaggle competitions",
+        "GitHub portfolio building",
+        "Industry mentor sessions"
+      ]
+    },
+    {
+      "id": "course-3",
+      "bannerGradient": "linear-gradient(90deg,#66BB6A,#81C784)",
+      "badge": "Course 3 · Applied",
+      "badgeBg": "rgba(76,175,80,.1)",
+      "badgeColor": "#4CAF50",
+      "title": "The Gen AI & RAG Specialist",
+      "description": "LLM architecture, fine-tuning with LoRA/QLoRA, RAG systems with vector databases, diffusion models, and AI agents.",
+      "meta": ["📅 4 Weeks", "📄 28 Sub-Topics", "🧩 Gen AI App"],
+      "features": [
+        "Build a RAG Q&A system",
+        "Fine-tune open-source LLMs",
+        "Deploy to cloud platforms"
+      ]
+    },
+    {
+      "id": "course-4",
+      "bannerGradient": "linear-gradient(90deg,#7E57C2,#9575CD)",
+      "badge": "Course 4 · Advanced",
+      "badgeBg": "rgba(156,39,176,.08)",
+      "badgeColor": "#7B1FA2",
+      "title": "The Agentic & Deep Tech Engineer",
+      "description": "Agentic AI architectures, enterprise AI platforms, industry verticals (healthcare, finance, manufacturing), AI governance, and career readiness.",
+      "meta": ["📅 4 Weeks", "📄 28 Sub-Topics", "🧩 Industry Capstone"],
+      "features": [
+        "Real industry problem statements",
+        "PwC mentor-led reviews",
+        "Demo day with industry panel"
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": 1,
+      "icon": "📄",
+      "iconBg": "rgba(232,122,46,.12)",
+      "title": "Completed: What is Prompt Engineering?",
+      "description": "Finished Reading 1 of Week 1 — Advanced Prompt Engineering",
+      "time": "2 hours ago"
+    },
+    {
+       "id": 2,
+       "icon": "✅",
+       "iconBg": "#E8F5E9",
+       "title": "Assessment submitted",
+       "description": "Week 1 Critical Thinking — scored 85%",
+       "time": "Yesterday"
+    },
+    {
+       "id": 3,
+       "icon": "💬",
+       "iconBg": "rgba(66,133,244,.1)",
+       "title": "Posted in Discussion",
+       "description": "\"How can prompt engineering transform rural education?\"",
+       "time": "Yesterday"
+    },
+    {
+       "id": 4,
+       "icon": "🔥",
+       "iconBg": "rgba(156,39,176,.08)",
+       "title": "5-day learning streak!",
+       "description": "You've been consistent this week. Keep it up!",
+       "time": "Today"
+    },
+    {
+       "id": 5,
+       "icon": "🃏",
+       "iconBg": "rgba(232,122,46,.12)",
+       "title": "Flashcards mastered: 4/7",
+       "description": "RACE Framework, Zero-shot vs Few-shot, CoT, System Prompts",
+       "time": "Today"
+    }
+  ]
+}

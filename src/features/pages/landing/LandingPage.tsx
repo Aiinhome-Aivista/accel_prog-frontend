@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { COURSE_DATA } from '../../data/courseData'
-import { courseService } from '../../services/courseService'
-import BrandLogo from '../shared/BrandLogo'
-import type { CourseItem, ProgramStats } from '../../types/registration'
-import LogoIcon from '../../assets/logogod.svg'
+import { COURSE_DATA } from '../../../data/courseData'
+import { courseService } from '../../../services/courseService'
+import Header from '../../../common/Header'
+import Footer from '../../../common/Footer'
+import type { CourseItem, ProgramStats } from '../../../types/registration'
+
 interface LandingPageProps {
   onSignInClick: () => void;
   onExploreCourse: (index: number) => void;
@@ -79,87 +80,13 @@ function LandingPage({
 
   return (
     <div className="landing-page" id="landingPage">
-      <div className="top-bar">
-        <a href="#">Request a Demo</a>
-        <a href="#">FAQs</a>
-        <a href="#">Help Center</a>
-      </div>
-
-      <nav className="nav">
-        <a
-          href="#" // Change this so it doesn't leave the app
-          className="nav-logo"
-          onClick={(e) => {
-            e.preventDefault(); // Prevent page reload
-            onCloseNav();
-            onGoHome(); // Trigger the view change to HOME
-          }}
-        >
-          <BrandLogo />
-        </a>
-
-        <div className={`nav-links ${navOpen ? "open" : ""}`} id="navLinks">
-          <a
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              textDecoration: "none",
-            }}
-            className="display: inline-flex; align-items: center; gap: 0.3rem"
-
-            href="#" onClick={onCloseNav}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M9 3L4 7l5 4"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>All Programs</span>
-          </a>
-
-          <a href="#pathway" onClick={onCloseNav}>
-            Program
-          </a>
-          <a href="#courses" onClick={onCloseNav}>
-            Courses
-          </a>
-          <a href="#features" onClick={onCloseNav}>
-            Why Us
-          </a>
-          <a href="#instructor" onClick={onCloseNav}>
-            Instructors
-          </a>
-          {/* <a
-            href="https://mokshpath.org/"
-            target="_blank"
-            rel="noreferrer"
-            onClick={onCloseNav}
-          >
-            Home
-          </a> */}
-          <button
-            className="btn-signin btn-signin-fill"
-            onClick={onSignInClick}
-          >
-            Sign In
-          </button>
-        </div>
-
-        <button
-          className="mobile-toggle"
-          onClick={onToggleNav}
-          aria-label="Toggle menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </nav>
+      <Header
+        onSignInClick={onSignInClick}
+        onToggleNav={onToggleNav}
+        onCloseNav={onCloseNav}
+        onGoHome={onGoHome}
+        navOpen={navOpen}
+      />
 
       <section className="hero">
         <div className="hero-inner">
@@ -672,42 +599,14 @@ function LandingPage({
         </div>
       </section>
 
-      <footer>
-        <div className="footer-inner">
-          <div className="footer-left">
-            <img
-              src={LogoIcon}
-              className="nav-logo-icon"
-              alt="Logo"
-              aria-hidden="true"
-            />
-            <span className="footer-copy">
-              Copyright 2026 MokshPath - Guided Path to True Learning
-            </span>
-          </div>
-          <div className="footer-links cursor-pointer">
-            <a target="_blank" rel="noreferrer" href="#" onClick={(e) => {
-              e.preventDefault(); // Prevent page reload
-              onCloseNav();
-              onGoHome(); // Trigger the view change to HOME
-            }}>
-              All Programs
-            </a>
-            <a href="#courses">Courses</a>
-            <a
-              href="#"
-              onClick={(event) => {
-                event.preventDefault();
-                onSignInClick();
-              }}
-            >
-              Sign In
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer
+        onSignInClick={onSignInClick}
+        onCloseNav={onCloseNav}
+        onGoHome={onGoHome}
+      />
     </div>
   );
 }
 
 export default LandingPage;
+
