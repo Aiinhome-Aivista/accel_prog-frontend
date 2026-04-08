@@ -8,6 +8,7 @@ import type {
   EnrolledCoursesResponse,
   RawDashboardCourse,
   GradesInfoData,
+  RecentActivityResponse,
 } from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
@@ -46,6 +47,11 @@ export const dashboardService = {
   getGradesInfoByUser: (userId: number) =>
     apiRequest<ApiResponse<GradesInfoData>>({
       url: `${API_ENDPOINTS.GRADES_INFO_BY_USER}?user_id=${userId}`,
+      method: "GET",
+    }),
+  getUserRecentActivity: (userId: number) =>
+    apiRequest<RecentActivityResponse>({
+      url: `${API_ENDPOINTS.GET_USER_RECENT_ACTIVITY}?user_id=${userId}`,
       method: "GET",
     }),
 };

@@ -118,3 +118,9 @@ export interface GradesInfoData {
   kpi: GradesKpi;
   weeks: GradesWeek[];
 }
+export interface RecentActivityData {
+  activities: ActivityData[];
+  message: string;
+}
+
+export interface RecentActivityResponse extends ApiResponse<RecentActivityData> {}
