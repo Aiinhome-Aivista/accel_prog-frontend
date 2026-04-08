@@ -10,13 +10,13 @@ import { PeopleTab } from './components/Tabs/PeopleTab';
 import { AnnouncementsTab } from './components/Tabs/AnnouncementsTab';
 import { FlashcardsTab } from './components/Tabs/FlashcardsTab';
 import { SupportTab } from './components/Tabs/SupportTab';
-import { WK as staticWK } from './course-learning.data';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../hooks/context/AuthContext';
 import { useDashboard } from '../../../hooks/context/DashboardContext';
 import BrandLogo from '../../../components/shared/BrandLogo';
 import { dashboardService } from '../../../services/dashboardService';
 import type { ApiWeek, WeekData } from './course-learning.models';
+
 const CourseLearning: React.FC = () => {
   const { user } = useAuth();
   const { kpiData } = useDashboard();
@@ -30,6 +30,7 @@ const CourseLearning: React.FC = () => {
   const [curW, setCurW] = useState(0);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -57,7 +58,6 @@ const CourseLearning: React.FC = () => {
                 type: (t.type === 'assessment' ? 'assess' : t.type) as any,
                 title: t.title,
                 content: t.content.data || "",
-                // Preserve other fields if needed, simplified for now
               }))
             }));
             setWeeks(mappedWeeks);
@@ -72,23 +72,25 @@ const CourseLearning: React.FC = () => {
               });
             });
             setDone(initialDone);
+            setError(null);
+          } else if (response.status === "error") {
+            setError(response.message || "Failed to load course content");
           }
         } catch (error) {
           console.error("Error fetching course content:", error);
-          setWeeks(staticWK); // Fallback to static data
+          setError("An unexpected error occurred while loading course content.");
         } finally {
           setIsLoading(false);
         }
       } else {
-        setWeeks(staticWK);
         setIsLoading(false);
+        setError("Missing course or user information.");
       }
     };
 
     fetchContent();
   }, [searchParams, user]);
 
-  // Expose function to mark done globally so it cascades logic
   const markDone = (id: string) => {
     setDone(prev => {
       const next = new Set(prev);
@@ -97,7 +99,6 @@ const CourseLearning: React.FC = () => {
     });
   };
 
-  // Check globals unlocking
   useEffect(() => {
     if (weeks.length === 0) return;
     setWeeks(prev => {
@@ -117,6 +118,31 @@ const CourseLearning: React.FC = () => {
       return (
         <div className="flex justify-center items-center h-full">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E87A2E]"></div>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="flex flex-col justify-center items-center h-full p-6 text-center">
+          <div className="text-[2rem] mb-4">⚠️</div>
+          <h2
+            className="text-[1.3rem] text-[#2B2D42] mb-2 font-bold"
+            style={{ fontFamily: '"DM Serif Display", serif' }}
+          >
+            {error}
+          </h2>
+          <p className="text-[0.9rem] text-[#6B6D7B] mb-6 max-w-[400px]">
+            {error === "User not enrolled"
+              ? "It seems you are not enrolled in this course yet. Please enroll from the dashboard to access the content."
+              : "We encountered an issue while loading your course content. Please try again later."}
+          </p>
+          <Link
+            to="/dashboard"
+            className="px-6 py-2.5 rounded-lg bg-[#E87A2E] text-white font-semibold no-underline hover:bg-[#D06A20] transition-colors"
+          >
+            Back to Dashboard
+          </Link>
         </div>
       );
     }
@@ -145,7 +171,6 @@ const CourseLearning: React.FC = () => {
 
   return (
     <div className=" bg-[#F3EDE7] text-[#2B2D42] antialiased overflow-hidden h-screen flex flex-col">
-      {/* Top Navbar */}
       <div className="bg-white border-b border-[#E5DDD4] h-[50px] flex items-center justify-between px-[1rem] z-[60] relative shrink-0">
         <div className="flex items-center gap-[0.7rem]">
           <button 
@@ -159,21 +184,11 @@ const CourseLearning: React.FC = () => {
             <ChevronLeft size={12} /> Dashboard
           </Link>
 
-          {/* <a href="#" className="flex items-center gap-[0.35rem] no-underline ml-2">
-            <img
-                         src={LogoIcon}
-                         className="w-[30px] h-[30px] object-contain"
-                         alt="MokshPath Logo"
-                       />
-            <span className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42]">Moksh<em className="not-italic text-[#E87A2E]">Path</em></span>
-          </a> */}
           <a
           href="#"
           className="nav-logo"
           onClick={(e) => {
             e.preventDefault();
-            // onCloseNav();
-            // onGoHome();
           }}
         >
           <BrandLogo />
@@ -192,7 +207,6 @@ const CourseLearning: React.FC = () => {
         </div>
       </div>
 
-      {/* Main App Shell */}
       <div className="flex flex-1 overflow-hidden h-[calc(100vh-50px)]">
         <Sidebar 
           activeTab={activeTab} 
@@ -205,7 +219,6 @@ const CourseLearning: React.FC = () => {
         </div>
       </div>
 
-      {/* AI Assistant */}
       <AiCompanion />
     </div>
   );
