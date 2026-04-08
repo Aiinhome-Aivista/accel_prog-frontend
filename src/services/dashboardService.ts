@@ -1,6 +1,6 @@
 import { apiRequest } from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
-import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI } from "../features/pages/dashboard/dashboard.models";
+import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI, EnrolledCoursesResponse } from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
   getDashboard: () =>
@@ -28,5 +28,10 @@ export const dashboardService = {
       url: API_ENDPOINTS.COURSE_ENROLLMENT,
       method: "POST",
       data,
+    }),
+  getEnrolledCourses: (userId: number) =>
+    apiRequest<EnrolledCoursesResponse>({
+      url: `${API_ENDPOINTS.GET_ENROLLED_COURSES}?user_id=${userId}`,
+      method: "GET",
     }),
 };

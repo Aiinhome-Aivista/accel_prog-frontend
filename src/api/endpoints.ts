@@ -11,4 +11,5 @@ export const API_ENDPOINTS = {
   MODULES: "/api/v1/get_modules_dashboard",
   DASHBOARD_KPI: "/api/v1/dashboard_kpi_by_user",
   COURSE_ENROLLMENT: "/api/v1/course_enrollment",
+  GET_ENROLLED_COURSES: "/api/v1/get-enrolled-courses-by-user-id",
 };

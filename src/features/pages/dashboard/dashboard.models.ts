@@ -68,3 +68,15 @@ export interface EnrollmentData {
 }
 
 export interface EnrollmentResponse extends ApiResponse<EnrollmentData> {}
+export interface EnrolledCourse {
+  course_id: number;
+  course_name: string;
+  description: string;
+  progress_pct: number;
+  status: string;
+  total_projects: number;
+  total_subtopics: number;
+  total_weeks: number;
+}
+
+export interface EnrolledCoursesResponse extends ApiResponse<EnrolledCourse[]> {}

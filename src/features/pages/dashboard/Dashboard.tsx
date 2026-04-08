@@ -30,6 +30,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [availableCourses, setAvailableCourses] = useState<CourseData[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<CourseData[]>([]);
+  const [completedEnrolledCourses, setCompletedEnrolledCourses] = useState<CourseData[]>([]);
   const [activeCourse, setActiveCourse] = useState<{
     name: string;
     id: string;
@@ -189,6 +191,53 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
     if (user) {
       fetchKPI();
+    }
+  }, [user]);
+  
+  useEffect(() => {
+    const fetchEnrolledCourses = async () => {
+      const userId = user?.id || 1;
+      try {
+        const response = await dashboardService.getEnrolledCourses(userId);
+        if (response.status === "success" && Array.isArray(response.data)) {
+          const mapped = response.data.map((course, index) => {
+            const styles = [
+              { bg: "rgba(232,122,46,.1)", color: "#E87A2E", banner: "linear-gradient(to right, #E87A2E, #D06A20)", progress: "#E87A2E" },
+              { bg: "rgba(66,133,244,.1)", color: "#4285F4", banner: "linear-gradient(to right, #4285F4, #2A66D8)", progress: "#4285F4" },
+              { bg: "rgba(52,168,83,.1)", color: "#34A853", banner: "linear-gradient(to right, #34A853, #2B8A45)", progress: "#34A853" },
+              { bg: "rgba(251,188,5,.1)", color: "#B88E00", banner: "linear-gradient(to right, #FBBC05, #D4AF37)", progress: "#FBBC05" },
+            ];
+            const style = styles[index % styles.length];
+
+            return {
+              id: course.course_id.toString(),
+              title: course.course_name,
+              badge: course.status,
+              description: course.description,
+              meta: [
+                `⏱️ ${course.total_weeks} Weeks`,
+                `📂 ${course.total_subtopics} Subtopics`,
+                `🧩 ${course.total_projects} Project`,
+              ],
+              progress: course.progress_pct,
+              progressText: `${course.progress_pct}% Completed`,
+              progressColor: style.progress,
+              badgeBg: style.bg,
+              badgeColor: style.color,
+              bannerGradient: style.banner
+            };
+          });
+
+          setEnrolledCourses(mapped.filter(c => c.progress < 100));
+          setCompletedEnrolledCourses(mapped.filter(c => c.progress === 100));
+        }
+      } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+      }
+    };
+
+    if (user) {
+      fetchEnrolledCourses();
     }
   }, [user]);
 
@@ -373,11 +422,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               My Courses — In Progress
             </h2>
             <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E87A2E]/10 text-[#E87A2E]">
-              {typedDashboardData.inProgressCourses.length} Active
+              {enrolledCourses.length} Active
             </div>
           </div>
 
-          {typedDashboardData.inProgressCourses.length === 0 ? (
+          {enrolledCourses.length === 0 ? (
             <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-8 text-center mb-10">
               <div className="text-2xl mb-2">📚</div>
               <p className="text-[13px] text-[#9597A6]">
@@ -387,7 +436,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-              {typedDashboardData.inProgressCourses.map((course) => (
+              {enrolledCourses.map((course) => (
                 <div
                   key={course.id}
                   className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all cursor-pointer group"
@@ -475,11 +524,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             Completed Courses
           </h2>
           <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E8F5E9] text-[#4CAF50]">
-            {typedDashboardData.completedCourses.length} Done
+            {completedEnrolledCourses.length} Done
           </div>
         </div>
 
-        {typedDashboardData.completedCourses.length === 0 ? (
+        {completedEnrolledCourses.length === 0 ? (
           <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-8 text-center mb-10">
             <div className="text-2xl mb-2">🎓</div>
             <p className="text-[13px] text-[#9597A6]">
@@ -489,7 +538,66 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {/* Render completed courses mapped appropriately */}
+             {completedEnrolledCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all cursor-pointer group"
+                >
+                  <div
+                    className="h-2 w-full"
+                    style={{ background: course.bannerGradient }}
+                  ></div>
+                  <div className="p-[1.2rem] flex-1 flex flex-col">
+                    <div
+                      className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-wider px-2 py-1 rounded-full mb-2.5 w-fit"
+                      style={{
+                        background: course.badgeBg,
+                        color: course.badgeColor,
+                      }}
+                    >
+                      {course.badge}
+                    </div>
+                    <div
+                      className=" text-[1rem] text-[#2B2D42] mb-1 leading-[1.3] font-medium"
+                      style={{ fontFamily: '"DM Serif Display", serif' }}
+                    >
+                      {course.title}
+                    </div>
+                    <div className="text-[12px] text-[#6B6D7B] leading-[1.55] flex-1 mb-3">
+                      {course.description}
+                    </div>
+                    <div className="flex gap-3 mb-3 flex-wrap">
+                      {course.meta.map((m, i) => (
+                        <span
+                          key={i}
+                          className="text-[10.5px] text-[#9597A6] font-medium flex items-center gap-1"
+                        >
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                   
+                    <div className="flex gap-2">
+                      <button
+                        className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
+                        onClick={() =>
+                           navigate(`/course-learning?course_id=${course.id}`, { replace: true })
+                        }
+                      >
+                         Review Course
+                      </button>
+                      <button
+                        className="flex-1 py-[7.5px] px-3 rounded-lg border-[1.5px] border-[#E5DDD4] bg-white text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
+                        onClick={() =>
+                          navigate(`/course-learning?course_id=${course.id}&tab=grades`, { replace: true })
+                        }
+                      >
+                        View Grades
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
         )}
 
