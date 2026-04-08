@@ -168,6 +168,14 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
     isSubmitting,
   } = useRegistration();
 
+  const formBodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (formBodyRef.current) {
+      formBodyRef.current.scrollTop = 0;
+    }
+  }, [currentSection]);
+
   const [isNavigating, setIsNavigating] = useState(false);
 
   const section = REG_SCHEMA[currentSection];
@@ -261,7 +269,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 <p>{section.subtitle}</p>
               </div>
 
-              <div className="reg-form-body">
+              <div className="reg-form-body" ref={formBodyRef}>
                 {currentSection === 0 ? (
                   <div className="reg-import">
                     <label className="reg-import-btn">
