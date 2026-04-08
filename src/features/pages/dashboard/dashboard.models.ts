@@ -91,7 +91,9 @@ export interface EnrolledCourse {
   total_weeks: number;
 }
 
-export interface EnrolledCoursesResponse extends ApiResponse<EnrolledCourse[]> {}
+export interface EnrolledCoursesResponse extends ApiResponse<
+  EnrolledCourse[]
+> {}
 
 export interface GradesCompetency {
   name: string;
@@ -117,6 +119,14 @@ export interface GradesInfoData {
   competency: GradesCompetency[];
   kpi: GradesKpi;
   weeks: GradesWeek[];
+}
+
+export interface Flashcard {
+  id: number;
+  card_question: string;
+  card_answer: string;
+  created_at: string;
+  is_active: boolean;
 }
 export interface RecentActivityData {
   activities: ActivityData[];

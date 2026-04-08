@@ -293,9 +293,11 @@ body {
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: linear-gradient(135deg,
-      rgba(232, 122, 46, 0.08),
-      rgba(232, 122, 46, 0.03));
+  background: linear-gradient(
+    135deg,
+    rgba(232, 122, 46, 0.08),
+    rgba(232, 122, 46, 0.03)
+  );
   position: absolute;
   top: 50%;
   left: 50%;
@@ -419,11 +421,13 @@ section {
   left: 12.5%;
   right: 12.5%;
   height: 3px;
-  background: linear-gradient(90deg,
-      var(--orange),
-      var(--orange-light),
-      #66bb6a,
-      var(--green));
+  background: linear-gradient(
+    90deg,
+    var(--orange),
+    var(--orange-light),
+    #66bb6a,
+    var(--green)
+  );
   border-radius: 2px;
   z-index: 0;
 }
@@ -1212,20 +1216,23 @@ footer {
 }
 
 .reg-layout {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
+  grid-template-columns: 200px 1fr;
+  padding: 2rem 2rem 2rem 1rem; /* more space on right */
   display: grid;
-  grid-template-columns: 240px 1fr;
   gap: 2rem;
   flex: 1;
   min-height: 0;
+  width: 100%;
+  max-width: 1200px; /* optional cap */
+  margin-left: auto; /* push to right */
+  margin-right: 0;
   overflow: hidden;
+  transform: translateX(40px); /* adjust value */
 }
 
 .reg-sidebar {
   position: sticky;
-  top: 30px;
+  top: 0px;
   align-self: start;
 }
 
@@ -1330,15 +1337,21 @@ footer {
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  max-width: 720px; /* control readable width */
+  height: 100%;
+  min-height: 0;
 }
 
 .reg-form-header {
   padding: 1.5rem 2rem;
   border-bottom: 1px solid var(--border);
   background: var(--bg-light);
+
+  position: sticky;
+  top: 0; /* sticks to top of container */
+  z-index: 10;
 }
 
 .reg-form-header h2 {
@@ -1355,6 +1368,9 @@ footer {
 
 .reg-form-body {
   padding: 1.5rem 2rem 2rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .reg-import {
@@ -1612,6 +1628,7 @@ footer {
   padding: 1.5rem 2rem;
   border-top: 1px solid var(--border);
   background: var(--bg-light);
+  flex-shrink: 0;
 }
 
 .reg-nav-prev {
@@ -1737,7 +1754,6 @@ footer {
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -1749,7 +1765,6 @@ footer {
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -1984,8 +1999,8 @@ footer {
   height: 24rem;
   width: 20rem;
   position: fixed;
-  top: 14rem;
-  left: 2.5rem;
+  top: 12.2rem;
+  left: 5.5rem;
   z-index: 0;
   pointer-events: none;
 }
@@ -1996,7 +2011,7 @@ footer {
     height: auto;
     min-height: 100vh;
     overflow: auto;
-    background: #F3EDE7 !important;
+    background: #f3ede7 !important;
   }
 
   .reg-layout {
@@ -2037,5 +2052,28 @@ footer {
     height: auto !important;
     opacity: 0.3 !important;
     z-index: 1 !important;
+  }
+}
+
+/* Global Spinner Component */
+.btn-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

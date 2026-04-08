@@ -9,6 +9,7 @@ import type {
   RawDashboardCourse,
   GradesInfoData,
   RecentActivityResponse,
+  Flashcard,
 } from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
@@ -18,11 +19,11 @@ export const dashboardService = {
       method: "GET",
     }),
 
-  getModules: (courseId: string | number) =>
+  getModules: (courseId: string | number, userId: number) =>
     apiRequest({
       url: API_ENDPOINTS.MODULES,
       method: "POST",
-      data: { course_id: Number(courseId) },
+      data: { course_id: Number(courseId), user_id: userId },
     }),
 
   getDashboardKPI: (userId: number) =>
@@ -59,6 +60,12 @@ export const dashboardService = {
   getUserRecentActivity: (userId: number) =>
     apiRequest<RecentActivityResponse>({
       url: `${API_ENDPOINTS.GET_USER_RECENT_ACTIVITY}?user_id=${userId}`,
+      method: "GET",
+    }),
+
+  getFlashcards: () =>
+    apiRequest<ApiResponse<Flashcard[]>>({
+      url: API_ENDPOINTS.GET_FLASHCARDS,
       method: "GET",
     }),
 };

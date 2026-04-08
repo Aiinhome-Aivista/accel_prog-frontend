@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { dashboardService } from '../../../../../services/dashboardService';
 import type { GradesInfoData } from '../../../dashboard/dashboard.models';
 
-export const GradesTab: React.FC<{ done: Set<string> }> = ({ done }) => {
+export const GradesTab: React.FC<{ done: Set<string> }> = () => {
   const [gradesData, setGradesData] = useState<GradesInfoData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

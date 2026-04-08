@@ -101,17 +101,17 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     }));
   };
 
-  const toggleEdit = () => {
-    if (isEditing) {
-      if (sub.content !== undefined) {
-        sub.content = editContent;
-      }
-      setIsEditing(false);
-    } else {
-      setEditContent(sub.content || "");
-      setIsEditing(true);
-    }
-  };
+  // const toggleEdit = () => {
+  //   if (isEditing) {
+  //     if (sub.content !== undefined) {
+  //       sub.content = editContent;
+  //     }
+  //     setIsEditing(false);
+  //   } else {
+  //     setEditContent(sub.content || "");
+  //     setIsEditing(true);
+  //   }
+  // };
 
   return (
     <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
@@ -203,12 +203,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                 <span className="text-[0.7rem] font-semibold text-[#6B6D7B] flex items-center gap-1.5">
                   <FileText size={14} /> {sub.title}
                 </span>
-                <button
+                {/* <button
                   className={`px-[0.6rem] py-[0.25rem] rounded-[5px] border text-[0.66rem] font-semibold cursor-pointer font-inherit transition-all ${isEditing ? "bg-[#E87A2E] text-white border-[#E87A2E]" : "bg-white text-[#6B6D7B] border-[#E5DDD4] hover:border-[#E87A2E] hover:text-[#E87A2E]"}`}
                   onClick={toggleEdit}
                 >
                   {isEditing ? "Save" : "Edit"}
-                </button>
+                </button> */}
               </div>
               <div className="p-[1.5rem] leading-[1.75] text-[0.86rem] min-h-[180px]">
                 {isEditing ? (

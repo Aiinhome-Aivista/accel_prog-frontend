@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Send, X } from 'lucide-react';
+import { Bot, X } from 'lucide-react';
 
 export const AiCompanion: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

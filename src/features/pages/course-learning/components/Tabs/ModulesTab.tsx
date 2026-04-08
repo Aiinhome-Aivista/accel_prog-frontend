@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../../../../../hooks/context/AuthContext";
 import { dashboardService } from "../../../../../services/dashboardService";
 
 interface Topic {
@@ -26,6 +27,7 @@ const colors = ["#E87A2E", "#4285F4", "#34A853", "#FBBC05"];
 
 export const ModulesTab: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const courseIdParam = searchParams.get("course_id") || "0";
 
   const [openMods, setOpenMods] = useState<Record<number, boolean>>({
@@ -37,7 +39,8 @@ export const ModulesTab: React.FC = () => {
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        const response = await dashboardService.getModules(courseIdParam);
+        const userId = user?.id || 1;
+        const response = await dashboardService.getModules(courseIdParam, userId);
         if (response.status === "success" && response.data) {
           setModules(response.data);
         }
