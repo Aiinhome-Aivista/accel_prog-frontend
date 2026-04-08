@@ -86,11 +86,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
       if (response.status === "success" && response.course_id) {
         showSuccess("Enrolled Successfully", response.message);
-        const { course_id, current_module_id, first_subtopic_id } = response;
-        navigate(
-          `/course-learning?course_id=${course_id}&module_id=${current_module_id}&subtopic_id=${first_subtopic_id}`,
-          { replace: true },
-        );
+        // const { course_id, current_module_id, first_subtopic_id } = response;
+        // navigate(
+        //   `/course-learning?course_id=${course_id}&module_id=${current_module_id}&subtopic_id=${first_subtopic_id}`,
+        //   { replace: true },
+        // );
       } else {
         showError(
           "Enrollment Failed",
@@ -495,9 +495,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <div className="flex flex-wrap gap-2">
             <button
               className="px-5 py-2.5 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[13px] font-semibold transition-colors cursor-pointer"
-              onClick={() =>
-                navigate("/course-learning?course_id=1", { replace: true })
-              }
+              // onClick={() =>
+              //   navigate("/course-learning?course_id=1", { replace: true })
+              // }
             >
               Continue Learning
             </button>
