@@ -4,12 +4,8 @@ import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
 import { Home, PlusSquare } from "lucide-react";
-import dashboardData from "./dashboardData.json";
-
-import type { DashboardData } from "./dashboard.models";
 import TiptapEditor from "../../../components/shared/TipTapEditor";
-
-const typedDashboardData = dashboardData as DashboardData;
+import CreateContent from "../../../components/shared/CreateContext";
 
 interface DashboardProps {
   onLogout: () => void;
@@ -36,11 +32,22 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     showSuccess("Saved", "Content saved successfully.");
   };
 
+  const handleClearContent = () => {
+    setContentTitle("");
+    setEditorContent("<p></p>");
+  };
+
+  const sidebarItemClass = (tab: "home" | "create-content") =>
+    `w-full flex items-center gap-3 px-4 py-3 text-left text-[0.9rem] border-l-[3px] transition-all ${
+      activeTab === tab
+        ? "bg-[#E87A2E]/10 text-[#E87A2E] border-l-[#E87A2E] font-semibold"
+        : "text-[#6B6D7B] border-l-transparent hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
+    }`;
+
   return (
     <div className="min-h-screen bg-[#F3EDE7] text-[#2B2D42] font-sans flex flex-col">
       {/* Top Nav */}
-      <nav className="bg-white border-b border-[#E5DDD4] px-6 h-[60px] flex items-center justify-between sticky top-0 z-50 shadow-[0_2px_8px_rgba(43,45,66,.06)]">
-        <button
+<nav className="fixed top-0 left-0 w-full bg-white border-b border-[#E5DDD4] px-6 h-[60px] flex items-center justify-between z-50 shadow-[0_2px_8px_rgba(43,45,66,.06)]">        <button
           type="button"
           className="flex items-center gap-2 bg-transparent border-none cursor-pointer"
           onClick={() => navigate("/admin/admin-dashboard")}
@@ -60,17 +67,19 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             {user?.name || "Admin"}
           </span>
 
-          <div
-            className="w-[34px] h-[34px] rounded-full bg-[#E87A2E]/10 flex items-center justify-center text-[12px] font-bold text-[#E87A2E] cursor-pointer"
+          <button
+            type="button"
+            className="w-[34px] h-[34px] rounded-full bg-[#E87A2E]/10 flex items-center justify-center text-[12px] font-bold text-[#E87A2E] cursor-pointer border-none"
             onClick={onLogout}
             title="Click to Sign Out"
           >
-            {user?.name?.[0].toUpperCase() || "A"}
-          </div>
+            {user?.name?.[0]?.toUpperCase() || "A"}
+          </button>
 
           <button
+            type="button"
             className="md:hidden p-1 flex flex-col gap-1 cursor-pointer bg-transparent border-none"
-            onClick={() => setNavOpen(!navOpen)}
+            onClick={() => setNavOpen((prev) => !prev)}
             aria-label="Toggle sidebar"
           >
             <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
@@ -81,7 +90,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       </nav>
 
       {/* Layout */}
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1 relative pt-[60px]">
         {navOpen && (
           <div
             className="fixed inset-0 bg-black/30 z-40 md:hidden"
@@ -90,11 +99,11 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         )}
 
         {/* Sidebar */}
-        <aside
-          className={`fixed md:static top-[60px] left-0 h-[calc(100vh-60px)] md:h-auto w-[220px] bg-white border-r border-[#E5DDD4] z-50 transition-transform ${
-            navOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-          }`}
-        >
+<aside
+  className={`fixed top-[60px] left-0 h-[calc(100vh-60px)] w-[220px] bg-white border-r border-[#E5DDD4] z-50 transition-transform overflow-y-auto ${
+    navOpen ? "translate-x-0" : "-translate-x-full"
+  } md:translate-x-0`}
+>
           <div className="p-4 border-b border-[#E5DDD4]">
             <h2 className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-[#9597A6]">
               Admin Panel
@@ -111,11 +120,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 setActiveTab("home");
                 setNavOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left text-[0.9rem] border-l-[3px] transition-all ${
-                activeTab === "home"
-                  ? "bg-[#E87A2E]/10 text-[#E87A2E] border-l-[#E87A2E] font-semibold"
-                  : "text-[#6B6D7B] border-l-transparent hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
-              }`}
+              className={sidebarItemClass("home")}
             >
               <Home className="w-4 h-4" />
               <span>Home</span>
@@ -127,11 +132,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 setActiveTab("create-content");
                 setNavOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left text-[0.9rem] border-l-[3px] transition-all ${
-                activeTab === "create-content"
-                  ? "bg-[#E87A2E]/10 text-[#E87A2E] border-l-[#E87A2E] font-semibold"
-                  : "text-[#6B6D7B] border-l-transparent hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
-              }`}
+              className={sidebarItemClass("create-content")}
             >
               <PlusSquare className="w-4 h-4" />
               <span>Create Content</span>
@@ -140,7 +141,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 px-6 py-8 pb-16">
+        <main className="flex-1 px-6 py-8 pb-16 md:ml-[220px]">
           <div className="max-w-[1060px] w-full mx-auto">
             {activeTab === "home" && (
               <>
@@ -165,55 +166,8 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             )}
 
             {activeTab === "create-content" && (
-              <div className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)]">
-                <div className="mb-5">
-                  <h2 className="font-serif text-[1.2rem] text-[#2B2D42] mb-2">
-                    Create Content
-                  </h2>
-                  <p className="text-[13px] text-[#6B6D7B]">
-                    Create lessons, modules, announcements, and rich formatted content.
-                  </p>
-                </div>
 
-                <div className="mb-4">
-                  <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    value={contentTitle}
-                    onChange={(e) => setContentTitle(e.target.value)}
-                    placeholder="Enter content title"
-                    className="w-full rounded-[12px] border border-[#E5DDD4] px-4 py-3 text-[14px] text-[#2B2D42] outline-none focus:border-[#E87A2E]"
-                  />
-                </div>
-
-                <TiptapEditor
-                  content={editorContent}
-                  onChange={setEditorContent}
-                />
-
-                <div className="mt-5 flex gap-3">
-                  <button
-                    type="button"
-                    onClick={handleSaveContent}
-                    className="px-5 py-2.5 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[13px] font-semibold transition-colors cursor-pointer"
-                  >
-                    Save Content
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setContentTitle("");
-                      setEditorContent("<p></p>");
-                    }}
-                    className="px-5 py-2.5 rounded-lg bg-white border border-[#E5DDD4] text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[13px] font-semibold transition-colors cursor-pointer"
-                  >
-                    Clear
-                  </button>
-                </div>
-              </div>
+              <CreateContent />
             )}
           </div>
         </main>
