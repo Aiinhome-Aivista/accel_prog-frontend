@@ -52,7 +52,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   };
 
   const handleEnrollment = async (courseId: string | number) => {
-    const userId = user?.id || 1;
+    if (!user) {
+      showError("Authentication Error", "You must be logged in to enroll.");
+      closeModal();
+      return;
+    }
+    const userId = user.id;
     const roleId = 2; // Default role_id per requirement
 
     try {
@@ -62,9 +67,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         role_id: roleId,
       });
 
-      if (response.status === "success" && response.data) {
+      if (response.status === "success" && response.course_id) {
         showSuccess("Enrolled Successfully", response.message);
-        const { course_id, current_module_id, first_subtopic_id } = response.data;
+        const { course_id, current_module_id, first_subtopic_id } = response;
         navigate(
           `/course-learning?course_id=${course_id}&module_id=${current_module_id}&subtopic_id=${first_subtopic_id}`,
           { replace: true }

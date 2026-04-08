@@ -61,7 +61,7 @@ export interface DashboardKPI {
 }
 
 export interface EnrollmentRequest {
-  user_id: number;
+  user_id?: number;
   course_id: number;
   role_id: number;
 }
@@ -72,13 +72,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export interface EnrollmentData {
+export interface EnrollmentResponse {
+  status: string;
+  message: string;
   course_id: number;
   current_module_id: number;
   first_subtopic_id: number;
 }
 
-export interface EnrollmentResponse extends ApiResponse<EnrollmentData> {}
 export interface EnrolledCourse {
   course_id: number;
   course_name: string;
