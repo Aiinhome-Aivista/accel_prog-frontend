@@ -223,6 +223,7 @@ const CreateContent: React.FC = () => {
   const [subtopicType, setSubtopicType] = useState<SubtopicType | "">("");
   const [editorContent, setEditorContent] = useState("<p></p>");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -367,11 +368,14 @@ const CreateContent: React.FC = () => {
     return Object.keys(nextErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
+    setIsSubmitting(true);
+
+    // Find IDs for the selected names
     const selectedCourseId = allCourses.find(c => c.course_name === courseName)?.course_id;
     const selectedModuleId = allModules.find(m => m.module_name === moduleName && m.course_id === selectedCourseId)?.module_id;
     const selectedSubtopicId = allSubtopics.find(s => s.title === subtopic && s.module_id === selectedModuleId)?.subtopic_id;
@@ -383,11 +387,23 @@ const CreateContent: React.FC = () => {
       subtopic_type: subtopicType,
       content: editorContent,
       mediaFileName: mediaFile?.name ?? null,
+      created_by: 1, // Binding the created_by field as per the request
     };
 
-    console.log("Create Content Payload:", payload);
-    showSuccess("Submitted", "Content submitted successfully.");
-    // Here you would typically call an API to save the content
+    try {
+      const response = await courseService.saveContent(payload);
+      if (response.status === "success") {
+        showSuccess("Content Saved", "Content submitted successfully!");
+        handleCancel(); // Reset form after successful submission
+      } else {
+        showError("Submission Failed", response.message || "Failed to save content.");
+      }
+    } catch (err: any) {
+      console.error("Error saving content:", err);
+      showError("Submission Error", err.message || "An unexpected error occurred during submission.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -533,8 +549,9 @@ const CreateContent: React.FC = () => {
         <button
           type="submit"
           className="px-5 py-2.5 rounded-lg bg-[#E87A2E] hover:bg-[#D06A20] text-white font-semibold transition-colors"
+          disabled={isSubmitting}
         >
-          Submit
+          {isSubmitting ? "Submitting..." : "Submit"}
         </button>
       </div>
     </form>

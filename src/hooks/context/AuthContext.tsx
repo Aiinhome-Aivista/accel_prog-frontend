@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface User {
   name: string;
   email: string;
+  id: number; // Add user ID
 }
 
 interface AuthContextType {
@@ -32,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = (userData: User, token?: string) => {
+  const login = (userData: User, token?: string) => { // userData now includes id
     setUser(userData);
     localStorage.setItem('user_data', JSON.stringify(userData));
     localStorage.setItem('user_name', userData.name); // Keep for compatibility if needed

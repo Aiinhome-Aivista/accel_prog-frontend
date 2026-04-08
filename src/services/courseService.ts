@@ -13,4 +13,11 @@ export const courseService = {
       url: API_ENDPOINTS.content_dropdown,
       method: "GET",
     }),
+
+  saveContent: (data: any) =>
+    apiRequest({
+      url: API_ENDPOINTS.save_content,
+      method: "POST",
+      data,
+    }),
 };

@@ -9,5 +9,6 @@ export const API_ENDPOINTS = {
   GOOGLE_SIGNIN: "/api/v1/google-signin",
   admin_generate_otp: "/api/v1/admin_generate_otp",
   admin_verify_otp: "/api/v1/admin_verify_otp",
-  content_dropdown: "api/v1/get_master_dropdown_data"
+  content_dropdown: "/api/v1/get_master_dropdown_data",
+  save_content: "/api/v1/save_content",
 };
