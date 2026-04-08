@@ -1,6 +1,14 @@
 import { apiRequest } from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
-import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI, EnrolledCoursesResponse, RawDashboardCourse } from "../features/pages/dashboard/dashboard.models";
+import type {
+  EnrollmentRequest,
+  EnrollmentResponse,
+  ApiResponse,
+  DashboardKPI,
+  EnrolledCoursesResponse,
+  RawDashboardCourse,
+  GradesInfoData,
+} from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
   getDashboard: (userId: number) =>
@@ -32,6 +40,12 @@ export const dashboardService = {
   getEnrolledCourses: (userId: number) =>
     apiRequest<EnrolledCoursesResponse>({
       url: `${API_ENDPOINTS.GET_ENROLLED_COURSES}?user_id=${userId}`,
+      method: "GET",
+    }),
+
+  getGradesInfoByUser: (userId: number) =>
+    apiRequest<ApiResponse<GradesInfoData>>({
+      url: `${API_ENDPOINTS.GRADES_INFO_BY_USER}?user_id=${userId}`,
       method: "GET",
     }),
 };
