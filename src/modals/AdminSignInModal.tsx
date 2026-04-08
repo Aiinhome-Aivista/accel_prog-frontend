@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import { auth } from "../Firebase";
 import { authService } from "../services/authService";
-import LogoIcon from '../assets/logogod.svg'
+import LogoIcon from "../assets/logogod.svg";
 import { useToast } from "../utils/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 interface SignInModalProps {
   open: boolean;
   onClose: () => void;
-  onSignIn: (isNewUser: boolean, email: string, name?: string, isAdmin?: boolean) => void;
+  onSignIn: (
+    isNewUser: boolean,
+    email: string,
+    name?: string,
+    isAdmin?: boolean,
+  ) => void;
 }
 
 function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -16,6 +22,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const navigate = useNavigate();
 
   // Reset state when modal closes
   useEffect(() => {
@@ -176,13 +183,11 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             />
           </div>
         )}
-
         <button
-          className="form-submit"
-          onClick={handleVerifyOtp}
-          disabled={isVerifying || !isOtpSent}
+          className="btn-signin btn-signin-fill"
+          onClick={() => navigate("/admin/admin-dashboard")}
         >
-          {isVerifying ? "Verifying..." : "Sign In"}
+          Sign In
         </button>
       </div>
     </div>
