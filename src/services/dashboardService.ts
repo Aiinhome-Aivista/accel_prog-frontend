@@ -18,11 +18,11 @@ export const dashboardService = {
       method: "GET",
     }),
 
-  getModules: (courseId: string | number) =>
+  getModules: (courseId: string | number, userId: number) =>
     apiRequest({
       url: API_ENDPOINTS.MODULES,
       method: "POST",
-      data: { course_id: Number(courseId) },
+      data: { course_id: Number(courseId), user_id: userId },
     }),
 
   getDashboardKPI: (userId: number) =>
