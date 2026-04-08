@@ -194,7 +194,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
           </p>
         </div>
       </div>
-<img className='h-96 w-80 fixed top-56 left-10' src={swamiji} alt="swamiji" />
+<img className='reg-hero-img' src={swamiji} alt="swamiji" />
       <div className="reg-layout">
         
         <div className="reg-sidebar">

@@ -1977,12 +1977,23 @@ footer {
   right: 1rem !important;
 }
 
-/* Mobile: restore full-page scrolling for registration */
+.reg-hero-img {
+  height: 24rem;
+  width: 20rem;
+  position: fixed;
+  top: 14rem;
+  left: 2.5rem;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Mobile optimizations for Registration Page */
 @media (max-width: 768px) {
   .reg-page {
     height: auto;
     min-height: 100vh;
     overflow: auto;
+    background: #F3EDE7 !important;
   }
 
   .reg-layout {
@@ -1990,6 +2001,9 @@ footer {
     flex: none;
     min-height: auto;
     overflow: visible;
+    position: relative;
+    z-index: 10 !important;
+    background: transparent !important;
   }
 
   .reg-sidebar {
@@ -1998,5 +2012,27 @@ footer {
 
   .reg-main {
     overflow-y: visible;
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .reg-form-header,
+  .reg-nav {
+    background: transparent !important;
+    border-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .reg-hero-img {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 85% !important;
+    height: auto !important;
+    opacity: 0.3 !important;
+    z-index: 1 !important;
   }
 }
