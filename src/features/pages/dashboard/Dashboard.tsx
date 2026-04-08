@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 // import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
@@ -66,6 +66,201 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   };
 
+  const fetchDashboardData = useCallback(async () => {
+    try {
+      const userId = user?.id || 4;
+      setIsLoadingAvailable(true);
+      const response = await dashboardService.getDashboard(userId);
+      if (response.status === "success" && Array.isArray(response.data)) {
+        const mappedCourses = response.data.map(
+          (course: RawDashboardCourse, index: number) => {
+            const styles = [
+              {
+                bg: "rgba(232,122,46,.1)",
+                color: "#E87A2E",
+                banner: "linear-gradient(to right, #E87A2E, #D06A20)",
+              },
+              {
+                bg: "rgba(66,133,244,.1)",
+                color: "#4285F4",
+                banner: "linear-gradient(to right, #4285F4, #2A66D8)",
+              },
+              {
+                bg: "rgba(52,168,83,.1)",
+                color: "#34A853",
+                banner: "linear-gradient(to right, #34A853, #2B8A45)",
+              },
+              {
+                bg: "rgba(251,188,5,.1)",
+                color: "#B88E00",
+                banner: "linear-gradient(to right, #FBBC05, #D4AF37)",
+              },
+            ];
+            const style = styles[index % styles.length];
+
+            return {
+              id: course.course_id.toString(),
+              title: course.course_name,
+              badge: course.course_label,
+              description: course.description,
+              features: course.features || [],
+              meta: [
+                `⏱️ ${course.total_weeks} Weeks`,
+                `📂 ${course.total_subtopics} Subtopics`,
+                `🧩 ${course.capstone}`,
+              ],
+              badgeBg: style.bg,
+              badgeColor: style.color,
+              bannerGradient: style.banner,
+            };
+          },
+        );
+        setAvailableCourses(mappedCourses);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setIsLoadingAvailable(false);
+    }
+  }, [user]);
+
+  const fetchKPI = useCallback(async () => {
+    const userId = user?.id || 2;
+    try {
+      const response = await dashboardService.getDashboardKPI(userId);
+      if (response.status === "success" && response.data) {
+        const kpi: DashboardKPI = response.data;
+        setStats((prevStats) =>
+          prevStats.map((s) => {
+            if (s.label === "In Progress")
+              return { ...s, value: kpi.in_progress_count.toString() };
+            if (s.label === "Completed")
+              return { ...s, value: kpi.completed_count.toString() };
+            if (s.label === "Day Streak")
+              return { ...s, value: kpi.streak_days.toString() };
+            if (s.label === "Progress")
+              return { ...s, value: `${kpi.overall_progress}%` };
+            return s;
+          }),
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching Dashboard KPI:", error);
+    }
+  }, [user]);
+
+  const fetchEnrolledCourses = useCallback(async () => {
+    const userId = user?.id || 1;
+    setIsLoadingEnrolled(true);
+    try {
+      const mapCourses = (coursesData: any[]) => {
+        return coursesData.map((course, index) => {
+          const styles = [
+            {
+              bg: "rgba(232,122,46,.1)",
+              color: "#E87A2E",
+              banner: "linear-gradient(to right, #E87A2E, #D06A20)",
+              progress: "#E87A2E",
+            },
+            {
+              bg: "rgba(66,133,244,.1)",
+              color: "#4285F4",
+              banner: "linear-gradient(to right, #4285F4, #2A66D8)",
+              progress: "#4285F4",
+            },
+            {
+              bg: "rgba(52,168,83,.1)",
+              color: "#34A853",
+              banner: "linear-gradient(to right, #34A853, #2B8A45)",
+              progress: "#34A853",
+            },
+            {
+              bg: "rgba(251,188,5,.1)",
+              color: "#B88E00",
+              banner: "linear-gradient(to right, #FBBC05, #D4AF37)",
+              progress: "#FBBC05",
+            },
+          ];
+          const style = styles[index % styles.length];
+
+          return {
+            id: course.course_id.toString(),
+            title: course.course_name,
+            badge: course.status,
+            description: course.description,
+            meta: [
+              `⏱️ ${course.total_weeks} Weeks`,
+              `📂 ${course.total_subtopics} Subtopics`,
+              `🧩 ${course.total_projects} Project`,
+            ],
+            progress: course.progress_pct,
+            progressText: `${course.progress_pct}% Completed`,
+            progressColor: style.progress,
+            badgeBg: style.bg,
+            badgeColor: style.color,
+            bannerGradient: style.banner,
+          };
+        });
+      };
+
+      try {
+        const enrolledRes = await dashboardService.getEnrolledCourses(userId);
+        if (
+          enrolledRes.status === "success" &&
+          Array.isArray(enrolledRes.data)
+        ) {
+          setEnrolledCourses(mapCourses(enrolledRes.data));
+        } else {
+          setEnrolledCourses([]);
+        }
+      } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+        setEnrolledCourses([]);
+      }
+
+      try {
+        const completedRes =
+          await dashboardService.getCompletedCourses(userId);
+        if (
+          completedRes.status === "success" &&
+          Array.isArray(completedRes.data)
+        ) {
+          setCompletedEnrolledCourses(mapCourses(completedRes.data));
+        } else {
+          setCompletedEnrolledCourses([]);
+        }
+      } catch (error) {
+        console.error("Error fetching completed courses:", error);
+        setCompletedEnrolledCourses([]);
+      }
+    } finally {
+      setIsLoadingEnrolled(false);
+    }
+  }, [user]);
+
+  const fetchRecentActivity = useCallback(async () => {
+    const userId = user?.id || 1;
+    setIsLoadingActivities(true);
+    try {
+      const response = await dashboardService.getUserRecentActivity(userId);
+      if (response.status === "success" && response.data) {
+        setActivities(response.data.activities || []);
+        setActivityMessage(response.data.message || "");
+      }
+    } catch (error) {
+      console.error("Error fetching recent activity:", error);
+    } finally {
+      setIsLoadingActivities(false);
+    }
+  }, [user]);
+
+  const refreshAllData = useCallback(() => {
+    fetchDashboardData();
+    fetchKPI();
+    fetchEnrolledCourses();
+    fetchRecentActivity();
+  }, [fetchDashboardData, fetchKPI, fetchEnrolledCourses, fetchRecentActivity]);
+
   const handleEnrollment = async (courseId: string | number) => {
     if (!user) {
       showError("Authentication Error", "You must be logged in to enroll.");
@@ -86,6 +281,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
       if (response.status === "success" && response.course_id) {
         showSuccess("Enrolled Successfully", response.message);
+        
+        // Refresh all data to update My Courses and Browse sections
+        refreshAllData();
+
+        // Scroll to My Courses section
+        setTimeout(() => {
+          const myCoursesSection = document.getElementById("myCourses");
+          if (myCoursesSection) {
+            myCoursesSection.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 500);
+
         // const { course_id, current_module_id, first_subtopic_id } = response;
         // navigate(
         //   `/course-learning?course_id=${course_id}&module_id=${current_module_id}&subtopic_id=${first_subtopic_id}`,
@@ -151,217 +358,28 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   }, []);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const userId = user?.id || 4; // Using 4 as a fallback from your example
-        setIsLoadingAvailable(true);
-        const response = await dashboardService.getDashboard(userId);
-        if (response.status === "success" && Array.isArray(response.data)) {
-          const mappedCourses = response.data.map(
-            (course: RawDashboardCourse, index: number) => {
-              const styles = [
-                {
-                  bg: "rgba(232,122,46,.1)",
-                  color: "#E87A2E",
-                  banner: "linear-gradient(to right, #E87A2E, #D06A20)",
-                },
-                {
-                  bg: "rgba(66,133,244,.1)",
-                  color: "#4285F4",
-                  banner: "linear-gradient(to right, #4285F4, #2A66D8)",
-                },
-                {
-                  bg: "rgba(52,168,83,.1)",
-                  color: "#34A853",
-                  banner: "linear-gradient(to right, #34A853, #2B8A45)",
-                },
-                {
-                  bg: "rgba(251,188,5,.1)",
-                  color: "#B88E00",
-                  banner: "linear-gradient(to right, #FBBC05, #D4AF37)",
-                },
-              ];
-              const style = styles[index % styles.length];
-
-              return {
-                id: course.course_id.toString(),
-                title: course.course_name,
-                badge: course.course_label,
-                description: course.description,
-                features: course.features || [],
-                meta: [
-                  `⏱️ ${course.total_weeks} Weeks`,
-                  `📂 ${course.total_subtopics} Subtopics`,
-                  `🧩 ${course.capstone}`,
-                ],
-                badgeBg: style.bg,
-                badgeColor: style.color,
-                bannerGradient: style.banner,
-              };
-            },
-          );
-          setAvailableCourses(mappedCourses);
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      } finally {
-        setIsLoadingAvailable(false);
-      }
-    };
-
     if (user) {
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user, fetchDashboardData]);
 
   useEffect(() => {
-    const fetchKPI = async () => {
-      // Use fallback ID 2 if user ID is not available (for demonstration/testing as agreed)
-      const userId = user?.id || 2;
-      try {
-        const response = await dashboardService.getDashboardKPI(userId);
-        if (response.status === "success" && response.data) {
-          const kpi: DashboardKPI = response.data;
-          setStats((prevStats) =>
-            prevStats.map((s) => {
-              if (s.label === "In Progress")
-                return { ...s, value: kpi.in_progress_count.toString() };
-              if (s.label === "Completed")
-                return { ...s, value: kpi.completed_count.toString() };
-              if (s.label === "Day Streak")
-                return { ...s, value: kpi.streak_days.toString() };
-              if (s.label === "Progress")
-                return { ...s, value: `${kpi.overall_progress}%` };
-              return s;
-            }),
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching Dashboard KPI:", error);
-      }
-    };
-
     if (user) {
       fetchKPI();
     }
-  }, [user]);
+  }, [user, fetchKPI]);
 
   useEffect(() => {
-    const fetchEnrolledCourses = async () => {
-      const userId = user?.id || 1;
-      setIsLoadingEnrolled(true);
-      try {
-        const mapCourses = (coursesData: any[]) => {
-          return coursesData.map((course, index) => {
-            const styles = [
-              {
-                bg: "rgba(232,122,46,.1)",
-                color: "#E87A2E",
-                banner: "linear-gradient(to right, #E87A2E, #D06A20)",
-                progress: "#E87A2E",
-              },
-              {
-                bg: "rgba(66,133,244,.1)",
-                color: "#4285F4",
-                banner: "linear-gradient(to right, #4285F4, #2A66D8)",
-                progress: "#4285F4",
-              },
-              {
-                bg: "rgba(52,168,83,.1)",
-                color: "#34A853",
-                banner: "linear-gradient(to right, #34A853, #2B8A45)",
-                progress: "#34A853",
-              },
-              {
-                bg: "rgba(251,188,5,.1)",
-                color: "#B88E00",
-                banner: "linear-gradient(to right, #FBBC05, #D4AF37)",
-                progress: "#FBBC05",
-              },
-            ];
-            const style = styles[index % styles.length];
-
-            return {
-              id: course.course_id.toString(),
-              title: course.course_name,
-              badge: course.status,
-              description: course.description,
-              meta: [
-                `⏱️ ${course.total_weeks} Weeks`,
-                `📂 ${course.total_subtopics} Subtopics`,
-                `🧩 ${course.total_projects} Project`,
-              ],
-              progress: course.progress_pct,
-              progressText: `${course.progress_pct}% Completed`,
-              progressColor: style.progress,
-              badgeBg: style.bg,
-              badgeColor: style.color,
-              bannerGradient: style.banner,
-            };
-          });
-        };
-
-        try {
-          const enrolledRes = await dashboardService.getEnrolledCourses(userId);
-          if (
-            enrolledRes.status === "success" &&
-            Array.isArray(enrolledRes.data)
-          ) {
-            setEnrolledCourses(mapCourses(enrolledRes.data));
-          } else {
-            setEnrolledCourses([]);
-          }
-        } catch (error) {
-          console.error("Error fetching enrolled courses:", error);
-          setEnrolledCourses([]);
-        }
-
-        try {
-          const completedRes =
-            await dashboardService.getCompletedCourses(userId);
-          if (
-            completedRes.status === "success" &&
-            Array.isArray(completedRes.data)
-          ) {
-            setCompletedEnrolledCourses(mapCourses(completedRes.data));
-          } else {
-            setCompletedEnrolledCourses([]);
-          }
-        } catch (error) {
-          console.error("Error fetching completed courses:", error);
-          setCompletedEnrolledCourses([]);
-        }
-      } finally {
-        setIsLoadingEnrolled(false);
-      }
-    };
-
     if (user) {
       fetchEnrolledCourses();
     }
-  }, [user]);
+  }, [user, fetchEnrolledCourses]);
 
   useEffect(() => {
-    const fetchRecentActivity = async () => {
-      const userId = user?.id || 1;
-      setIsLoadingActivities(true);
-      try {
-        const response = await dashboardService.getUserRecentActivity(userId);
-        if (response.status === "success" && response.data) {
-          setActivities(response.data.activities || []);
-          setActivityMessage(response.data.message || "");
-        }
-      } catch (error) {
-        console.error("Error fetching recent activity:", error);
-      } finally {
-        setIsLoadingActivities(false);
-      }
-    };
-
     if (user) {
       fetchRecentActivity();
     }
-  }, [user]);
+  }, [user, fetchRecentActivity]);
 
   return (
     <div className="min-h-screen bg-[#F3EDE7] text-[#2B2D42] flex flex-col">
