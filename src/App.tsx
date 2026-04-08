@@ -25,6 +25,7 @@ import Dashboard from "./features/pages/dashboard/Dashboard";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import type { CourseItem } from "./types/registration";
 import CourseLearning from "./features/pages/course-learning/course-learning";
+import AdminSignInModal from "./modals/AdminSignInModal";
 
 // Effects component to handle route-based side effects like animations
 function RouteEffects() {
@@ -68,9 +69,20 @@ function RouteEffects() {
 
 function AppContent() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isAdminSignInOpen, setIsAdminSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [courseData, setCourseData] = useState<CourseItem[]>([]);
   const [navOpen, setNavOpen] = useState(false);
+
+  const location = useLocation();
+
+  useEffect(() => {
+  if (location.pathname === "/admin") {
+    setIsAdminSignInOpen(true);
+  } else {
+    setIsAdminSignInOpen(false);
+  }
+}, [location.pathname]);
 
   const { login, logout } = useAuth();
   const { resetRegistration } = useRegistration();
@@ -128,6 +140,13 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
+        {/* admin signin */}
+        <Route 
+          path="/admin"
+          element={null}
+        />
+
         <Route
           path="/dashboard"
           element={
@@ -143,6 +162,15 @@ function AppContent() {
       <SignInModal
         open={isSignInOpen}
         onClose={() => setIsSignInOpen(false)}
+        onSignIn={handleSignIn}
+      />
+
+      <AdminSignInModal 
+        open={isAdminSignInOpen}
+        onClose={() => {
+          setIsAdminSignInOpen(false);
+          navigate("/");
+        }}
         onSignIn={handleSignIn}
       />
 
