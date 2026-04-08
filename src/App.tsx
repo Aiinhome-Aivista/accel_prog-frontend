@@ -26,6 +26,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import type { CourseItem } from "./types/registration";
 import CourseLearning from "./features/pages/course-learning/course-learning";
 import AdminSignInModal from "./modals/AdminSignInModal";
+import AdminDashboard from "./features/pages/dashboard/AdminDashboard";
 
 // Effects component to handle route-based side effects like animations
 function RouteEffects() {
@@ -89,11 +90,16 @@ function AppContent() {
 
   const navigate = useNavigate();
 
-  const handleSignIn = (isNewUser: boolean, email: string, name?: string) => {
+  const handleSignIn = (isNewUser: boolean, email: string, name?: string, isAdmin?: boolean) => {
     setIsSignInOpen(false);
     if (name) {
       login({ name, email });
     }
+
+      if (isAdmin) {
+    navigate("/admin/admin-dashboard");
+    return;
+  }
 
     if (isNewUser) {
       navigate("/registration");
@@ -147,6 +153,9 @@ function AppContent() {
           element={null}
         />
 
+        <Route path="/admin/admin-dashboard" element={<AdminDashboard
+        onLogout={handleLogout} />} />
+
         <Route
           path="/dashboard"
           element={
@@ -173,6 +182,8 @@ function AppContent() {
         }}
         onSignIn={handleSignIn}
       />
+
+
 
       <DetailModal
         courseIndex={courseIndex}

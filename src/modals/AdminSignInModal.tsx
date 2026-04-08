@@ -7,7 +7,7 @@ import { useToast } from "../utils/ToastContext";
 interface SignInModalProps {
   open: boolean;
   onClose: () => void;
-  onSignIn: (isNewUser: boolean, email: string, name?: string) => void;
+  onSignIn: (isNewUser: boolean, email: string, name?: string, isAdmin?: boolean) => void;
 }
 
 function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
@@ -72,7 +72,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           response.is_new_user === false ||
           response.data?.is_new_user === false;
         const name = response.data?.full_name || "User";
-        onSignIn(!isExistingUser, email, name);
+        onSignIn(!isExistingUser, email, name, true);
       } else {
         alert(response.message || "Invalid OTP code.");
       }
