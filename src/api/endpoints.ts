@@ -13,4 +13,5 @@ export const API_ENDPOINTS = {
   COURSE_ENROLLMENT: "/api/v1/course_enrollment",
   GET_ENROLLED_COURSES: "/api/v1/get-enrolled-courses-by-user-id",
   GRADES_INFO_BY_USER: "/api/v1/grades_info_by_user",
+  GET_COMPLETED_COURSES: "/api/v1/get-completed-courses-by-user-id",
 };
