@@ -1,6 +1,5 @@
 import type {
   WeekData,
-  Flashcard,
   Person,
   Announcement,
 } from "./course-learning.models";
