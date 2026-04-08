@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import type { ChangeEvent } from "react";
+import { useEffect, useRef } from "react";
 import { useToast } from "../../../utils/ToastContext";
 import { useRegistration } from "../../../hooks/context/RegistrationContext";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import { REG_SCHEMA } from "../../../data/registrationSchema";
-import swamiji from '../../../assets/hero.svg';
+import swamiji from "../../../assets/hero.svg";
 import type {
   FieldSchema,
   FormValue,
@@ -71,7 +72,11 @@ function renderField(
           <input
             type="text"
             placeholder="Please specify..."
-            value={typeof formData[`${field.id}_other`] === "string" ? formData[`${field.id}_other`] : ""}
+            value={
+              typeof formData[`${field.id}_other`] === "string"
+                ? formData[`${field.id}_other`]
+                : ""
+            }
             onChange={(e) => onUpdateField(`${field.id}_other`, e.target.value)}
             className="mt-2"
           />
@@ -100,7 +105,11 @@ function renderField(
           <input
             type="text"
             placeholder="Please specify..."
-            value={typeof formData[`${field.id}_other`] === "string" ? formData[`${field.id}_other`] : ""}
+            value={
+              typeof formData[`${field.id}_other`] === "string"
+                ? formData[`${field.id}_other`]
+                : ""
+            }
             onChange={(e) => onUpdateField(`${field.id}_other`, e.target.value)}
             className="mt-1"
           />
@@ -155,8 +164,16 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
     updateField,
     toggleChip,
     submitForm,
-    isSectionComplete
+    isSectionComplete,
   } = useRegistration();
+
+  const formBodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (formBodyRef.current) {
+      formBodyRef.current.scrollTop = 0;
+    }
+  }, [currentSection]);
 
   const section = REG_SCHEMA[currentSection];
 
@@ -194,9 +211,8 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
           </p>
         </div>
       </div>
-      <img className='reg-hero-img' src={swamiji} alt="swamiji" />
+      <img className="reg-hero-img" src={swamiji} alt="swamiji" />
       <div className="reg-layout">
-
         <div className="reg-sidebar">
           <div className="reg-progress-pct">{progressPct}% Complete</div>
           <div className="reg-progress-bar">
@@ -250,7 +266,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 <p>{section.subtitle}</p>
               </div>
 
-              <div className="reg-form-body">
+              <div className="reg-form-body" ref={formBodyRef}>
                 {currentSection === 0 ? (
                   <div className="reg-import">
                     <label className="reg-import-btn">
@@ -334,7 +350,13 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                         {field.label}
                         {field.required ? <span className="req">*</span> : null}
                       </label>
-                      {renderField(field, value, updateField, toggleChip, formData)}
+                      {renderField(
+                        field,
+                        value,
+                        updateField,
+                        toggleChip,
+                        formData,
+                      )}
                       {field.hint ? (
                         <div className="hint">{field.hint}</div>
                       ) : null}
@@ -417,7 +439,11 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
               </div>
               <h2>You're On the Radar!</h2>
               <p>
-                Thanks for sharing your story with us. Our team is now crafting the perfect learning path just for you. We'll notify you shortly with your course details, schedule, and everything you need to hit the ground running. In the mean time explore & subscribe to our pre recommended courses which may suite your need.
+                Thanks for sharing your story with us. Our team is now crafting
+                the perfect learning path just for you. We'll notify you shortly
+                with your course details, schedule, and everything you need to
+                hit the ground running. In the mean time explore & subscribe to
+                our pre recommended courses which may suite your need.
               </p>
               <p
                 style={{
@@ -440,7 +466,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                   borderRadius: "10px",
                   fontWeight: 600,
                 }}
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate("/dashboard")}
               >
                 Go to Dashboard
               </button>
@@ -453,4 +479,3 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
 }
 
 export default RegistrationPage;
-

@@ -1334,10 +1334,11 @@ footer {
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   max-width: 720px; /* control readable width */
+  height: 100%;
+  min-height: 0;
 }
 
 .reg-form-header {
@@ -1364,6 +1365,9 @@ footer {
 
 .reg-form-body {
   padding: 1.5rem 2rem 2rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .reg-import {
@@ -1621,6 +1625,7 @@ footer {
   padding: 1.5rem 2rem;
   border-top: 1px solid var(--border);
   background: var(--bg-light);
+  flex-shrink: 0;
 }
 
 .reg-nav-prev {
