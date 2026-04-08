@@ -11,6 +11,9 @@ import type {
   RecentActivityResponse,
   Flashcard,
 } from "../features/pages/dashboard/dashboard.models";
+import type {
+  CourseLearningContent,
+} from "../features/pages/course-learning/course-learning.models";
 
 export const dashboardService = {
   getDashboard: (userId: number) =>
@@ -67,5 +70,11 @@ export const dashboardService = {
     apiRequest<ApiResponse<Flashcard[]>>({
       url: API_ENDPOINTS.GET_FLASHCARDS,
       method: "GET",
+    }),
+  getCourseLearningContent: (courseId: number, userId: number) =>
+    apiRequest<ApiResponse<CourseLearningContent>>({
+      url: API_ENDPOINTS.GET_COURSE_LEARNING_CONTENT,
+      method: "POST",
+      data: { course_id: courseId, user_id: userId },
     }),
 };

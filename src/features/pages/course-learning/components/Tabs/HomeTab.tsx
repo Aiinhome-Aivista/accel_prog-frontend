@@ -1,12 +1,14 @@
 import React from "react";
-import { WK } from "../../course-learning.data";
+import type { WeekData } from "../../course-learning.models";
 
 interface HomeTabProps {
+  weeks: WeekData[];
   goToCourseContent: (weekIndex: number) => void;
   done: Set<string>;
 }
 
 export const HomeTab: React.FC<HomeTabProps> = ({
+  weeks,
   goToCourseContent,
   done,
 }) => {
@@ -89,7 +91,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </h2>
         </div>
         <div className="p-[1rem_1.2rem]">
-          {WK.map((w, i) => {
+          {weeks.map((w, i) => {
             const isWeekComplete = w.subs.every((s) => done.has(s.id));
             const doneCt = w.subs.filter((s) => done.has(s.id)).length;
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { WK } from "../../course-learning.data";
+import type { WeekData } from "../../course-learning.models";
 
 import {
   UploadCloud,
@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 interface CourseContentTabProps {
+  weeks: WeekData[];
   curW: number;
   setCurW: (w: number) => void;
   done: Set<string>;
@@ -20,6 +21,7 @@ interface CourseContentTabProps {
 }
 
 export const CourseContentTab: React.FC<CourseContentTabProps> = ({
+  weeks,
   curW,
   setCurW,
   done,
@@ -40,12 +42,13 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     setIsEditing(false);
   }, [curW]);
 
-  const w = WK[curW];
+  if (!weeks || weeks.length === 0) return null;
+  const w = weeks[curW];
 
   if (!w.ul) {
     return (
       <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
-        <WeekTabs w={WK} curW={curW} setCurW={setCurW} />
+        <WeekTabs w={weeks} curW={curW} setCurW={setCurW} />
         <div className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[1rem]">
           <div className="p-[2rem] text-center text-[#9597A6]">
             <div className="text-[1.6rem] mb-[0.5rem]">🔒</div>
@@ -63,9 +66,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   const sub = w.subs[curS];
   const isDone = done.has(sub.id);
+
   const isSubLocked = (wi: number, si: number) => {
-    if (si === 0) return !WK[wi].ul;
-    const prev = WK[wi].subs[si - 1];
+    if (si === 0) return !weeks[wi].ul;
+    const prev = weeks[wi].subs[si - 1];
     return !done.has(prev.id);
   };
   const lk = isSubLocked(curW, curS);
@@ -115,7 +119,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   return (
     <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
-      <WeekTabs w={WK} curW={curW} setCurW={setCurW} />
+      <WeekTabs w={weeks} curW={curW} setCurW={setCurW} />
 
       <div
         className="text-[1.3rem] text-[#2B2D42] mb-[1.2rem] font-medium"
@@ -552,7 +556,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 };
 
 const WeekTabs: React.FC<{
-  w: typeof WK;
+  w: WeekData[];
   curW: number;
   setCurW: (i: number) => void;
 }> = ({ w, curW, setCurW }) => (

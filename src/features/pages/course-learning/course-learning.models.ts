@@ -75,3 +75,38 @@ export interface Announcement {
   tx: string;
   tm: string;
 }
+
+export interface ApiContent {
+  data: string | null;
+  type: string;
+}
+
+export interface ApiTopic {
+  content: ApiContent;
+  is_completed: boolean;
+  subtitle: string | null;
+  subtopic_id: number;
+  title: string;
+  type: "reading" | "video" | "assessment" | "discussion" | "project";
+}
+
+export interface ApiProgress {
+  completed_topics: number;
+  percentage: number;
+  total_topics: number;
+}
+
+export interface ApiWeek {
+  is_locked: boolean;
+  module_id: number;
+  module_name: string;
+  progress: ApiProgress | null;
+  topics: ApiTopic[];
+  week: number;
+}
+
+export interface CourseLearningContent {
+  course_id: number;
+  course_name: string;
+  weeks: ApiWeek[];
+}

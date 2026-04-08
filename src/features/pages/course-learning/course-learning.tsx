@@ -10,11 +10,13 @@ import { PeopleTab } from './components/Tabs/PeopleTab';
 import { AnnouncementsTab } from './components/Tabs/AnnouncementsTab';
 import { FlashcardsTab } from './components/Tabs/FlashcardsTab';
 import { SupportTab } from './components/Tabs/SupportTab';
-import { WK } from './course-learning.data';
+import { WK as staticWK } from './course-learning.data';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../hooks/context/AuthContext';
 import { useDashboard } from '../../../hooks/context/DashboardContext';
 import BrandLogo from '../../../components/shared/BrandLogo';
+import { dashboardService } from '../../../services/dashboardService';
+import type { ApiWeek, WeekData } from './course-learning.models';
 const CourseLearning: React.FC = () => {
   const { user } = useAuth();
   const { kpiData } = useDashboard();
@@ -26,6 +28,65 @@ const CourseLearning: React.FC = () => {
   // Cross-tab state
   const [done, setDone] = useState<Set<string>>(new Set());
   const [curW, setCurW] = useState(0);
+  const [weeks, setWeeks] = useState<WeekData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      const courseId = searchParams.get("course_id");
+      const userId = user?.id;
+
+      if (courseId && userId) {
+        try {
+          setIsLoading(true);
+          const response = await dashboardService.getCourseLearningContent(Number(courseId), userId);
+          if (response.status === "success" && response.data) {
+            const mappedWeeks: WeekData[] = response.data.weeks.map((apiWeek: ApiWeek) => ({
+              id: `w${apiWeek.week}`,
+              t: apiWeek.module_name,
+              short: `Week ${apiWeek.week}`,
+              ul: !apiWeek.is_locked,
+              color: apiWeek.week === 1 ? "#E87A2E" : apiWeek.week === 2 ? "#E8A040" : apiWeek.week === 3 ? "#66BB6A" : "#4CAF50",
+              topics: apiWeek.topics.map(t => ({
+                d: `Topic ${t.subtopic_id}`,
+                t: t.title,
+                n: t.subtitle || "",
+              })),
+              subs: apiWeek.topics.map(t => ({
+                id: `w${apiWeek.week}s${t.subtopic_id}`,
+                type: (t.type === 'assessment' ? 'assess' : t.type) as any,
+                title: t.title,
+                content: t.content.data || "",
+                // Preserve other fields if needed, simplified for now
+              }))
+            }));
+            setWeeks(mappedWeeks);
+            
+            // Initialize 'done' set from API progress if available
+            const initialDone = new Set<string>();
+            response.data.weeks.forEach(w => {
+              w.topics.forEach(t => {
+                if (t.is_completed) {
+                  initialDone.add(`w${w.week}s${t.subtopic_id}`);
+                }
+              });
+            });
+            setDone(initialDone);
+          }
+        } catch (error) {
+          console.error("Error fetching course content:", error);
+          setWeeks(staticWK); // Fallback to static data
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setWeeks(staticWK);
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, [searchParams, user]);
 
   // Expose function to mark done globally so it cascades logic
   const markDone = (id: string) => {
@@ -38,22 +99,35 @@ const CourseLearning: React.FC = () => {
 
   // Check globals unlocking
   useEffect(() => {
-    for (let i = 0; i < WK.length - 1; i++) {
-      const isWeekComplete = WK[i].subs.every(s => done.has(s.id));
-      if (isWeekComplete) {
-        WK[i + 1].ul = true;
+    if (weeks.length === 0) return;
+    setWeeks(prev => {
+      const next = [...prev];
+      for (let i = 0; i < next.length - 1; i++) {
+        const isWeekComplete = next[i].subs.every(s => done.has(s.id));
+        if (isWeekComplete) {
+          next[i + 1].ul = true;
+        }
       }
-    }
+      return next;
+    });
   }, [done]);
 
   const renderActiveTab = () => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-full">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E87A2E]"></div>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case 'home':
-        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} done={done} />;
+        return <HomeTab weeks={weeks} goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} done={done} />;
       case 'modules':
         return <ModulesTab />;
       case 'learn':
-        return <CourseContentTab curW={curW} setCurW={setCurW} done={done} markDone={markDone} />;
+        return <CourseContentTab weeks={weeks} curW={curW} setCurW={setCurW} done={done} markDone={markDone} />;
       case 'grades':
         return <GradesTab done={done} />;
       case 'people':
@@ -65,7 +139,7 @@ const CourseLearning: React.FC = () => {
       case 'support':
         return <SupportTab />;
       default:
-        return <HomeTab goToCourseContent={(w) => { setCurW(w); setActiveTab('learn'); }} done={done} />;
+        return <HomeTab weeks={weeks} goToCourseContent={(w) => { setCurW(w); setActiveTab('learn'); }} done={done} />;
     }
   };
 
