@@ -7,7 +7,7 @@ import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from '../../../components/shared/BrandLogo';
-import type { DashboardData, CourseData, DashboardKPI, StatItem, EnrollmentRequest, EnrollmentResponse } from "./dashboard.models";
+import type { DashboardData, CourseData, DashboardKPI, StatItem, EnrollmentRequest, EnrollmentResponse, RawDashboardCourse } from "./dashboard.models";
 
 const typedDashboardData = dashboardData as DashboardData;
 
@@ -124,9 +124,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await dashboardService.getDashboard();
+        const userId = user?.id || 4; // Using 4 as a fallback from your example
+        const response = await dashboardService.getDashboard(userId);
         if (response.status === "success" && Array.isArray(response.data)) {
-          const mappedCourses = response.data.map((course: any, index: number) => {
+          const mappedCourses = response.data.map((course: RawDashboardCourse, index: number) => {
             const styles = [
               { bg: "rgba(232,122,46,.1)", color: "#E87A2E", banner: "linear-gradient(to right, #E87A2E, #D06A20)" },
               { bg: "rgba(66,133,244,.1)", color: "#4285F4", banner: "linear-gradient(to right, #4285F4, #2A66D8)" },
@@ -136,7 +137,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             const style = styles[index % styles.length];
 
             return {
-              id: course.course_id,
+              id: course.course_id.toString(),
               title: course.course_name,
               badge: course.course_label,
               description: course.description,
@@ -159,8 +160,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       }
     };
 
-    fetchDashboardData();
-  }, []);
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchKPI = async () => {

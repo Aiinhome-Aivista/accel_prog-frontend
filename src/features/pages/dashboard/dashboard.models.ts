@@ -42,6 +42,17 @@ export interface DashboardData {
   activities: ActivityData[];
 }
 
+export interface RawDashboardCourse {
+  course_id: number;
+  course_name: string;
+  description: string;
+  course_label: string;
+  features: string[];
+  total_weeks: number;
+  total_subtopics: number;
+  capstone: string;
+}
+
 export interface DashboardKPI {
   completed_count: number;
   in_progress_count: number;

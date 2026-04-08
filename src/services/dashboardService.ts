@@ -1,11 +1,11 @@
 import { apiRequest } from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
-import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI, EnrolledCoursesResponse } from "../features/pages/dashboard/dashboard.models";
+import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI, EnrolledCoursesResponse, RawDashboardCourse } from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
-  getDashboard: () =>
-    apiRequest<ApiResponse<any[]>>({
-      url: API_ENDPOINTS.DASHBOARD,
+  getDashboard: (userId: number) =>
+    apiRequest<ApiResponse<RawDashboardCourse[]>>({
+      url: `${API_ENDPOINTS.DASHBOARD}?user_id=${userId}`,
       method: "GET",
     }),
 
