@@ -4,10 +4,10 @@
     "streakText": "You're on a 5-day streak. Keep the momentum going — your next sub-topic awaits."
   },
   "stats": [
-    { "id": 1, "icon": "📚", "iconBg": "rgba(232,122,46,.12)", "value": "1", "label": "In Progress" },
+    { "id": 1, "icon": "📚", "iconBg": "rgba(232,122,46,.12)", "value": "0", "label": "In Progress" },
     { "id": 2, "icon": "✅", "iconBg": "#E8F5E9", "value": "0", "label": "Completed" },
-    { "id": 3, "icon": "🏆", "iconBg": "rgba(66,133,244,.1)", "value": "5", "label": "Day Streak" },
-    { "id": 4, "icon": "📊", "iconBg": "rgba(156,39,176,.08)", "value": "42%", "label": "Progress" }
+    { "id": 3, "icon": "🏆", "iconBg": "rgba(66,133,244,.1)", "value": "0", "label": "Day Streak" },
+    { "id": 4, "icon": "📊", "iconBg": "rgba(156,39,176,.08)", "value": "0%", "label": "Progress" }
   ],
   "inProgressCourses": [
     {

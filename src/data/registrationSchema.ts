@@ -273,7 +273,7 @@ export const REG_SCHEMA: SectionSchema[] = [
   },
   {
     id: "psychometric",
-    title: "Blue Sky Ai",
+    title: "Blue Sky AI",
     subtitle: "We'd love to understand how you think",
     fields: [
       {

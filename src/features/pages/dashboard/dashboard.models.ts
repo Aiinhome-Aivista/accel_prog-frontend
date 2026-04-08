@@ -42,6 +42,17 @@ export interface DashboardData {
   activities: ActivityData[];
 }
 
+export interface RawDashboardCourse {
+  course_id: number;
+  course_name: string;
+  description: string;
+  course_label: string;
+  features: string[];
+  total_weeks: number;
+  total_subtopics: number;
+  capstone: string;
+}
+
 export interface DashboardKPI {
   completed_count: number;
   in_progress_count: number;
@@ -50,7 +61,7 @@ export interface DashboardKPI {
 }
 
 export interface EnrollmentRequest {
-  user_id: number;
+  user_id?: number;
   course_id: number;
   role_id: number;
 }
@@ -61,10 +72,55 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export interface EnrollmentData {
+export interface EnrollmentResponse {
+  status: string;
+  message: string;
   course_id: number;
   current_module_id: number;
   first_subtopic_id: number;
 }
 
-export interface EnrollmentResponse extends ApiResponse<EnrollmentData> {}
+export interface EnrolledCourse {
+  course_id: number;
+  course_name: string;
+  description: string;
+  progress_pct: number;
+  status: string;
+  total_projects: number;
+  total_subtopics: number;
+  total_weeks: number;
+}
+
+export interface EnrolledCoursesResponse extends ApiResponse<EnrolledCourse[]> {}
+
+export interface GradesCompetency {
+  name: string;
+  value: number;
+}
+export interface GradesKpi {
+  avg_score: number;
+  completed: string;
+  progress_percent: number;
+  rank: number;
+  streak_days: number;
+}
+export interface GradesWeekItem {
+  name: string;
+  value: number | null;
+}
+export interface GradesWeek {
+  items: GradesWeekItem[];
+  progress: number;
+  week: string;
+}
+export interface GradesInfoData {
+  competency: GradesCompetency[];
+  kpi: GradesKpi;
+  weeks: GradesWeek[];
+}
+export interface RecentActivityData {
+  activities: ActivityData[];
+  message: string;
+}
+
+export interface RecentActivityResponse extends ApiResponse<RecentActivityData> {}

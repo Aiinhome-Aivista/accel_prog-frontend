@@ -1,11 +1,20 @@
 import { apiRequest } from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
-import type { EnrollmentRequest, EnrollmentResponse, ApiResponse, DashboardKPI } from "../features/pages/dashboard/dashboard.models";
+import type {
+  EnrollmentRequest,
+  EnrollmentResponse,
+  ApiResponse,
+  DashboardKPI,
+  EnrolledCoursesResponse,
+  RawDashboardCourse,
+  GradesInfoData,
+  RecentActivityResponse,
+} from "../features/pages/dashboard/dashboard.models";
 
 export const dashboardService = {
-  getDashboard: () =>
-    apiRequest<ApiResponse<any[]>>({
-      url: API_ENDPOINTS.DASHBOARD,
+  getDashboard: (userId: number) =>
+    apiRequest<ApiResponse<RawDashboardCourse[]>>({
+      url: `${API_ENDPOINTS.DASHBOARD}?user_id=${userId}`,
       method: "GET",
     }),
 
@@ -28,5 +37,28 @@ export const dashboardService = {
       url: API_ENDPOINTS.COURSE_ENROLLMENT,
       method: "POST",
       data,
+    }),
+  getEnrolledCourses: (userId: number) =>
+    apiRequest<EnrolledCoursesResponse>({
+      url: `${API_ENDPOINTS.GET_ENROLLED_COURSES}?user_id=${userId}`,
+      method: "GET",
+    }),
+
+  getGradesInfoByUser: (userId: number) =>
+    apiRequest<ApiResponse<GradesInfoData>>({
+      url: `${API_ENDPOINTS.GRADES_INFO_BY_USER}?user_id=${userId}`,
+      method: "GET",
+    }),
+
+  getCompletedCourses: (userId: number) =>
+    apiRequest<EnrolledCoursesResponse>({
+      url: `${API_ENDPOINTS.GET_COMPLETED_COURSES}?user_id=${userId}`,
+      method: "GET",
+    }),
+
+  getUserRecentActivity: (userId: number) =>
+    apiRequest<RecentActivityResponse>({
+      url: `${API_ENDPOINTS.GET_USER_RECENT_ACTIVITY}?user_id=${userId}`,
+      method: "GET",
     }),
 };

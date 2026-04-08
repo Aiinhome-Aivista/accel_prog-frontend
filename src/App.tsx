@@ -131,9 +131,9 @@ function AppContent() {
         <Route
           path="/dashboard"
           element={
-            // <ProtectedRoute>
-            <Dashboard onLogout={handleLogout} />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Dashboard onLogout={handleLogout} />
+            </ProtectedRoute>
           }
         />
         <Route path="/course-learning" element={<CourseLearning />} />
