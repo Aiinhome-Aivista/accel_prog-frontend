@@ -7,6 +7,8 @@ import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from "../../../components/shared/BrandLogo";
+import HeroIcon from "../../../assets/hero.svg";
+
 import type {
   DashboardData,
   CourseData,
@@ -481,16 +483,24 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           id="welcome-section"
           className="scroll-mt-20 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
         >
-          <div>
-            <h1
-              className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1 font-bold"
-              style={{ fontFamily: '"DM Serif Display", serif' }}
-            >
-              {typedDashboardData.welcome.title}, {user?.name || "Learner"}!
-            </h1>
-            <p className="text-[13.5px] text-[#6B6D7B] leading-relaxed">
-              {typedDashboardData.welcome.streakText}
-            </p>
+          <div className="flex gap-1 items-center">
+              <img
+                src={HeroIcon}
+                className="h-24 w-24"
+                alt="Logo"
+                aria-hidden="true"
+              />
+            <div>
+              <h1
+                className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1 font-bold"
+                style={{ fontFamily: '"DM Serif Display", serif' }}
+              >
+                {typedDashboardData.welcome.title}, {user?.name || "Learner"}!
+              </h1>
+              <p className="text-[13.5px] text-[#6B6D7B] leading-relaxed">
+                {typedDashboardData.welcome.streakText}
+              </p>
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
@@ -654,9 +664,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       <button
                         className="flex-1 py-[7.5px] px-3 rounded-lg border-[1.5px] border-[#E5DDD4] bg-white text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
                         onClick={() =>
-                          navigate(`/course-learning?course_id=${course.id}&tab=grades`, {
-                            replace: true,
-                          })
+                          navigate(
+                            `/course-learning?course_id=${course.id}&tab=grades`,
+                            {
+                              replace: true,
+                            },
+                          )
                         }
                       >
                         View Grades

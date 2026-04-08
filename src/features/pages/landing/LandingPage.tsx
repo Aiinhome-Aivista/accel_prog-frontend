@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
-import { COURSE_DATA } from '../../../data/courseData'
-import { courseService } from '../../../services/courseService'
-import Header from '../../../common/Header'
-import Footer from '../../../common/Footer'
-import type { CourseItem, ProgramStats } from '../../../types/registration'
+import { useEffect, useState } from "react";
+import { COURSE_DATA } from "../../../data/courseData";
+import { courseService } from "../../../services/courseService";
+import Header from "../../../common/Header";
+import Footer from "../../../common/Footer";
+import type { CourseItem, ProgramStats } from "../../../types/registration";
+import HeroIcon from "../../../assets/hero.svg";
 
 interface LandingPageProps {
   onSignInClick: () => void;
@@ -22,7 +23,7 @@ function LandingPage({
   navOpen,
   onToggleNav,
   onCloseNav,
-  onGoHome
+  onGoHome,
 }: LandingPageProps) {
   const [courseData, setCourseData] = useState<CourseItem[]>(COURSE_DATA);
   const [programStats, setProgramStats] = useState<ProgramStats>({
@@ -353,12 +354,12 @@ function LandingPage({
                     {(course.tags && course.tags.length > 0
                       ? course.tags
                       : course.modules.map((m) =>
-                        m.name
-                          .replace(/Module \d+: /, "")
-                          .split(" ")
-                          .slice(0, 2)
-                          .join(" "),
-                      )
+                          m.name
+                            .replace(/Module \d+: /, "")
+                            .split(" ")
+                            .slice(0, 2)
+                            .join(" "),
+                        )
                     ).map((tag) => (
                       <span className="course-tag" key={tag}>
                         {tag}
@@ -584,17 +585,25 @@ function LandingPage({
       <section className="cta-section">
         <div className="container">
           <div className="cta-box fade-in">
-            <h2>Ready to Become AI-Native?</h2>
-            <p>
-              Join the Summer 2026 cohort and transform from AI consumer to AI
-              builder with real-world capstone projects.
-            </p>
-            <button
-              className="btn-signin btn-signin-fill"
-              onClick={onSignInClick}
-            >
-              Enroll Now
-            </button>
+            <img
+              src={HeroIcon}
+              className="mb-6 h-60 w-60"
+              alt="Logo"
+              aria-hidden="true"
+            />
+            <div className="text-left">
+              <h2>Ready to Become AI-Native?</h2>
+              <p>
+                Join the Summer 2026 cohort and transform from AI consumer to AI
+                builder with real-world capstone projects.
+              </p>
+              <button
+                className="btn-signin btn-signin-fill"
+                onClick={onSignInClick}
+              >
+                Enroll Now
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -609,4 +618,3 @@ function LandingPage({
 }
 
 export default LandingPage;
-

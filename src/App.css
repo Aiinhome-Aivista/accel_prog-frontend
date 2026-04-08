@@ -808,6 +808,9 @@ section {
   padding: 3.5rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cta-box::before {
