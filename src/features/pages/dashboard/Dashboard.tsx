@@ -14,7 +14,9 @@ import type {
   StatItem,
   RawDashboardCourse,
   ActivityData,
+  RecentActivityResponse,
 } from "./dashboard.models";
+import { useDashboard } from "../../../hooks/context/DashboardContext";
 
 const typedDashboardData = dashboardData as DashboardData;
 
@@ -30,6 +32,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { user } = useAuth();
+  const { kpiData, refreshKPI } = useDashboard();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -124,30 +127,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   }, [user]);
 
-  const fetchKPI = useCallback(async () => {
-    const userId = user?.id || 2;
-    try {
-      const response = await dashboardService.getDashboardKPI(userId);
-      if (response.status === "success" && response.data) {
-        const kpi: DashboardKPI = response.data;
-        setStats((prevStats) =>
-          prevStats.map((s) => {
-            if (s.label === "In Progress")
-              return { ...s, value: kpi.in_progress_count.toString() };
-            if (s.label === "Completed")
-              return { ...s, value: kpi.completed_count.toString() };
-            if (s.label === "Day Streak")
-              return { ...s, value: kpi.streak_days.toString() };
-            if (s.label === "Progress")
-              return { ...s, value: `${kpi.overall_progress}%` };
-            return s;
-          }),
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching Dashboard KPI:", error);
-    }
-  }, [user]);
 
   const fetchEnrolledCourses = useCallback(async () => {
     const userId = user?.id || 1;
@@ -256,10 +235,28 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const refreshAllData = useCallback(() => {
     fetchDashboardData();
-    fetchKPI();
+    refreshKPI();
     fetchEnrolledCourses();
     fetchRecentActivity();
-  }, [fetchDashboardData, fetchKPI, fetchEnrolledCourses, fetchRecentActivity]);
+  }, [fetchDashboardData, refreshKPI, fetchEnrolledCourses, fetchRecentActivity]);
+
+  useEffect(() => {
+    if (kpiData) {
+      setStats((prevStats) =>
+        prevStats.map((s) => {
+          if (s.label === "In Progress")
+            return { ...s, value: kpiData.in_progress_count.toString() };
+          if (s.label === "Completed")
+            return { ...s, value: kpiData.completed_count.toString() };
+          if (s.label === "Day Streak")
+            return { ...s, value: kpiData.streak_days.toString() };
+          if (s.label === "Progress")
+            return { ...s, value: `${kpiData.overall_progress}%` };
+          return s;
+        }),
+      );
+    }
+  }, [kpiData]);
 
   const handleEnrollment = async (courseId: string | number) => {
     if (!user) {
@@ -363,11 +360,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   }, [user, fetchDashboardData]);
 
-  useEffect(() => {
-    if (user) {
-      fetchKPI();
-    }
-  }, [user, fetchKPI]);
 
   useEffect(() => {
     if (user) {

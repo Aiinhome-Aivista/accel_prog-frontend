@@ -16,6 +16,7 @@ import {
   RegistrationProvider,
   useRegistration,
 } from "./hooks/context/RegistrationContext";
+import { DashboardProvider } from "./hooks/context/DashboardContext";
 
 import LandingPage from "./features/pages/landing/LandingPage";
 import DetailModal from "./modals/DetailModal";
@@ -161,7 +162,9 @@ function App() {
       <ToastProvider>
         <AuthProvider>
           <RegistrationProvider>
-            <AppContent />
+            <DashboardProvider>
+              <AppContent />
+            </DashboardProvider>
           </RegistrationProvider>
         </AuthProvider>
       </ToastProvider>

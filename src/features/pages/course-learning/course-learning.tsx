@@ -12,9 +12,12 @@ import { FlashcardsTab } from './components/Tabs/FlashcardsTab';
 import { SupportTab } from './components/Tabs/SupportTab';
 import { WK } from './course-learning.data';
 import { Link, useSearchParams } from 'react-router-dom';
-// import LogoIcon from '../../../assets/logogod.svg';
+import { useAuth } from '../../../hooks/context/AuthContext';
+import { useDashboard } from '../../../hooks/context/DashboardContext';
 import BrandLogo from '../../../components/shared/BrandLogo';
 const CourseLearning: React.FC = () => {
+  const { user } = useAuth();
+  const { kpiData } = useDashboard();
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "home";
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -104,10 +107,13 @@ const CourseLearning: React.FC = () => {
         </div>
         <div className="flex items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem] px-[0.55rem] py-[0.2rem] rounded-full bg-gradient-to-br from-[#FF6B35] to-[#F7931E] text-white text-[0.62rem] font-bold">
-            🔥 5
+            🔥 {kpiData?.streak_days || 0}
           </div>
-          <div className="w-[28px] h-[28px] rounded-full bg-[#e87a2e1f] flex items-center justify-center text-[0.6rem] font-bold text-[#E87A2E]">
-            L
+          <div 
+            className="w-[28px] h-[28px] rounded-full bg-[#e87a2e1f] flex items-center justify-center text-[0.6rem] font-bold text-[#E87A2E] cursor-pointer"
+            title={user?.name || "User"}
+          >
+            {user?.name?.[0]?.toUpperCase() || "L"}
           </div>
         </div>
       </div>
