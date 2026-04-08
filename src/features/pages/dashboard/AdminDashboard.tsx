@@ -4,8 +4,7 @@ import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
 import { Home, PlusSquare } from "lucide-react";
-import TiptapEditor from "../../../components/shared/TipTapEditor";
-import CreateContent from "../../../components/shared/CreateContext";
+import CreateContent from "../../../components/shared/CreateContent";
 
 interface DashboardProps {
   onLogout: () => void;
@@ -151,15 +150,6 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   </h1>
                   <p className="text-[13.5px] text-[#6B6D7B] leading-relaxed">
                     Manage your platform from the admin dashboard.
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)]">
-                  <h2 className="font-serif text-[1.2rem] text-[#2B2D42] mb-2">
-                    Admin Home
-                  </h2>
-                  <p className="text-[13px] text-[#6B6D7B]">
-                    This is the default dashboard view.
                   </p>
                 </div>
               </>
