@@ -77,6 +77,7 @@ const CourseLearning: React.FC = () => {
                   id: `w${apiWeek.week}s${t.subtopic_id}`,
                   type: (t.type === 'assessment' ? 'assess' : t.type) as any,
                   title: t.title,
+                  moduleName: apiWeek.module_name,
                 };
                 
                 const contentData = t.content.data;
@@ -91,10 +92,11 @@ const CourseLearning: React.FC = () => {
                       marks: q.marks
                     }))
                   }));
-                } else if (t.type === 'discussion' && Array.isArray(contentData)) {
-                  sub.topic = contentData[0]?.question_text || "";
-                } else if (typeof contentData === 'string') {
+                } else {
                   sub.content = contentData;
+                  if (t.type === 'discussion' && Array.isArray(contentData)) {
+                    sub.topic = contentData[0]?.question_text || "";
+                  }
                 }
                 return sub;
               }),

@@ -37,7 +37,7 @@ export interface SubTopic {
   id: string;
   type: 'reading' | 'video' | 'assess' | 'discussion' | 'project';
   title: string;
-  content?: string; // HTML content for reading/project
+  content?: any; // HTML for reading OR data array for others
   videoTitle?: string;
   videoDesc?: string;
   categories?: AssessmentCategory[]; // Dynamic categories for assessment
@@ -45,6 +45,7 @@ export interface SubTopic {
   seeds?: TopicSeed[];
   brief?: string; // Project brief
   reqs?: string[]; // Project requirements
+  moduleName?: string; // Added to store parent module name
 }
 
 export interface WeekData {
