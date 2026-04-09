@@ -15,6 +15,7 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  courseName: string;
 }
 
 const NAV_ITEMS = [
@@ -33,6 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   isOpen,
   setIsOpen,
+  courseName,
 }) => {
   return (
     <>
@@ -45,13 +47,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         <div className="p-[0.8rem_0.9rem_0.6rem] border-b border-[#E5DDD4]">
           <div className="text-[0.55rem] font-bold uppercase tracking-[0.06em] text-[#9597A6]">
-            Course 1 · Foundation
+            Course Overview
           </div>
           <div
             className="font-['DM_Serif_Display'] text-[0.85rem] text-[#2B2D42] leading-[1.2] font-medium"
             style={{ fontFamily: '"DM Serif Display", serif' }}
           >
-            The AI Consumer & Builder
+            {courseName}
           </div>
         </div>
         <div className="flex-1 py-[0.3rem]">

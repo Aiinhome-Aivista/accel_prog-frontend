@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { WeekData } from "../../course-learning.models";
+import type { WeekData, Question, AssessmentCategory } from "../../course-learning.models";
 
 import {
   UploadCloud,
@@ -269,65 +269,62 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           )}
 
           {sub.type === "assess" &&
-            sub.questions &&
-            ["critical", "technical", "problem", "subjective"].map((catKey) => {
-              const qs = sub.questions
-                ? sub.questions[catKey as keyof typeof sub.questions]
-                : [];
+            sub.categories &&
+            sub.categories.map((cat: AssessmentCategory) => {
+              const qs = cat.questions;
               if (!qs || qs.length === 0) return null;
 
-              const catData = {
-                critical: {
-                  label: "Critical Thinking",
-                  icon: "🧠",
-                  bg: "rgba(156,39,176,.08)",
-                  c: "#9C27B0",
-                },
-                technical: {
-                  label: "Technical Depth",
-                  icon: "⚙️",
-                  bg: "rgba(66,133,244,.1)",
-                  c: "#4285F4",
-                },
-                problem: {
-                  label: "Problem Solving",
-                  icon: "🧩",
-                  bg: "#e87a2e1f",
-                  c: "#E87A2E",
-                },
-                subjective: {
-                  label: "Subjective",
-                  icon: "✍️",
-                  bg: "#E8F5E9",
-                  c: "#4CAF50",
-                },
-              }[catKey];
+              const catIcons: Record<string, string> = {
+                "Critical Thinking": "🧠",
+                "Technical Depth": "⚙️",
+                "Problem Solving": "🧩",
+                "Subjective": "✍️",
+              };
+
+              const catColors: Record<string, string> = {
+                "Critical Thinking": "#9C27B0",
+                "Technical Depth": "#4285F4",
+                "Problem Solving": "#E87A2E",
+                "Subjective": "#4CAF50",
+              };
+
+              const catBg: Record<string, string> = {
+                "Critical Thinking": "rgba(156,39,176,.08)",
+                "Technical Depth": "rgba(66,133,244,.1)",
+                "Problem Solving": "#e87a2e1f",
+                "Subjective": "#E8F5E9",
+              };
+
+              const label = cat.label;
+              const icon = catIcons[label] || "❓";
+              const color = catColors[label] || "#6B6D7B";
+              const bg = catBg[label] || "#F9F5F0";
 
               return (
                 <div
-                  key={catKey}
+                  key={label}
                   className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[0.8rem] overflow-hidden"
                 >
                   <div className="p-[0.7rem_1rem] border-b border-[#E5DDD4] flex items-center gap-[0.4rem]">
                     <div
                       className="w-[22px] h-[22px] rounded-[5px] flex items-center justify-center shrink-0 text-[0.75rem]"
                       style={{
-                        backgroundColor: catData?.bg,
-                        color: catData?.c,
+                        backgroundColor: bg,
+                        color: color,
                       }}
                     >
-                      {catData?.icon}
+                      {icon}
                     </div>
                     <h4 className="text-[0.8rem] font-bold text-[#2B2D42] m-0">
-                      {catData?.label}
+                      {label}
                     </h4>
                     <div className="ml-auto text-[0.6rem] font-semibold text-[#9597A6]">
                       {qs.length}Q
                     </div>
                   </div>
                   <div className="p-[0.9rem_1rem]">
-                    {qs.map((q, qi) => {
-                      const qid = `${sub.id}_${catKey}_${qi}`;
+                    {qs.map((q: Question, qi: number) => {
+                      const qid = `${sub.id}_${label}_${qi}`;
                       const isMcq = q.type === "mcq";
                       const sel = answers[qid];
                       const submitted = answers[`${qid}_sub`];
@@ -338,15 +335,15 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                           className="mb-[1rem] pb-[0.8rem] border-b border-black/5 last:border-none last:mb-0 last:pb-0"
                         >
                           <div className="text-[0.63rem] font-bold text-[#E87A2E] uppercase tracking-[0.05em] mb-[0.25rem]">
-                            {catData?.label} · Q{qi + 1}
+                            {label} · Q{qi + 1}
                           </div>
                           <div className="text-[0.82rem] text-[#2B2D42] font-semibold leading-[1.5] mb-[0.5rem]">
-                            {q.q}
+                            {q.q} {q.marks ? `(${q.marks}m)` : ""}
                           </div>
 
                           {isMcq ? (
                             <div className="flex flex-col gap-[0.25rem]">
-                              {q.opts?.map((o, oi) => {
+                              {q.opts?.map((o: string, oi: number) => {
                                 let cls =
                                   "flex items-start gap-[0.4rem] p-[0.45rem_0.6rem] rounded-[8px] border-[1.5px] cursor-pointer text-[0.78rem] transition-all ";
                                 if (sel !== undefined) {
@@ -536,7 +533,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                 />
               </label>
 
-              {(uploads[sub.id] || []).map((f, i) => (
+              {(uploads[sub.id] || []).map((f: string, i: number) => (
                 <div
                   key={i}
                   className="flex items-center gap-[0.25rem] p-[0.25rem_0.45rem] bg-[#E8F5E9] rounded-[5px] text-[0.68rem] font-medium text-[#4CAF50] mb-[0.15rem] w-max"

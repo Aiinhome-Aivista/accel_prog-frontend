@@ -12,17 +12,17 @@ export interface TopicDay {
 }
 
 export interface Question {
+  id: number;
   q: string;
   type: 'subjective' | 'mcq';
   opts?: string[];
   ans?: number; // Correct option index
+  marks?: number;
 }
 
-export interface AssessmentQuestions {
-  critical: Question[];
-  technical: Question[];
-  problem: Question[];
-  subjective: Question[];
+export interface AssessmentCategory {
+  label: string;
+  questions: Question[];
 }
 
 export interface TopicSeed {
@@ -37,10 +37,10 @@ export interface SubTopic {
   id: string;
   type: 'reading' | 'video' | 'assess' | 'discussion' | 'project';
   title: string;
-  content?: string; // HTML content for reading
+  content?: string; // HTML content for reading/project
   videoTitle?: string;
   videoDesc?: string;
-  questions?: AssessmentQuestions;
+  categories?: AssessmentCategory[]; // Dynamic categories for assessment
   topic?: string; // Discussion topic
   seeds?: TopicSeed[];
   brief?: string; // Project brief
@@ -55,6 +55,7 @@ export interface WeekData {
   color: string;
   topics: TopicDay[];
   subs: SubTopic[];
+  progress: ApiProgress | null;
 }
 
 export interface Flashcard {

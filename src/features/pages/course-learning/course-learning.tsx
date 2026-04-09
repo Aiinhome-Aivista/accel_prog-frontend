@@ -29,6 +29,7 @@ const CourseLearning: React.FC = () => {
   const [done, setDone] = useState<Set<string>>(new Set());
   const [curW, setCurW] = useState(0);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
+  const [courseName, setCourseName] = useState("Course Learning");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,6 +43,7 @@ const CourseLearning: React.FC = () => {
           setIsLoading(true);
           const response = await dashboardService.getCourseLearningContent(Number(courseId), userId);
           if (response.status === "success" && response.data) {
+            setCourseName(response.data.course_name);
             const mappedWeeks: WeekData[] = response.data.weeks.map((apiWeek: ApiWeek) => ({
               id: `w${apiWeek.week}`,
               t: apiWeek.module_name,
@@ -53,16 +55,36 @@ const CourseLearning: React.FC = () => {
                 t: t.title,
                 n: t.subtitle || "",
               })),
-              subs: apiWeek.topics.map(t => ({
-                id: `w${apiWeek.week}s${t.subtopic_id}`,
-                type: (t.type === 'assessment' ? 'assess' : t.type) as any,
-                title: t.title,
-                content: t.content.data || "",
-              }))
+              subs: apiWeek.topics.map(t => {
+                const sub: any = {
+                  id: `w${apiWeek.week}s${t.subtopic_id}`,
+                  type: (t.type === 'assessment' ? 'assess' : t.type) as any,
+                  title: t.title,
+                };
+                
+                const contentData = t.content.data;
+                if (t.type === 'assessment' && Array.isArray(contentData)) {
+                  sub.categories = contentData.map((cat: any) => ({
+                    label: cat.category_name,
+                    questions: cat.questions.map((q: any) => ({
+                      id: q.question_id,
+                      q: q.question_text,
+                      type: q.type_id === 1 ? 'mcq' : 'subjective',
+                      opts: q.options || undefined,
+                      marks: q.marks
+                    }))
+                  }));
+                } else if (t.type === 'discussion' && Array.isArray(contentData)) {
+                  sub.topic = contentData[0]?.question_text || "";
+                } else if (typeof contentData === 'string') {
+                  sub.content = contentData;
+                }
+                return sub;
+              }),
+              progress: apiWeek.progress
             }));
             setWeeks(mappedWeeks);
             
-            // Initialize 'done' set from API progress if available
             const initialDone = new Set<string>();
             response.data.weeks.forEach(w => {
               w.topics.forEach(t => {
@@ -222,6 +244,7 @@ const CourseLearning: React.FC = () => {
           setActiveTab={setActiveTab} 
           isOpen={isSidebarOpen} 
           setIsOpen={setIsSidebarOpen} 
+          courseName={courseName}
         />
         <div className="flex-1 overflow-y-auto bg-[#F3EDE7] relative">
           {renderActiveTab()}
