@@ -135,7 +135,10 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
         /* Restore Tailwind-stripped PrimeReact spacings and fix vertical alignment */
         .p-toast .p-toast-message .p-toast-message-content {
           align-items: center;
-          padding: 1rem 1.25rem !important;
+          padding: 1.1rem 3rem 1.1rem 1.25rem !important;
+        }
+        .p-toast .p-toast-message .p-toast-message-text {
+          padding-right: 0.5rem;
         }
         .p-toast .p-toast-message .p-toast-message-icon {
           margin-right: 0.8rem;
@@ -151,6 +154,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
         .p-toast .p-toast-icon-close {
           /* Override Lara's absolute top: 1rem so it centers perfectly on small toasts */
           top: 50% !important;
+          right: 0.75rem !important;
           transform: translateY(-50%) !important;
           margin-top: 0 !important;
         }

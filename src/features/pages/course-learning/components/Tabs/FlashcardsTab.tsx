@@ -82,10 +82,8 @@ export const FlashcardsTab: React.FC = () => {
       </p>
 
       {loading && (
-        <div className="flex items-center justify-center py-8">
-          <div className="text-[0.9rem] text-[#6B6D7B]">
-            Loading flashcards...
-          </div>
+        <div className="flex justify-center items-center h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E87A2E]"></div>
         </div>
       )}
 
