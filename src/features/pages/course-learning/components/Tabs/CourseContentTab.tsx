@@ -26,6 +26,7 @@ interface CourseContentTabProps {
   markDone: (id: string) => void;
   courseId: number;
   userId: number;
+  refetchContent?: () => Promise<void>;
 }
 
 export const CourseContentTab: React.FC<CourseContentTabProps> = ({
@@ -36,6 +37,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   markDone,
   courseId,
   userId,
+  refetchContent,
 }) => {
   const [curS, setCurS] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -69,6 +71,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   const handleMarkComplete = async (subtopicId: string) => {
     const w = weeks[curW];
+    if (!w) return;
     const moduleId = w.moduleId;
     const subtopicNum = parseInt(subtopicId.split("s")[1] || "0");
 
@@ -81,6 +84,17 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
         userId,
       );
       markDone(subtopicId);
+
+      // Check if this was the last topic of the week
+      if (curS === w.subs.length - 1) {
+        if (refetchContent) {
+          await refetchContent();
+        }
+        // Auto-switch to next week if available
+        if (curW < weeks.length - 1) {
+          setCurW(curW + 1);
+        }
+      }
     } catch (error) {
       console.error("Error marking subtopic complete:", error);
     } finally {
@@ -218,19 +232,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const canNext = done.has(sub.id);
 
   // Find next incomplete subtopic
-  const findNextIncompleteIndex = () => {
-    for (let i = curS + 1; i < w.subs.length; i++) {
-      if (!done.has(w.subs[i].id)) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
-  const nextIncompleteIndex = findNextIncompleteIndex();
-  const nextIncompleteSub =
-    nextIncompleteIndex >= 0 ? w.subs[nextIncompleteIndex] : null;
-
   // Use local calculation for real-time UI feedback after marking complete
   // But also consider API values if available
   const doneCount = w.subs.filter((s) => done.has(s.id)).length;

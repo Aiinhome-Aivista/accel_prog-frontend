@@ -224,6 +224,7 @@ const CourseLearning: React.FC = () => {
           markDone={markDone} 
           courseId={Number(searchParams.get("course_id")) as number} 
           userId={user?.id as number} 
+          refetchContent={fetchContent}
         />;
       case 'grades':
         return <GradesTab done={done} />;
