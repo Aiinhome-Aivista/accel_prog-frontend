@@ -176,11 +176,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               `🧩 ${course.total_projects} Project`,
             ],
             progress: course.progress_pct,
-            progressText: `${course.progress_pct}% Completed`,
+            progressText: `${course.progress_pct}% complete · Week ${course.current_week}: ${course.current_module_name}`,
             progressColor: style.progress,
             badgeBg: style.bg,
             badgeColor: style.color,
             bannerGradient: style.banner,
+            currentWeek: course.current_week,
+            currentModuleName: course.current_module_name,
           };
         });
       };
@@ -570,7 +572,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               className="text-[1.15rem] text-[#2B2D42] font-bold"
               style={{ fontFamily: '"DM Serif Display", serif' }}
             >
-              My Courses {'— '+enrolledCourses[0]?.status}
+              My Courses {enrolledCourses.length > 0 && enrolledCourses[0]?.status ? `— ${enrolledCourses[0].status}` : ''}
             </h2>
             <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E87A2E]/10 text-[#E87A2E]">
               {isLoadingEnrolled ? "-" : enrolledCourses.length} Active

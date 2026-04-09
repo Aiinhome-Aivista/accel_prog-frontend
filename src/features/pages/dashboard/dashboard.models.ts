@@ -20,6 +20,8 @@ export interface CourseData {
   progressColor?: string;
   features?: string[];
   status?: string;
+  currentWeek?: number;
+  currentModuleName?: string;
 }
 
 export interface ActivityData {
@@ -90,6 +92,8 @@ export interface EnrolledCourse {
   total_projects: number;
   total_subtopics: number;
   total_weeks: number;
+  current_week?: number;
+  current_module_name?: string;
 }
 
 export interface EnrolledCoursesResponse extends ApiResponse<

@@ -130,4 +130,25 @@ export const dashboardService = {
       url: `${API_ENDPOINTS.GET_COURSE_VIDEOS}?course_id=${courseId}`,
       method: "GET",
     }),
+
+  submitCohortAnswer: (
+    userId: number,
+    courseId: number,
+    moduleId: number,
+    subtopicId: number,
+    cohortQuestionId: number,
+    answer: string
+  ) =>
+    apiRequest({
+      url: API_ENDPOINTS.SUBMIT_COHORT_ANSWER,
+      method: "POST",
+      data: {
+        user_id: userId,
+        course_id: courseId,
+        module_id: moduleId,
+        subtopic_id: subtopicId,
+        cohort_question_id: cohortQuestionId,
+        answer: answer,
+      },
+    }),
 };

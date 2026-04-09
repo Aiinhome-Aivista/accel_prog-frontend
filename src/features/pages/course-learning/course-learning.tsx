@@ -34,21 +34,10 @@ const CourseLearning: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load done state from localStorage on mount
-  useEffect(() => {
-    const courseId = searchParams.get("course_id");
-    if (courseId) {
-      const storageKey = `course_${courseId}_completed`;
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        try {
-          setDone(new Set(JSON.parse(stored)));
-        } catch (e) {
-          console.error("Failed to load completion state from localStorage", e);
-        }
-      }
-    }
-  }, [searchParams]);
+  // API is the source of truth for completion state
+  const markDone = (id: string) => {
+    setDone(prev => new Set([...Array.from(prev), id]));
+  };
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -77,7 +66,7 @@ const CourseLearning: React.FC = () => {
               id: `w${apiWeek.week}`,
               t: apiWeek.module_name,
               short: `Week ${apiWeek.week}`,
-              ul: !apiWeek.is_locked,
+              ul: !apiWeek.is_locked || apiWeek.week <= 2,
               color: apiWeek.week === 1 ? "#E87A2E" : apiWeek.week === 2 ? "#E8A040" : apiWeek.week === 3 ? "#66BB6A" : "#4CAF50",
               moduleId: apiWeek.module_id,
               topics: apiWeek.topics.map(t => ({
@@ -139,15 +128,7 @@ const CourseLearning: React.FC = () => {
               });
             });
             
-            // Merge with existing done state from localStorage
-            setDone(prev => {
-              const merged = new Set([...Array.from(prev), ...Array.from(initialDone)]);
-              const courseId = searchParams.get("course_id");
-              if (courseId) {
-                localStorage.setItem(`course_${courseId}_completed`, JSON.stringify(Array.from(merged)));
-              }
-              return merged;
-            });
+            setDone(initialDone);
             setError(null);
           } else if (response.status === "error") {
             setError(response.message || "Failed to load course content");
@@ -167,18 +148,7 @@ const CourseLearning: React.FC = () => {
     fetchContent();
   }, [searchParams, user]);
 
-  const markDone = (id: string) => {
-    setDone(prev => {
-      const next = new Set(prev);
-      next.add(id);
-      // Persist to localStorage
-      const courseId = searchParams.get("course_id");
-      if (courseId) {
-        localStorage.setItem(`course_${courseId}_completed`, JSON.stringify(Array.from(next)));
-      }
-      return next;
-    });
-  };
+
 
   useEffect(() => {
     if (weeks.length === 0) return;

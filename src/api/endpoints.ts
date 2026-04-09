@@ -21,5 +21,6 @@ export const API_ENDPOINTS = {
   SUBMIT_USER_ANSWER: "/api/v1/submit_user_answer",
   COURSE_HOME_OVERVIEW: "/api/v1/course_home_overview",
   COURSE_HOME_TIMELINE: "/api/v1/course_home_timeline",
-  GET_COURSE_VIDEOS: "/api/v1/get_course_videos"
+  GET_COURSE_VIDEOS: "/api/v1/get_course_videos",
+  SUBMIT_COHORT_ANSWER: "/api/v1/submit_cohort_answer"
 };

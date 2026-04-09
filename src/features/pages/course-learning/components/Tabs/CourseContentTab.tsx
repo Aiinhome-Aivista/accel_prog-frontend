@@ -50,6 +50,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const [questionResponses, setQuestionResponses] = useState<
     Record<string, any>
   >({});
+  const [submittingDiscussion, setSubmittingDiscussion] = useState(false);
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
@@ -237,20 +238,54 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const pct =
     w.subs.length > 0 ? Math.round((doneCount / w.subs.length) * 100) : 0;
 
-  const postDiscussion = () => {
-    if (!localMessage.trim()) return;
-    const newMsg = {
-      n: "You",
-      a: "Y",
-      tm: "Now",
-      tx: localMessage.trim(),
-      lk: 0,
-    };
-    setDiscussions((prev) => ({
-      ...prev,
-      [sub.id]: [newMsg, ...(prev[sub.id] || sub.seeds || [])],
-    }));
-    setLocalMessage("");
+  const postDiscussion = async () => {
+    if (!localMessage.trim() || !discussionData) return;
+
+    const w = weeks[curW];
+    const moduleId = w.moduleId;
+    const subtopicNum = parseInt(sub.id.split("s")[1] || "0");
+    const cohortQuestionId = discussionData.cohort_id;
+
+    try {
+      setSubmittingDiscussion(true);
+      const res = await dashboardService.submitCohortAnswer(
+        userId,
+        courseId,
+        moduleId,
+        subtopicNum,
+        cohortQuestionId,
+        localMessage.trim(),
+      );
+
+      if (res && res.status === "success") {
+        const newMsg = {
+          n: "You",
+          a: "You",
+          tm: res.data?.created_at
+            ? new Date(
+              res.data.created_at.endsWith("Z")
+                ? res.data.created_at
+                : res.data.created_at + "Z"
+            ).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+            : "Now",
+          tx: res.data?.answer || localMessage.trim(),
+          lk: 0,
+        };
+        setDiscussions((prev) => ({
+          ...prev,
+          [sub.id]: [newMsg, ...(prev[sub.id] || sub.seeds || [])],
+        }));
+        setLocalMessage("");
+      }
+    } catch (error) {
+      console.error("Error posting discussion:", error);
+    } finally {
+      setSubmittingDiscussion(false);
+    }
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -300,27 +335,25 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           return (
             <div
               key={si}
-              className={`flex items-center gap-[0.45rem] p-[0.45rem_0.6rem] rounded-[8px] cursor-pointer text-[0.73rem] font-medium transition-all mb-[0.15rem] ${
-                d
+              className={`flex items-center gap-[0.45rem] p-[0.45rem_0.6rem] rounded-[8px] cursor-pointer text-[0.73rem] font-medium transition-all mb-[0.15rem] ${d
                   ? "bg-[#E8F5E9] text-[#4CAF50] font-semibold"
                   : a
                     ? "bg-[#e87a2e1f] text-[#E87A2E] font-semibold"
                     : l
                       ? "opacity-35 cursor-default hover:bg-transparent text-[#6B6D7B]"
                       : "text-[#6B6D7B] hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
-              }`}
+                }`}
               onClick={() => {
                 if (!l) setCurS(si);
               }}
             >
               <div
-                className={`w-[7px] h-[7px] rounded-full border-[1.5px] shrink-0 ${
-                  d
+                className={`w-[7px] h-[7px] rounded-full border-[1.5px] shrink-0 ${d
                     ? "bg-[#4CAF50] border-[#4CAF50]"
                     : a
                       ? "bg-[#E87A2E] border-[#E87A2E]"
                       : "border-[#E5DDD4] bg-transparent"
-                }`}
+                  }`}
               ></div>
               <Icon size={13} className="opacity-40 shrink-0" />
               <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -555,14 +588,13 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                             !questionResponses[qid]
                                               ?.is_correct &&
                                             o ===
-                                              questionResponses[qid]
-                                                ?.correct_answer)) && (
+                                            questionResponses[qid]
+                                              ?.correct_answer)) && (
                                           <div
-                                            className={`w-[7px] h-[7px] rounded-full ${
-                                              submitted
+                                            className={`w-[7px] h-[7px] rounded-full ${submitted
                                                 ? "bg-[#4CAF50]" // after submit always green
                                                 : "bg-[#4CAF50]"
-                                            }`}
+                                              }`}
                                           />
                                         )
                                       }
@@ -647,7 +679,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                 </div>
               );
             })}
-       
+
           {sub.type === "discussion" && (
             <div className="mb-[1rem]">
               <div className="bg-[#121421] rounded-t-[14px] p-[1.1rem_1.3rem] text-white">
@@ -655,9 +687,9 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   {discussionData?.question_text || sub.topic || "Discussion"}
                 </h4>
                 <div className="flex items-center gap-[0.45rem] text-[0.68rem] text-[#9597A6] font-medium">
-                   <span>Cohort {discussionData?.tag || "Alpha-3"}</span>
-                   <span className="opacity-40">•</span>
-                   <span>{sub.moduleName}</span>
+                  <span>Cohort {discussionData?.tag || "Alpha-3"}</span>
+                  <span className="opacity-40">•</span>
+                  <span>{sub.moduleName}</span>
                 </div>
               </div>
               <div className="bg-white border text-[#2B2D42] border-t-0 border-[#E5DDD4] rounded-b-[14px] p-[0.8rem]">
@@ -672,10 +704,18 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                     onChange={(e) => setLocalMessage(e.target.value)}
                   ></textarea>
                   <button
-                    className="px-[0.65rem] py-[0.28rem] rounded-[6px] bg-[#E87A2E] text-white text-[0.68rem] font-semibold cursor-pointer border-none self-end shrink-0 hover:bg-[#D06A20]"
+                    className="px-[0.65rem] py-[0.28rem] rounded-[6px] bg-[#E87A2E] text-white text-[0.68rem] font-semibold cursor-pointer border-none self-end shrink-0 hover:bg-[#D06A20] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                     onClick={postDiscussion}
+                    disabled={submittingDiscussion || !localMessage.trim()}
                   >
-                    Post
+                    {submittingDiscussion ? (
+                      <>
+                        <Loader size={10} className="animate-spin" />
+                        Posting...
+                      </>
+                    ) : (
+                      "Post"
+                    )}
                   </button>
                 </div>
                 {(discussions[sub.id] || []).map((m: any, i: number) => (
@@ -708,19 +748,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           )}
           {sub.type === "project" && (
             <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[1.1rem] mb-[1rem]">
-              <h4 className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42] mb-[0.3rem] m-0">
-                {sub.title}
-              </h4>
-              <p className="text-[0.78rem] text-[#6B6D7B] leading-[1.6] mb-[0.4rem]">
-                {sub.brief}
-              </p>
-              <ul className="m-0 ml-[1rem] p-0 mb-[0.6rem] text-[0.76rem] text-[#6B6D7B] leading-[1.5]">
-                {sub.reqs?.map((r, i) => (
-                  <li key={i} className="mb-[0.15rem]">
-                    {r}
-                  </li>
-                ))}
-              </ul>
+              <div
+                className="prose prose-sm max-w-none text-[#6B6D7B] text-[0.78rem] leading-[1.6] mb-[1.2rem]
+                [&_h3]:text-[1rem] [&_h3]:text-[#2B2D42] [&_h3]:font-bold [&_h3]:mb-[0.5rem]
+                [&_ul]:list-disc [&_ul]:ml-[1.2rem] [&_li]:mb-[0.3rem]"
+                dangerouslySetInnerHTML={{ __html: sub.content || "" }}
+              />
 
               <label
                 htmlFor={`fu${sub.id}`}
@@ -755,13 +788,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           )}
           <div className="flex flex-wrap items-center justify-between py-[1rem] mt-[0.6rem] border-t border-[#E5DDD4] gap-[0.5rem]">
             <button
-              className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all cursor-pointer ${
-                isDone
+              className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all cursor-pointer ${isDone
                   ? "bg-[#4CAF50] text-white border-[#4CAF50] hover:bg-[#388E3C]"
                   : loadingSubtopic === sub.id
                     ? "bg-[#E87A2E] text-white border-[#E87A2E] opacity-75 cursor-wait"
                     : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
-              }`}
+                }`}
               onClick={() =>
                 !isDone && !loadingSubtopic && handleMarkComplete(sub.id)
               }
@@ -781,11 +813,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
             {nextIncompleteSub && (
               <button
-                className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border-none text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all ${
-                  canNext
+                className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border-none text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all ${canNext
                     ? "bg-[#E87A2E] text-white cursor-pointer hover:bg-[#D06A20]"
                     : "bg-[#E87A2E] text-white opacity-35 cursor-default pointer-events-none"
-                }`}
+                  }`}
                 onClick={() =>
                   canNext &&
                   nextIncompleteIndex >= 0 &&
@@ -815,13 +846,12 @@ const WeekTabs: React.FC<{
     {w.map((wk, i) => (
       <button
         key={i}
-        className={`px-[1rem] py-[0.45rem] rounded-full border-[1.5px] font-semibold text-[0.72rem] transition-all font-inherit ${
-          i === curW
+        className={`px-[1rem] py-[0.45rem] rounded-full border-[1.5px] font-semibold text-[0.72rem] transition-all font-inherit ${i === curW
             ? "bg-[#E87A2E] text-white border-[#E87A2E]"
             : !wk.ul
               ? "bg-white border-[#E5DDD4] text-[#6B6D7B] opacity-40 cursor-default hover:border-[#E5DDD4] hover:text-[#6B6D7B]"
               : "bg-white border-[#E5DDD4] text-[#6B6D7B] cursor-pointer hover:border-[#E87A2E] hover:text-[#E87A2E]"
-        }`}
+          }`}
         onClick={() => wk.ul && setCurW(i)}
       >
         {wk.short}
