@@ -5,6 +5,7 @@ import { useToast } from "../../../utils/ToastContext";
 import { useRegistration } from "../../../hooks/context/RegistrationContext";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import { REG_SCHEMA } from "../../../data/registrationSchema";
+import "./RegistrationPage.css";
 import swamiji from "../../../assets/hero.svg";
 import type {
   FieldSchema,
@@ -478,10 +479,12 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                   fontSize: "1rem",
                   borderRadius: "10px",
                   fontWeight: 600,
-                  display: "flex",
+                  // display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   minWidth: "180px",
+                  margin: "1rem auto",
+                  display: "block",
                 }}
                 disabled={isNavigating}
                 onClick={() => {
