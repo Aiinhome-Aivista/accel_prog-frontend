@@ -59,8 +59,8 @@ export const ModulesTab: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem] text-center text-[#6B6D7B]">
-        Loading modules...
+      <div className="flex justify-center items-center h-[calc(100vh-120px)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E87A2E]"></div>
       </div>
     );
   }
