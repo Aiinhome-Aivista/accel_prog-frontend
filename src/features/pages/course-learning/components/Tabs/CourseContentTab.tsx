@@ -204,9 +204,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   }
 
   const sub = w.subs[curS];
-     const parsedContent = typeof sub.content === "string" ?
-          JSON.parse(sub.content) : sub.content; const discussionData =
-          parsedContent?.data?.[0];
+  const discussionData = sub.type === 'discussion' ? (Array.isArray(sub.content) ? sub.content[0] : sub.content?.data?.[0]) : null;
   const isDone = done.has(sub.id);
 
   const isSubLocked = (wi: number, si: number) => {
@@ -651,24 +649,21 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             })}
        
           {sub.type === "discussion" && (
-            
             <div className="mb-[1rem]">
-              <div className="bg-[#1A1B2E] rounded-t-[14px] p-[0.9rem_1.1rem] text-white">
-                <h4 className="font-['DM_Serif_Display'] text-[0.88rem] mb-[0.1rem] m-0">
-                  {discussionData?.question_text || "Discussion"}
+              <div className="bg-[#121421] rounded-t-[14px] p-[1.1rem_1.3rem] text-white">
+                <h4 className="font-['DM_Serif_Display'] text-[0.94rem] leading-[1.5] mb-[0.6rem] m-0">
+                  {discussionData?.question_text || sub.topic || "Discussion"}
                 </h4>
-                {discussionData?.tag && (
-                  <div className="mt-[0.4rem]">
-                    <span className="text-[0.62rem] font-bold bg-[#e87a2e1f] text-[#E87A2E] px-[0.5rem] py-[0.2rem] rounded-[4px]">
-                      {discussionData.tag}
-                    </span>
-                  </div>
-                )}
+                <div className="flex items-center gap-[0.45rem] text-[0.68rem] text-[#9597A6] font-medium">
+                   <span>Cohort {discussionData?.tag || "Alpha-3"}</span>
+                   <span className="opacity-40">•</span>
+                   <span>{sub.moduleName}</span>
+                </div>
               </div>
               <div className="bg-white border text-[#2B2D42] border-t-0 border-[#E5DDD4] rounded-b-[14px] p-[0.8rem]">
                 <div className="flex gap-[0.4rem] mb-[0.6rem] items-start">
                   <div className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[0.55rem] font-bold shrink-0 bg-[#e87a2e1f] text-[#E87A2E]">
-                    Y
+                    You
                   </div>
                   <textarea
                     className="flex-1 p-[0.4rem_0.5rem] border-[1.5px] border-[#E5DDD4] rounded-[8px] text-[0.76rem] font-inherit min-h-[36px] resize-y bg-[#F9F5F0] focus:outline-none focus:border-[#E87A2E] focus:bg-white"
