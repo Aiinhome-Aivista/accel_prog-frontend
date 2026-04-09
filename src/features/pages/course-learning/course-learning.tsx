@@ -104,7 +104,8 @@ const CourseLearning: React.FC = () => {
     setWeeks(prev => {
       const next = [...prev];
       for (let i = 0; i < next.length - 1; i++) {
-        const isWeekComplete = next[i].subs.every(s => done.has(s.id));
+        // A week is only complete if it's unlocked, has subs, and all subs are done
+        const isWeekComplete = next[i].ul && next[i].subs.length > 0 && next[i].subs.every(s => done.has(s.id));
         if (isWeekComplete) {
           next[i + 1].ul = true;
         }
