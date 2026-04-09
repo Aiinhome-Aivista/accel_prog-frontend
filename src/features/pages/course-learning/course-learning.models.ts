@@ -56,6 +56,7 @@ export interface WeekData {
   topics: TopicDay[];
   subs: SubTopic[];
   progress: ApiProgress | null;
+  moduleId: number;
 }
 
 export interface Flashcard {

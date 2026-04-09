@@ -50,6 +50,7 @@ const CourseLearning: React.FC = () => {
               short: `Week ${apiWeek.week}`,
               ul: !apiWeek.is_locked,
               color: apiWeek.week === 1 ? "#E87A2E" : apiWeek.week === 2 ? "#E8A040" : apiWeek.week === 3 ? "#66BB6A" : "#4CAF50",
+              moduleId: apiWeek.module_id,
               topics: apiWeek.topics.map(t => ({
                 d: `Topic ${t.subtopic_id}`,
                 t: t.title,
