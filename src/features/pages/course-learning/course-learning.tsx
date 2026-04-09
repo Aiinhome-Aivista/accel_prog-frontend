@@ -154,7 +154,7 @@ const CourseLearning: React.FC = () => {
       case 'modules':
         return <ModulesTab />;
       case 'learn':
-        return <CourseContentTab weeks={weeks} curW={curW} setCurW={setCurW} done={done} markDone={markDone} />;
+        return <CourseContentTab weeks={weeks} curW={curW} setCurW={setCurW} done={done} markDone={markDone} courseId={Number(searchParams.get("course_id")) || 1} userId={user?.id || 323} />;
       case 'grades':
         return <GradesTab done={done} />;
       case 'people':

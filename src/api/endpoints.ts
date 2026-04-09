@@ -17,4 +17,5 @@ export const API_ENDPOINTS = {
   GET_USER_RECENT_ACTIVITY: "/api/v1/get-user-recent-activity",
   GET_FLASHCARDS: "/api/v1/get-flashcards",
   GET_COURSE_LEARNING_CONTENT: "/api/v1/get_course_learning_content_by_user",
+  COMPLETE_SUBTOPIC_MODULE_COURSE_WISE_BY_USER: "/api/v1/complete_subtopic_module_course_wise_by_user"
 };

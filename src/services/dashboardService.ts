@@ -77,4 +77,12 @@ export const dashboardService = {
       method: "POST",
       data: { course_id: courseId, user_id: userId },
     }),
+
+  completeSubtopicModuleCourseWiseByUser: (courseId: number, moduleId: number, subtopicId: number, userId: number) =>
+    apiRequest({
+      url: API_ENDPOINTS.COMPLETE_SUBTOPIC_MODULE_COURSE_WISE_BY_USER,  
+      method: "POST",
+      data: { course_id: courseId, module_id: moduleId, subtopic_id: subtopicId, user_id: userId },
+    }),
+
 };

@@ -10,7 +10,9 @@ import {
   PenSquare,
   MessageSquare,
   Briefcase,
+  Loader,
 } from "lucide-react";
+import { dashboardService } from "../../../../../services/dashboardService";
 
 interface CourseContentTabProps {
   weeks: WeekData[];
@@ -18,6 +20,8 @@ interface CourseContentTabProps {
   setCurW: (w: number) => void;
   done: Set<string>;
   markDone: (id: string) => void;
+  courseId?: number;
+  userId?: number;
 }
 
 export const CourseContentTab: React.FC<CourseContentTabProps> = ({
@@ -26,6 +30,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   setCurW,
   done,
   markDone,
+  courseId = 1,
+  userId = 323,
 }) => {
   const [curS, setCurS] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -33,6 +39,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const [uploads, setUploads] = useState<Record<string, string[]>>({});
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
+  const [loadingSubtopic, setLoadingSubtopic] = useState<string | null>(null);
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
@@ -41,6 +48,26 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     setCurS(0);
     setIsEditing(false);
   }, [curW]);
+
+  const handleMarkComplete = async (subtopicId: string) => {
+    const moduleId = curW + 1; // Using week index as module ID
+    const subtopicNum = parseInt(subtopicId.split("s")[1] || "0");
+    
+    try {
+      setLoadingSubtopic(subtopicId);
+      await dashboardService.completeSubtopicModuleCourseWiseByUser(
+        courseId,
+        moduleId,
+        subtopicNum,
+        userId
+      );
+      markDone(subtopicId);
+    } catch (error) {
+      console.error("Error marking subtopic complete:", error);
+    } finally {
+      setLoadingSubtopic(null);
+    }
+  };
 
   if (!weeks || weeks.length === 0) return null;
   const w = weeks[curW];
@@ -525,11 +552,23 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all cursor-pointer ${
                 isDone
                   ? "bg-[#4CAF50] text-white border-[#4CAF50] hover:bg-[#388E3C]"
-                  : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
+                  : loadingSubtopic === sub.id
+                    ? "bg-[#E87A2E] text-white border-[#E87A2E] opacity-75 cursor-wait"
+                    : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
               }`}
-              onClick={() => !isDone && markDone(sub.id)}
+              onClick={() => !isDone && !loadingSubtopic && handleMarkComplete(sub.id)}
+              disabled={isDone || loadingSubtopic === sub.id}
             >
-              {isDone ? "✓ Completed" : "Mark Complete"}
+              {loadingSubtopic === sub.id ? (
+                <>
+                  <Loader size={14} className="animate-spin" />
+                  Loading...
+                </>
+              ) : isDone ? (
+                "✓ Completed"
+              ) : (
+                "Mark Complete"
+              )}
             </button>
 
             {nextSub && (
