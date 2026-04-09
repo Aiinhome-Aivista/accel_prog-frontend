@@ -33,6 +33,22 @@ const CourseLearning: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Load done state from localStorage on mount
+  useEffect(() => {
+    const courseId = searchParams.get("course_id");
+    if (courseId) {
+      const storageKey = `course_${courseId}_completed`;
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        try {
+          setDone(new Set(JSON.parse(stored)));
+        } catch (e) {
+          console.error("Failed to load completion state from localStorage", e);
+        }
+      }
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     const fetchContent = async () => {
       const courseId = searchParams.get("course_id");
@@ -86,6 +102,7 @@ const CourseLearning: React.FC = () => {
             }));
             setWeeks(mappedWeeks);
             
+            // Merge API completion data with localStorage data
             const initialDone = new Set<string>();
             response.data.weeks.forEach(w => {
               w.topics.forEach(t => {
@@ -94,7 +111,16 @@ const CourseLearning: React.FC = () => {
                 }
               });
             });
-            setDone(initialDone);
+            
+            // Merge with existing done state from localStorage
+            setDone(prev => {
+              const merged = new Set([...Array.from(prev), ...Array.from(initialDone)]);
+              const courseId = searchParams.get("course_id");
+              if (courseId) {
+                localStorage.setItem(`course_${courseId}_completed`, JSON.stringify(Array.from(merged)));
+              }
+              return merged;
+            });
             setError(null);
           } else if (response.status === "error") {
             setError(response.message || "Failed to load course content");
@@ -118,6 +144,11 @@ const CourseLearning: React.FC = () => {
     setDone(prev => {
       const next = new Set(prev);
       next.add(id);
+      // Persist to localStorage
+      const courseId = searchParams.get("course_id");
+      if (courseId) {
+        localStorage.setItem(`course_${courseId}_completed`, JSON.stringify(Array.from(next)));
+      }
       return next;
     });
   };
