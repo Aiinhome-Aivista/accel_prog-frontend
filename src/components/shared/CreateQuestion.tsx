@@ -250,12 +250,64 @@ const handleSubmit = async (e: React.FormEvent) => {
                     {q.type === "multiple_choice" && (
                       <div className="space-y-2">
                         {q.options?.map((opt, oIdx) => (
-                          <div key={oIdx} className="flex gap-2">
-                            <input className="flex-1 border border-[#E5DDD4] rounded px-3 py-1 text-sm" value={opt} onChange={(e) => updateQuestion(section.id, q.id, "option_text", e.target.value, oIdx)} />
-                            <button type="button" onClick={() => updateQuestion(section.id, q.id, "options", q.options?.filter((_, i) => i !== oIdx))} className="text-red-300"><Trash2 size={14}/></button>
+                          <div key={oIdx} className="flex gap-2 items-center">
+                            <input 
+                              type="checkbox" 
+                              title="Mark as correct answer"
+                              className="w-4 h-4 cursor-pointer accent-[#E87A2E]"
+                              checked={Array.isArray(q.correct_answer) ? q.correct_answer.includes(opt) : false}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                let ans = Array.isArray(q.correct_answer) ? [...q.correct_answer] : [];
+                                if (checked && !ans.includes(opt)) {
+                                  ans.push(opt);
+                                } else if (!checked) {
+                                  ans = ans.filter(a => a !== opt);
+                                }
+                                updateQuestion(section.id, q.id, "correct_answer", ans);
+                              }}
+                            />
+                            <input 
+                              className="flex-1 border border-[#E5DDD4] rounded px-3 py-1 text-sm" 
+                              value={opt} 
+                              onChange={(e) => {
+                                const newVal = e.target.value;
+                                const oldVal = opt;
+                                // Automatically update correct_answer if this option was marked correct
+                                let ans = Array.isArray(q.correct_answer) ? [...q.correct_answer] : [];
+                                if (ans.includes(oldVal)) {
+                                  ans = ans.map(a => a === oldVal ? newVal : a);
+                                  updateQuestion(section.id, q.id, "correct_answer", ans);
+                                }
+                                updateQuestion(section.id, q.id, "option_text", newVal, oIdx);
+                              }} 
+                              placeholder={`Option ${String.fromCharCode(65 + oIdx)}`}
+                            />
+                            <button type="button" onClick={() => {
+                              // If deleted option was correct, remove it from correct_answers
+                              let ans = Array.isArray(q.correct_answer) ? [...q.correct_answer] : [];
+                              if (ans.includes(opt)) {
+                                ans = ans.filter(a => a !== opt);
+                                updateQuestion(section.id, q.id, "correct_answer", ans);
+                              }
+                              updateQuestion(section.id, q.id, "options", q.options?.filter((_, i) => i !== oIdx));
+                            }} className="text-red-300">
+                              <Trash2 size={14}/>
+                            </button>
                           </div>
                         ))}
                         <button type="button" onClick={() => updateQuestion(section.id, q.id, "options", [...(q.options || []), ""])} className="text-xs text-[#E87A2E]">+ Add Option</button>
+                      </div>
+                    )}
+                    {q.type === "text_area" && (
+                      <div className="space-y-2">
+                        <textarea 
+                          className="w-full p-3 bg-white border border-[#E5DDD4] rounded-lg text-sm outline-none" 
+                          rows={2} 
+                          value={q.correct_answer?.[0] || ""} 
+                          placeholder="Correct Answer (Optional)" 
+                          onChange={(e) => updateQuestion(section.id, q.id, "correct_answer", [e.target.value])} 
+                        />
                       </div>
                     )}
                   </div>
