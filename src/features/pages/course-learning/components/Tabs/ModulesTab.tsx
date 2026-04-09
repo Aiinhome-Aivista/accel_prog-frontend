@@ -28,8 +28,6 @@ const colors = ["#E87A2E", "#4285F4", "#34A853", "#FBBC05"];
 export const ModulesTab: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const courseIdParam = searchParams.get("course_id") || "0";
-
   const [openMods, setOpenMods] = useState<Record<number, boolean>>({
     0: true,
   });
@@ -38,9 +36,14 @@ export const ModulesTab: React.FC = () => {
 
   useEffect(() => {
     const fetchModules = async () => {
+      const courseId = searchParams.get("course_id");
+      const userId = user?.id;
+
+      if (!courseId || !userId) return;
+
       try {
-        const userId = user?.id || 1;
-        const response = await dashboardService.getModules(courseIdParam, userId);
+        setLoading(true);
+        const response = await dashboardService.getModules(courseId, userId);
         if (response.status === "success" && response.data) {
           setModules(response.data);
         }
@@ -51,7 +54,7 @@ export const ModulesTab: React.FC = () => {
       }
     };
     fetchModules();
-  }, [courseIdParam]);
+  }, [searchParams, user]);
 
   const toggleMod = (idx: number) => {
     setOpenMods((prev) => ({ ...prev, [idx]: !prev[idx] }));

@@ -20,8 +20,8 @@ interface CourseContentTabProps {
   setCurW: (w: number) => void;
   done: Set<string>;
   markDone: (id: string) => void;
-  courseId?: number;
-  userId?: number;
+  courseId: number;
+  userId: number;
 }
 
 export const CourseContentTab: React.FC<CourseContentTabProps> = ({
@@ -30,8 +30,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   setCurW,
   done,
   markDone,
-  courseId = 1,
-  userId = 323,
+  courseId,
+  userId,
 }) => {
   const [curS, setCurS] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
