@@ -3,10 +3,11 @@ import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
-import { Home, PlusSquare, FileQuestion, List } from "lucide-react";
+import { Home, FileQuestion, List, BookCopy } from "lucide-react";
 import CreateContent from "../../../components/shared/CreateContent";
 import CreateQuestion from "../../../components/shared/CreateQuestion";
 import ManageContent from "../../../components/shared/ManageContent";
+import ManageQuestion from "../../../components/shared/ManageQuestion";
 
 // Define ContentItem type here or import it if it's in a shared file
 interface ContentItem {
@@ -22,11 +23,31 @@ interface ContentItem {
   mediaFileName: string | null;
 }
 
+interface QuestionPaperItem {
+  question_paper_id: number;
+  course_id: number;
+  module_id: number;
+  subtopic_id: number;
+  course_name: string;
+  module_name: string;
+  subtopic_title: string;
+  type: string;
+  content: string;
+}
+
+interface QuestionPaperGroup {
+  course_name: string;
+  module_name: string;
+  subtopic_title: string;
+  subtopic_id: number;
+  questions: any[];
+}
+
 interface DashboardProps {
   onLogout: () => void;
 }
 
-type AdminTab = "home" | "create-content" | "create-question" | "manage-content";
+type AdminTab = "home" | "create-content" | "create-question" | "manage-content" | "manage-question";
 
 const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { user } = useAuth();
@@ -35,7 +56,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const getTabFromHash = useCallback((): AdminTab => {
     const hash = window.location.hash.substring(1);
-    if (["home", "create-content", "create-question", "manage-content"].includes(hash)) {
+    if (["home", "create-content", "create-question", "manage-content", "manage-question"].includes(hash)) {
       return hash as AdminTab;
     }
     return "home";
@@ -45,11 +66,12 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>(getTabFromHash());
   // New state to hold the content item being edited
   const [contentToEdit, setContentToEdit] = useState<ContentItem | null>(null);
+  const [questionToEdit, setQuestionToEdit] = useState<QuestionPaperGroup | null>(null);
 
   // Update URL when activeTab state changes
   useEffect(() => {
     const currentHash = window.location.hash.substring(1);
-    if (activeTab !== currentHash) {
+    if (activeTab !== currentHash && ["home", "create-content", "create-question", "manage-content", "manage-question"].includes(activeTab)) {
       window.location.hash = activeTab;
     }
   }, [activeTab]);
@@ -67,14 +89,17 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const handleTabChange = (
     tab: AdminTab,
-    itemToEdit: ContentItem | null = null // Optional parameter for editing
+    itemToEdit: ContentItem | QuestionPaperGroup | null = null // Optional parameter for editing
   ) => {
     setActiveTab(tab);
     setNavOpen(false); // Close sidebar on mobile
     if (tab === "create-content") {
-      setContentToEdit(itemToEdit);
+      setContentToEdit(itemToEdit as ContentItem | null);
+    } else if (tab === "create-question") {
+      setQuestionToEdit(itemToEdit as QuestionPaperGroup | null);
     } else {
       setContentToEdit(null); // Clear edit state when switching to other tabs
+      setQuestionToEdit(null);
     }
   };
 
@@ -189,25 +214,35 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <span>Manage Content</span>
             </button>
 
+            <button
+              type="button"
+              onClick={() => handleTabChange("manage-question")}
+              className={sidebarItemClass("manage-question")}
+            >
+              <BookCopy className="w-4 h-4" />
+              <span>Manage Questions</span>
+            </button>
 
-                        <button
+            {/* <button
               type="button"
               onClick={() => handleTabChange("create-question")}
               className={sidebarItemClass("create-question")}
             >
               <FileQuestion className="w-4 h-4" />
               <span>Create Question</span>
-            </button>
-            
+            </button> */}
+
           </div>
         </aside>
 
         {/* Main Content */}
         <main
-          className={`flex-1 py-8 pb-16 md:ml-[220px] ${activeTab === "manage-content" ? "" : "px-6"}`}
+          className={`flex-1 py-8 pb-16 md:ml-[220px] ${
+            activeTab === "manage-content" || activeTab === "manage-question" ? "" : "px-6"
+          }`}
         >
           <div
-            className={`${activeTab !== "manage-content" ? "max-w-[1060px]" : ""} w-full mx-auto`}
+            className={`${activeTab !== "manage-content" && activeTab !== "manage-question" ? "max-w-[1060px]" : ""} w-full mx-auto`}
           >
             {activeTab === "home" && (
               <>
@@ -232,12 +267,27 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               />
             )}
 
-            {activeTab === "create-question" && <CreateQuestion />}
+            {activeTab === "create-question" && (
+              <CreateQuestion
+                questionToEdit={questionToEdit}
+                onCancel={() => {
+                  setQuestionToEdit(null); // Clear edit state after operation
+                  handleTabChange("manage-question"); // Go back to manage questions
+                }}
+              />
+            )}
 
             {activeTab === "manage-content" && (
               <ManageContent
                 setActiveTab={(tab) => handleTabChange(tab)}
                 onEdit={(item) => handleTabChange("create-content", item)}
+              />
+            )}
+
+            {activeTab === "manage-question" && (
+              <ManageQuestion
+                setActiveTab={(tab) => handleTabChange(tab)}
+                onEdit={(item) => handleTabChange("create-question", item)}
               />
             )}
           </div>

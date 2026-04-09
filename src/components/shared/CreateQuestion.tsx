@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Trash2, GripVertical } from "lucide-react"; // Icons for the UI
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Plus, Trash2, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "../../utils/ToastContext";
 import { courseService } from "../../services/courseService";
 import { useAuth } from "../../hooks/context/AuthContext";
 import SearchableDropdown from "./SearchableDropdown";
-
-
-// --- Types ---
 
 /** --- Types --- **/
 type QuestionType = "text_area" | "multiple_choice";
 
 interface Question {
   id: string;
+  db_id?: number; 
   type: QuestionType;
   question_text: string;
   options?: string[];
-  placeholder?: string;
+  correct_answer: string[] | null;
+  marks: number;
 }
 
 interface Section {
@@ -25,53 +24,33 @@ interface Section {
   questions: Question[];
 }
 
-interface DropdownCourse {
-  course_id: number;
-  course_name: string;
+interface CreateQuestionProps {
+  questionToEdit?: any | null; 
+  onCancel: () => void; 
 }
 
-interface DropdownModule {
-  course_id: number;
-  module_id: number;
-  module_name: string;
-}
-
-interface DropdownSubtopic {
-  module_id: number;
-  subtopic_id: number;
-  title: string;
-  type: string;
-}
-
-interface DropdownType {
-  type: string;
-}
-
-const CreateQuestion: React.FC = () => {
+const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCancel }) => {
   const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   
-  // Existing Dropdown States
-  const [allCourses, setAllCourses] = useState<DropdownCourse[]>([]);
-  const [allModules, setAllModules] = useState<DropdownModule[]>([]);
-  const [allSubtopics, setAllSubtopics] = useState<DropdownSubtopic[]>([]);
-  const [allSubtopicTypes, setAllSubtopicTypes] = useState<DropdownType[]>([]);
+  const [allCourses, setAllCourses] = useState<any[]>([]);
+  const [allModules, setAllModules] = useState<any[]>([]);
+  const [allCategories, setAllCategories] = useState<any[]>([]);
+  const [allSubtopics, setAllSubtopics] = useState<any[]>([]);
+  const [allSubtopicTypes, setAllSubtopicTypes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
 
-  // Form Field States
   const [courseName, setCourseName] = useState("");
   const [moduleName, setModuleName] = useState("");
   const [subtopic, setSubtopic] = useState("");
+  const [subtopicIdForNewAssessment, setSubtopicIdForNewAssessment] = useState<number | undefined>(undefined);
   const [subtopicType, setSubtopicType] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  // --- NEW: Question Paper State ---
   const [sections, setSections] = useState<Section[]>([
     { id: "sec_1", section_title: "Problem Solving", questions: [] }
   ]);
 
-  // Load Data
   useEffect(() => {
     courseService.getContentDropdownData().then(res => {
       if (res.status === "success" && res.data) {
@@ -79,229 +58,224 @@ const CreateQuestion: React.FC = () => {
         setAllModules(res.data.modules);
         setAllSubtopics(res.data.subtopics);
         setAllSubtopicTypes(res.data.types);
-      } else {
-        showError("Error", res.message || "Failed to fetch dropdown data.");
+        setAllCategories(res.data.categories || []);
       }
       setLoading(false);
     });
   }, []);
 
-  const selectedCourseData = useMemo(
-    () => allCourses.find((course) => course.course_name === courseName),
-    [allCourses, courseName],
-  );
+  useEffect(() => {
+    if (questionToEdit && !loading) {
+      setCourseName(questionToEdit.course_name || "");
+      setModuleName(questionToEdit.module_name || "");
+      setSubtopic(questionToEdit.subtopic_title || "");
+      setSubtopicIdForNewAssessment(questionToEdit.subtopic_id);
+      setSubtopicType("assessment");
+
+      const grouped: Record<string, Section> = {};
+      questionToEdit.questions.forEach((q: any) => {
+        const catName = q.category_name || "General";
+        if (!grouped[catName]) {
+          grouped[catName] = { id: `sec_${Date.now()}_${catName}`, section_title: catName, questions: [] };
+        }
+        grouped[catName].questions.push({
+          id: `q_${q.question_id}`,
+          db_id: q.question_id,
+          type: q.type_id === 1 ? "multiple_choice" : "text_area",
+          question_text: q.question_text,
+          options: q.options || [],
+          correct_answer: q.correct_answer || [],
+          marks: q.marks,
+        });
+      });
+      setSections(Object.values(grouped));
+    }
+  }, [questionToEdit, loading]);
 
   const moduleOptions = useMemo(() => {
-    if (!selectedCourseData) return allModules.map((module) => module.module_name);
-    return allModules
-      .filter((module) => module.course_id === selectedCourseData.course_id)
-      .map((module) => module.module_name);
-  }, [allModules, selectedCourseData]);
-
-  const selectedModuleData = useMemo(
-    () =>
-      allModules.find(
-        (module) =>
-          module.module_name === moduleName &&
-          module.course_id === selectedCourseData?.course_id,
-      ),
-    [allModules, moduleName, selectedCourseData],
-  );
+    const cid = allCourses.find(c => c.course_name === courseName)?.course_id;
+    return cid ? allModules.filter(m => m.course_id === cid).map(m => m.module_name) : [];
+  }, [allCourses, allModules, courseName]);
 
   const subtopicOptions = useMemo(() => {
-    if (!selectedModuleData) return allSubtopics.map((sub) => sub.title);
-    return allSubtopics
-      .filter((sub) => sub.module_id === selectedModuleData.module_id)
-      .map((sub) => sub.title);
-  }, [allSubtopics, selectedModuleData]);
+    const mid = allModules.find(m => m.module_name === moduleName)?.module_id;
+    return mid ? allSubtopics.filter(s => s.module_id === mid).map(s => s.title) : [];
+  }, [allModules, allSubtopics, moduleName]);
 
-  const subtopicTypeOptions = useMemo(() => {
-    return allSubtopicTypes.map(type => type.type);
-  }, [allSubtopicTypes]);
-
-  const handleCourseChange = (value: string) => {
-    setCourseName(value);
-    setModuleName("");
-    setSubtopic("");
-  };
-
-  const handleModuleChange = (value: string) => {
-    setModuleName(value);
-    setSubtopic("");
-  };
-
-  // --- Helpers for Question Builder ---
-  const addSection = () => {
-    setSections([...sections, { id: `sec_${Date.now()}`, section_title: "", questions: [] }]);
-  };
-
-  const removeSection = (sId: string) => {
-    setSections(sections.filter(s => s.id !== sId));
+  const handleSubtopicChange = (value: string) => {
+    setSubtopic(value);
+    const id = allSubtopics.find(s => s.title === value)?.subtopic_id;
+    setSubtopicIdForNewAssessment(id);
   };
 
   const addQuestion = (sId: string, type: QuestionType) => {
-    setSections(sections.map(s => {
-      if (s.id === sId) {
-        const newQ: Question = {
-          id: `q_${Date.now()}`,
-          type,
-          question_text: "",
-          ...(type === "multiple_choice" ? { options: ["", ""] } : { placeholder: "Write your answer..." })
-        };
-        return { ...s, questions: [...s.questions, newQ] };
-      }
-      return s;
-    }));
+    setSections(sections.map(s => s.id === sId ? {
+      ...s, questions: [...s.questions, { id: `q_${Date.now()}`, type, question_text: "", options: type === "multiple_choice" ? ["", ""] : undefined, correct_answer: null, marks: 1 }]
+    } : s));
   };
 
-  const updateQuestion = (sId: string, qId: string, field: string, value: any) => {
-    setSections(sections.map(s => {
-      if (s.id === sId) {
-        return {
-          ...s,
-          questions: s.questions.map(q => q.id === qId ? { ...q, [field]: value } : q)
-        };
-      }
-      return s;
-    }));
-  };
+  const updateQuestion = useCallback((sId: string, qId: string, field: string, value: any, optIdx?: number) => {
+    setSections(prev => prev.map(s => s.id === sId ? {
+      ...s, questions: s.questions.map(q => {
+        if (q.id === qId) {
+          if (field === 'option_text' && q.options && optIdx !== undefined) {
+            const newOpts = [...q.options]; newOpts[optIdx] = value; return { ...q, options: newOpts };
+          }
+          return { ...q, [field]: value };
+        }
+        return q;
+      })
+    } : s));
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Validate basic fields
-    if (!courseName || !subtopicType) {
-      showError("Validation Error", "Please fill required dropdowns");
-      return;
+  /** --- FIXED SUBMIT LOGIC --- **/
+/** --- UPDATED SUBMIT LOGIC --- **/
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const cId = allCourses.find(c => c.course_name === courseName)?.course_id;
+  const mId = allModules.find(m => m.module_name === moduleName)?.module_id;
+  const sId = questionToEdit?.subtopic_id || subtopicIdForNewAssessment;
+
+  if (!cId || !mId || !sId) return showError("Error", "Required IDs missing.");
+
+  setIsSubmitting(true);
+
+  const questionList = sections.flatMap((section) => {
+    const category = allCategories.find(cat => cat.category_name === section.section_title);
+    
+    return section.questions.map((q, idx) => {
+      const isMcq = q.type === "multiple_choice";
+
+      return {
+        // FIX: Added "as const" or explicit type casting to satisfy the interface
+        action: (q.db_id ? "update" : "insert") as "insert" | "update" | "delete", 
+        question_id: q.db_id ? Number(q.db_id) : null,
+        course_id: Number(cId),
+        module_id: Number(mId),
+        subtopic_id: Number(sId),
+        category_id: Number(category?.category_id || 1),
+        type_id: Number(isMcq ? 1 : 2),
+        question_text: String(q.question_text),
+        option_a: isMcq ? String(q.options?.[0] || "") : "",
+        option_b: isMcq ? String(q.options?.[1] || "") : "",
+        option_c: isMcq ? String(q.options?.[2] || "") : "",
+        option_d: isMcq ? String(q.options?.[3] || "") : "",
+        // Ensure correct_answer is passed as an array
+        correct_answer: Array.isArray(q.correct_answer) ? q.correct_answer : [String(q.correct_answer || "")]
+      };
+    });
+  });
+
+  try {
+    // This will now pass the type check
+    const response = await courseService.manageQuestions({ questions: questionList });
+    if (response.status === "success") {
+      showSuccess("Success", questionToEdit ? "Assessment updated successfully." : "Assessment created successfully.");
+      onCancel();
+    } else {
+      showError("Error", response.message);
     }
+  } catch (err: any) {
+    showError("Data Error", "Parameter mismatch. Please check 13-argument procedure signature.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
-    const selectedCourseId = allCourses.find(c => c.course_name === courseName)?.course_id;
-    const selectedModuleId = allModules.find(m => m.module_name === moduleName && m.course_id === selectedCourseId)?.module_id;
-    const selectedSubtopicId = allSubtopics.find(s => s.title === subtopic && s.module_id === selectedModuleId)?.subtopic_id;
-
-    const payload = {
-      course_id: selectedCourseId,
-      module_id: selectedModuleId,
-      subtopic_id: selectedSubtopicId,
-      subtopic_type: subtopicType,
-      created_by: user?.id || 1,
-      content: { sections } // Sending structured JSON
-    };
-
-    console.log("Final Payload:", payload);
-    showSuccess("Success", "Question paper submitted.");
-  };
-
-  if (loading) return <div className="p-10 text-center">Loading Data...</div>;
+/** --- UPDATED BUTTON RENDER --- **/
+// Replace the footer buttons in your return statement with this:
+<div className="flex justify-between items-center mt-12 pt-8 border-t border-[#E5DDD4]">
+  <button 
+    type="button" 
+    onClick={onCancel} 
+    className="px-8 py-2.5 rounded-lg border border-[#E5DDD4] text-gray-500 font-bold hover:bg-gray-50 transition-colors"
+  >
+    Cancel
+  </button>
+  
+  <button 
+    type="submit" 
+    disabled={isSubmitting} 
+    className="px-12 py-2.5 bg-[#E87A2E] text-white rounded-lg font-bold shadow-lg hover:bg-[#d06a20] transition-all flex items-center"
+  >
+    {isSubmitting ? (
+      <>
+        <Loader2 className="mr-2 animate-spin" size={18} />
+        {questionToEdit ? "Updating..." : "Submitting..."}
+      </>
+    ) : (
+      questionToEdit ? "Update Paper" : "Submit Paper"
+    )}
+  </button>
+</div>
+  if (loading) return <div className="p-20 text-center text-gray-500">Loading Data...</div>;
 
   return (
     <form onSubmit={handleSubmit} className="bg-[#F9F5F0] min-h-screen p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-2xl border border-[#E5DDD4] p-8 shadow-sm">
+        <h2 className="text-2xl font-serif mb-6">{questionToEdit ? "Edit Assessment" : "Create Assessment"}</h2>
         
-        {/* Top Dropdowns */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <SearchableDropdown label="Course" value={courseName} options={allCourses.map(c => c.course_name)} onChange={handleCourseChange} menuKey="course" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select course" />
-          <SearchableDropdown label="Module" value={moduleName} options={moduleOptions} onChange={handleModuleChange} menuKey="module" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select module" />
-          <SearchableDropdown label="Subtopic" value={subtopic} options={subtopicOptions} onChange={setSubtopic} menuKey="subtopic" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select subtopic" />
-          <SearchableDropdown label="Type" value={subtopicType} options={subtopicTypeOptions} onChange={setSubtopicType} menuKey="type" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select type" />
+          <SearchableDropdown label="Course" value={courseName} options={allCourses.map(c => c.course_name)} onChange={(v) => { setCourseName(v); setModuleName(""); }} menuKey="course" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select Course" />
+          <SearchableDropdown label="Module" value={moduleName} options={moduleOptions} onChange={(v) => { setModuleName(v); setSubtopic(""); }} menuKey="module" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select Module" />
+          <SearchableDropdown label="Subtopic" value={subtopic} options={subtopicOptions} onChange={handleSubtopicChange} menuKey="subtopic" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select Subtopic" />
+          <SearchableDropdown label="Type" value={subtopicType} options={["assessment"]} onChange={setSubtopicType} menuKey="type" openDropdownKey={openDropdownKey} setOpenDropdownKey={setOpenDropdownKey} required placeholder="Select Type" />
         </div>
 
         <hr className="mb-8 border-[#E5DDD4]" />
 
-        {/* --- Dynamic Question Builder --- */}
-        <div className="space-y-8">
-          {sections.map((section, sIndex) => (
-            <div key={section.id} className="border border-[#E5DDD4] rounded-xl p-6 bg-white relative">
-              <div className="flex justify-between items-center mb-6">
+        <div className="space-y-6">
+          {sections.map((section, sIdx) => (
+            <div key={section.id} className="border border-[#E5DDD4] rounded-xl bg-white">
+              <div className="flex justify-between items-center p-5 border-b border-[#F9F5F0]">
                 <div className="flex items-center gap-2 flex-1">
-                  <GripVertical className="text-gray-400 cursor-move" size={20} />
-                  <input
-                    className="text-lg font-bold border-b border-transparent hover:border-gray-300 focus:border-[#E87A2E] outline-none w-1/2"
-                    value={section.section_title}
-                    onChange={(e) => {
-                      const newSecs = [...sections];
-                      newSecs[sIndex].section_title = e.target.value;
-                      setSections(newSecs);
-                    }}
-                    placeholder="Section Title (e.g. Problem Solving)"
-                  />
+                  <GripVertical className="text-gray-300" size={20} />
+                  <input className="font-bold text-lg outline-none w-1/2" value={section.section_title} onChange={(e) => {
+                    const next = [...sections]; next[sIdx].section_title = e.target.value; setSections(next);
+                  }} />
                 </div>
-                <button type="button" onClick={() => removeSection(section.id)} className="text-red-400 hover:text-red-600">
-                  <Trash2 size={20} />
-                </button>
+                <button type="button" onClick={() => setSections(sections.filter(s => s.id !== section.id))} className="text-red-400"><Trash2 size={18} /></button>
               </div>
 
-              {/* Questions within Section */}
-              <div className="space-y-6">
-                {section.questions.map((q, qIndex) => (
-                  <div key={q.id} className="pl-6 border-l-2 border-[#F9F5F0] space-y-3">
+              <div className="p-6 space-y-8">
+                {section.questions.map((q, qIdx) => (
+                  <div key={q.id} className="pl-6 border-l-2 border-[#E87A2E]/20 space-y-4">
                     <div className="flex justify-between">
-                      <span className="text-xs font-bold text-[#E87A2E] uppercase">
-                        {section.section_title} · Q{qIndex + 1}
-                      </span>
+                      <span className="text-xs font-bold text-[#E87A2E] uppercase">Q{qIdx + 1}</span>
+                      <input type="number" className="w-12 border rounded p-1 text-xs" value={q.marks} onChange={(e) => updateQuestion(section.id, q.id, "marks", parseInt(e.target.value))} />
                     </div>
-                    <textarea
-                      className="w-full p-3 bg-[#F9F5F0] rounded-lg border-none focus:ring-1 focus:ring-[#E87A2E] outline-none text-sm"
-                      rows={2}
-                      placeholder="Enter question text..."
-                      value={q.question_text}
-                      onChange={(e) => updateQuestion(section.id, q.id, "question_text", e.target.value)}
-                    />
-
+                    <textarea className="w-full p-3 bg-[#F9F5F0] rounded-lg text-sm outline-none" rows={2} value={q.question_text} placeholder="Question text..." onChange={(e) => updateQuestion(section.id, q.id, "question_text", e.target.value)} />
+                    
                     {q.type === "multiple_choice" && (
-                      <div className="grid grid-cols-1 gap-2 mt-2">
+                      <div className="space-y-2">
                         {q.options?.map((opt, oIdx) => (
-                          <div key={oIdx} className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full border border-gray-300" />
-                            <input
-                              className="flex-1 bg-white border border-[#E5DDD4] rounded-md px-3 py-1 text-sm outline-none"
-                              value={opt}
-                              onChange={(e) => {
-                                const newOpts = [...(q.options || [])];
-                                newOpts[oIdx] = e.target.value;
-                                updateQuestion(section.id, q.id, "options", newOpts);
-                              }}
-                              placeholder={`Option ${oIdx + 1}`}
-                            />
+                          <div key={oIdx} className="flex gap-2">
+                            <input className="flex-1 border border-[#E5DDD4] rounded px-3 py-1 text-sm" value={opt} onChange={(e) => updateQuestion(section.id, q.id, "option_text", e.target.value, oIdx)} />
+                            <button type="button" onClick={() => updateQuestion(section.id, q.id, "options", q.options?.filter((_, i) => i !== oIdx))} className="text-red-300"><Trash2 size={14}/></button>
                           </div>
                         ))}
-                        <button 
-                          type="button" 
-                          onClick={() => updateQuestion(section.id, q.id, "options", [...(q.options || []), ""])}
-                          className="text-xs text-[#E87A2E] font-medium w-fit"
-                        >
-                          + Add Option
-                        </button>
+                        <button type="button" onClick={() => updateQuestion(section.id, q.id, "options", [...(q.options || []), ""])} className="text-xs text-[#E87A2E]">+ Add Option</button>
                       </div>
                     )}
                   </div>
                 ))}
-              </div>
-
-              {/* Add Question Buttons */}
-              <div className="mt-6 flex gap-3 border-t border-[#F9F5F0] pt-4">
-                <button type="button" onClick={() => addQuestion(section.id, "multiple_choice")} className="flex items-center gap-2 text-xs font-semibold px-3 py-2 bg-[#F9F5F0] rounded-lg hover:bg-[#E5DDD4]">
-                  <Plus size={14} /> Multiple Choice
-                </button>
-                <button type="button" onClick={() => addQuestion(section.id, "text_area")} className="flex items-center gap-2 text-xs font-semibold px-3 py-2 bg-[#F9F5F0] rounded-lg hover:bg-[#E5DDD4]">
-                  <Plus size={14} /> Subjective / Text
-                </button>
+                <div className="flex gap-4 pt-4">
+                  <button type="button" onClick={() => addQuestion(section.id, "multiple_choice")} className="text-xs font-bold flex items-center gap-1"><Plus size={14}/> MCQ</button>
+                  <button type="button" onClick={() => addQuestion(section.id, "text_area")} className="text-xs font-bold flex items-center gap-1"><Plus size={14}/> Subjective</button>
+                </div>
               </div>
             </div>
           ))}
-
-          <button
-            type="button"
-            onClick={addSection}
-            className="w-full py-4 border-2 border-dashed border-[#E5DDD4] rounded-xl text-gray-500 font-semibold hover:border-[#E87A2E] hover:text-[#E87A2E] transition-all"
-          >
-            + Add New Section
-          </button>
+          <button type="button" onClick={() => setSections([...sections, { id: `sec_${Date.now()}`, section_title: "New Section", questions: [] }])} className="w-full py-3 border-2 border-dashed border-[#E5DDD4] text-gray-400 rounded-xl">+ Add Section</button>
         </div>
 
-        {/* Footer Buttons */}
         <div className="flex justify-between items-center mt-12 pt-8 border-t border-[#E5DDD4]">
-          <button type="button" className="px-8 py-2.5 rounded-lg border border-[#E5DDD4] text-gray-500 font-bold hover:bg-gray-50">Cancel</button>
-          <button type="submit" className="px-12 py-2.5 bg-[#E87A2E] text-white rounded-lg font-bold shadow-lg hover:bg-[#d06a20]">Submit Paper</button>
+          <button type="button" onClick={onCancel} className="px-8 py-2.5 rounded-lg border border-[#E5DDD4] text-gray-500 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
+          <button type="submit" disabled={isSubmitting} className="px-12 py-2.5 bg-[#E87A2E] text-white rounded-lg font-bold flex items-center shadow-lg hover:bg-[#d06a20] transition-all">
+            {isSubmitting && <Loader2 className="mr-2 animate-spin" size={18} />}
+            {isSubmitting ? "Submitting..." : "Submit Paper"}
+          </button>
         </div>
       </div>
     </form>
