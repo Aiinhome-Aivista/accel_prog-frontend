@@ -1332,61 +1332,7 @@ footer {
   height: 24px;
 }
 
-@media (max-width: 960px) {
-  .hero-inner {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .hero-sub {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .hero-cta {
-    justify-content: center;
-  }
-
-  .hero-visual {
-    order: -1;
-  }
-
-  .hero-stats-float {
-    max-width: 340px;
-    margin: 0 auto;
-  }
-
-  .courses-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .instructor-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .reg-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .reg-sidebar {
-    position: static;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 700px) {
-  .top-bar {
-    padding: 0.4rem 1rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
+@media (max-width: 1024px) {
   .nav-links {
     display: none;
   }
@@ -1410,8 +1356,64 @@ footer {
     z-index: 99;
   }
 
+  .hero-inner {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  .hero-sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    order: -1;
+  }
+
+  .hero-stats-float {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
   .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .instructor-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .reg-layout {
     grid-template-columns: 1fr;
+  }
+
+  .reg-sidebar {
+    position: static;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 800px) {
+  .features-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .courses-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .top-bar {
+    padding: 0.4rem 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .hero {
@@ -1438,6 +1440,16 @@ footer {
 
   .cta-box {
     padding: 2.5rem 1.5rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .cta-box .text-left {
+    text-align: center;
+  }
+
+  .cta-box img {
+    margin-bottom: 1rem;
   }
 
   .detail-modal {
