@@ -322,6 +322,24 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   };
 
+  const handleContinueLearning = (courseId: string | number) => {
+    const userId = user?.id || 1;
+    const savedState = localStorage.getItem(`course_state_${userId}_${courseId}`);
+    
+    let url = `/course-learning?course_id=${courseId}`;
+    
+    if (savedState) {
+      try {
+        const { activeTab, curW, curS } = JSON.parse(savedState);
+        url += `&tab=${activeTab}&week_idx=${curW}&sub_idx=${curS}`;
+      } catch (e) {
+        console.error("Error parsing saved course state:", e);
+      }
+    }
+    
+    navigate(url, { replace: true });
+  };
+
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     sectionId: string,
@@ -524,9 +542,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <div className="flex flex-wrap gap-2">
             <button
               className="px-5 py-2.5 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[13px] font-semibold transition-colors cursor-pointer"
-              onClick={() =>
-                navigate("/course-learning?course_id=1", { replace: true })
-              }
+              onClick={() => handleContinueLearning(1)}
             >
               Continue Learning
             </button>
@@ -675,12 +691,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     <div className="flex gap-2">
                       <button
                         className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
-                        onClick={() =>
-                          navigate(
-                            `/course-learning?course_id=${course.id}&tab=learn&week_idx=${Math.max(0, (course.currentWeek || 1) - 1)}`,
-                            { replace: true },
-                          )
-                        }
+                        onClick={() => handleContinueLearning(course.id)}
                       >
                         Continue Learning
                       </button>

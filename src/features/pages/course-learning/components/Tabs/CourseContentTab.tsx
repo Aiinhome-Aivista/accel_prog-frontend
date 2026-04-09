@@ -22,6 +22,8 @@ interface CourseContentTabProps {
   weeks: WeekData[];
   curW: number;
   setCurW: (w: number) => void;
+  curS: number;
+  setCurS: (s: number) => void;
   done: Set<string>;
   markDone: (id: string) => void;
   courseId: number;
@@ -33,13 +35,14 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   weeks,
   curW,
   setCurW,
+  curS,
+  setCurS,
   done,
   markDone,
   courseId,
   userId,
   refetchContent,
 }) => {
-  const [curS, setCurS] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [discussions, setDiscussions] = useState<Record<string, any>>({});
   const [uploads, setUploads] = useState<Record<string, string[]>>({});
@@ -59,15 +62,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   useEffect(() => {
     setIsEditing(false);
-    // On week switch, land on first incomplete topic (respects completed state)
-    const wk = weeks[curW];
-    if (wk && wk.subs.length > 0) {
-      const firstIncomplete = wk.subs.findIndex((s) => !done.has(s.id));
-      setCurS(firstIncomplete >= 0 ? firstIncomplete : 0);
-    } else {
-      setCurS(0);
-    }
-  }, [curW]); // Only on week change — NOT on done, so mark complete won't auto-navigate
+  }, [curW]); // Only reset editing on week change
 
   const handleMarkComplete = async (subtopicId: string) => {
     const w = weeks[curW];

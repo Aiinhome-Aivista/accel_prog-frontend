@@ -23,12 +23,14 @@ const CourseLearning: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "home";
   const initialWeekIdx = Number(searchParams.get("week_idx") || 0);
+  const initialSubIdx = Number(searchParams.get("sub_idx") || 0);
   const [activeTab, setActiveTab] = useState(initialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Cross-tab state
   const [done, setDone] = useState<Set<string>>(new Set());
   const [curW, setCurW] = useState(initialWeekIdx);
+  const [curS, setCurS] = useState(initialSubIdx);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
   const [courseName, setCourseName] = useState("Course Learning");
   const [introVideo, setIntroVideo] = useState<any>(null);
@@ -146,8 +148,10 @@ const CourseLearning: React.FC = () => {
   // Initial load
   useEffect(() => {
     const weekIdx = Number(searchParams.get("week_idx") || 0);
+    const subIdx = Number(searchParams.get("sub_idx") || 0);
     setDone(new Set());
     setCurW(weekIdx);
+    setCurS(subIdx);
     setIntroVideo(null);
     setWeeks([]);
     fetchContent();
@@ -159,6 +163,19 @@ const CourseLearning: React.FC = () => {
       fetchContent();
     }
   }, [curW, weeks]);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    const courseId = searchParams.get("course_id");
+    if (courseId && user) {
+      const state = {
+        activeTab,
+        curW,
+        curS
+      };
+      localStorage.setItem(`course_state_${user.id}_${courseId}`, JSON.stringify(state));
+    }
+  }, [activeTab, curW, curS, searchParams, user]);
 
 
 
@@ -213,7 +230,7 @@ const CourseLearning: React.FC = () => {
 
     switch (activeTab) {
       case 'home':
-        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} introVideo={introVideo} />;
+        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setCurS(0); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} introVideo={introVideo} />;
       case 'modules':
         return <ModulesTab />;
       case 'learn':
@@ -221,7 +238,9 @@ const CourseLearning: React.FC = () => {
           key={searchParams.get("course_id")}
           weeks={weeks} 
           curW={curW} 
-          setCurW={setCurW} 
+          setCurW={(w) => { setCurW(w); setCurS(0); }} 
+          curS={curS}
+          setCurS={setCurS}
           done={done} 
           markDone={markDone} 
           courseId={Number(searchParams.get("course_id")) as number} 
@@ -239,7 +258,7 @@ const CourseLearning: React.FC = () => {
       case 'support':
         return <SupportTab />;
       default:
-        return <HomeTab goToCourseContent={(w) => { setCurW(w); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} />;
+        return <HomeTab goToCourseContent={(w) => { setCurW(w); setCurS(0); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} />;
     }
   };
 
