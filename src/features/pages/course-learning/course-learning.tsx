@@ -173,7 +173,7 @@ const CourseLearning: React.FC = () => {
 
     switch (activeTab) {
       case 'home':
-        return <HomeTab weeks={weeks} goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} done={done} />;
+        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} />;
       case 'modules':
         return <ModulesTab />;
       case 'learn':
@@ -197,7 +197,7 @@ const CourseLearning: React.FC = () => {
       case 'support':
         return <SupportTab />;
       default:
-        return <HomeTab weeks={weeks} goToCourseContent={(w) => { setCurW(w); setActiveTab('learn'); }} done={done} />;
+        return <HomeTab goToCourseContent={(w) => { setCurW(w); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} />;
     }
   };
 

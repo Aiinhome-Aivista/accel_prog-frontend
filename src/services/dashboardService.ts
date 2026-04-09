@@ -13,6 +13,8 @@ import type {
 } from "../features/pages/dashboard/dashboard.models";
 import type {
   CourseLearningContent,
+  CourseHomeOverview,
+  CourseHomeTimelineItem,
 } from "../features/pages/course-learning/course-learning.models";
 
 export const dashboardService = {
@@ -85,4 +87,17 @@ export const dashboardService = {
       data: { course_id: courseId, module_id: moduleId, subtopic_id: subtopicId, user_id: userId },
     }),
 
+  getCourseHomeOverview: (courseId: number) =>
+    apiRequest<ApiResponse<CourseHomeOverview>>({
+      url: API_ENDPOINTS.COURSE_HOME_OVERVIEW,
+      method: "POST",
+      data: { course_id: courseId },
+    }),
+
+  getCourseHomeTimeline: (courseId: number, userId: number) =>
+    apiRequest<ApiResponse<CourseHomeTimelineItem[]>>({
+      url: API_ENDPOINTS.COURSE_HOME_TIMELINE,
+      method: "POST",
+      data: { course_id: courseId, user_id: userId },
+    }),
 };
