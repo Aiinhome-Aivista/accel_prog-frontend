@@ -1,13 +1,37 @@
 {
   "welcome": {
     "title": "Welcome back",
-    "streakText": "You're on a 5-day streak. Keep the momentum going — your next sub-topic awaits."
+    "streakText": "You're on a {streak}-day streak. Keep the momentum going — your next sub-topic awaits."
   },
   "stats": [
-    { "id": 1, "icon": "📚", "iconBg": "rgba(232,122,46,.12)", "value": "0", "label": "In Progress" },
-    { "id": 2, "icon": "✅", "iconBg": "#E8F5E9", "value": "0", "label": "Completed" },
-    { "id": 3, "icon": "🏆", "iconBg": "rgba(66,133,244,.1)", "value": "0", "label": "Day Streak" },
-    { "id": 4, "icon": "📊", "iconBg": "rgba(156,39,176,.08)", "value": "0%", "label": "Progress" }
+    {
+      "id": 1,
+      "icon": "📚",
+      "iconBg": "rgba(232,122,46,.12)",
+      "value": "0",
+      "label": "In Progress"
+    },
+    {
+      "id": 2,
+      "icon": "✅",
+      "iconBg": "#E8F5E9",
+      "value": "0",
+      "label": "Completed"
+    },
+    {
+      "id": 3,
+      "icon": "🏆",
+      "iconBg": "rgba(66,133,244,.1)",
+      "value": "0",
+      "label": "Day Streak"
+    },
+    {
+      "id": 4,
+      "icon": "📊",
+      "iconBg": "rgba(156,39,176,.08)",
+      "value": "0%",
+      "label": "Progress"
+    }
   ],
   "inProgressCourses": [
     {
@@ -82,36 +106,36 @@
       "time": "2 hours ago"
     },
     {
-       "id": 2,
-       "icon": "✅",
-       "iconBg": "#E8F5E9",
-       "title": "Assessment submitted",
-       "description": "Week 1 Critical Thinking — scored 85%",
-       "time": "Yesterday"
+      "id": 2,
+      "icon": "✅",
+      "iconBg": "#E8F5E9",
+      "title": "Assessment submitted",
+      "description": "Week 1 Critical Thinking — scored 85%",
+      "time": "Yesterday"
     },
     {
-       "id": 3,
-       "icon": "💬",
-       "iconBg": "rgba(66,133,244,.1)",
-       "title": "Posted in Discussion",
-       "description": "\"How can prompt engineering transform rural education?\"",
-       "time": "Yesterday"
+      "id": 3,
+      "icon": "💬",
+      "iconBg": "rgba(66,133,244,.1)",
+      "title": "Posted in Discussion",
+      "description": "\"How can prompt engineering transform rural education?\"",
+      "time": "Yesterday"
     },
     {
-       "id": 4,
-       "icon": "🔥",
-       "iconBg": "rgba(156,39,176,.08)",
-       "title": "5-day learning streak!",
-       "description": "You've been consistent this week. Keep it up!",
-       "time": "Today"
+      "id": 4,
+      "icon": "🔥",
+      "iconBg": "rgba(156,39,176,.08)",
+      "title": "5-day learning streak!",
+      "description": "You've been consistent this week. Keep it up!",
+      "time": "Today"
     },
     {
-       "id": 5,
-       "icon": "🃏",
-       "iconBg": "rgba(232,122,46,.12)",
-       "title": "Flashcards mastered: 4/7",
-       "description": "RACE Framework, Zero-shot vs Few-shot, CoT, System Prompts",
-       "time": "Today"
+      "id": 5,
+      "icon": "🃏",
+      "iconBg": "rgba(232,122,46,.12)",
+      "title": "Flashcards mastered: 4/7",
+      "description": "RACE Framework, Zero-shot vs Few-shot, CoT, System Prompts",
+      "time": "Today"
     }
   ]
 }
