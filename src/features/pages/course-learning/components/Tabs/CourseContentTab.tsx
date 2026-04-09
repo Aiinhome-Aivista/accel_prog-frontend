@@ -57,8 +57,15 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   useEffect(() => {
     setIsEditing(false);
-    setCurS(0); // Reset to first topic when switching weeks
-  }, [curW]);
+    // On week switch, land on first incomplete topic (respects completed state)
+    const wk = weeks[curW];
+    if (wk && wk.subs.length > 0) {
+      const firstIncomplete = wk.subs.findIndex((s) => !done.has(s.id));
+      setCurS(firstIncomplete >= 0 ? firstIncomplete : 0);
+    } else {
+      setCurS(0);
+    }
+  }, [curW]); // Only on week change — NOT on done, so mark complete won't auto-navigate
 
   const handleMarkComplete = async (subtopicId: string) => {
     const w = weeks[curW];
