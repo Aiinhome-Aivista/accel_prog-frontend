@@ -47,6 +47,10 @@ const CourseLearning: React.FC = () => {
       if (courseId && userId) {
         try {
           setIsLoading(true);
+          setDone(new Set()); // Reset history
+          setCurW(0); // Reset to week 1
+          setIntroVideo(null); // Clear video from prev course
+          setWeeks([]); // Clear weeks to prevent flash of old content
           
           // Fetch both content and videos
           const [response, videoRes] = await Promise.all([
@@ -66,7 +70,7 @@ const CourseLearning: React.FC = () => {
               id: `w${apiWeek.week}`,
               t: apiWeek.module_name,
               short: `Week ${apiWeek.week}`,
-              ul: !apiWeek.is_locked || apiWeek.week <= 2,
+              ul: !apiWeek.is_locked,
               color: apiWeek.week === 1 ? "#E87A2E" : apiWeek.week === 2 ? "#E8A040" : apiWeek.week === 3 ? "#66BB6A" : "#4CAF50",
               moduleId: apiWeek.module_id,
               topics: apiWeek.topics.map(t => ({
@@ -206,6 +210,7 @@ const CourseLearning: React.FC = () => {
         return <ModulesTab />;
       case 'learn':
         return <CourseContentTab 
+          key={searchParams.get("course_id")}
           weeks={weeks} 
           curW={curW} 
           setCurW={setCurW} 

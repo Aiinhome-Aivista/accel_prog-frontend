@@ -215,7 +215,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   };
   const lk = isSubLocked(curW, curS);
 
-  const nextSub = curS < w.subs.length - 1 ? w.subs[curS + 1] : null;
   const canNext = done.has(sub.id);
 
   // Find next incomplete subtopic
