@@ -116,6 +116,15 @@ export interface CourseHomeOverview {
     weeks: number;
   };
   welcome_text: string;
+  streak?: {
+    count: number;
+    text: string;
+    description: string;
+    history: {
+      day: string;
+      status: "completed" | "current" | "pending";
+    }[];
+  };
 }
 
 export interface CourseHomeTimelineItem {

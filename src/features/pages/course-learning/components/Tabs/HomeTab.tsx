@@ -37,23 +37,31 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="text-[1.6rem]">🔥</div>
         <div>
           <h4 className="text-[0.8rem] font-bold text-[#2B2D42] m-0">
-            5-Day Streak!
+            {overview?.streak?.text || "0-Day Streak"}
           </h4>
-          <p className="text-[0.68rem] text-[#6B6D7B] m-0">Keep going.</p>
+          <p className="text-[0.68rem] text-[#6B6D7B] m-0">{overview?.streak?.description || "Start learning today!"}</p>
         </div>
         <div className="flex gap-[0.2rem] ml-auto">
-          {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+          {(overview?.streak?.history || [
+            { day: "M", status: "pending" },
+            { day: "T", status: "pending" },
+            { day: "W", status: "pending" },
+            { day: "T", status: "pending" },
+            { day: "F", status: "pending" },
+            { day: "S", status: "pending" },
+            { day: "S", status: "pending" }
+          ]).map((s, i) => (
             <div
               key={i}
               className={`w-[17px] h-[17px] rounded-[3px] flex items-center justify-center text-[0.48rem] font-bold ${
-                i < 5
+                s.status === "completed"
                   ? "bg-[#e87a2e1f] text-[#E87A2E]"
-                  : i === 5
+                  : s.status === "current"
                     ? "bg-[#E87A2E] text-white"
                     : "bg-[#F9F5F0] text-[#9597A6]"
               }`}
             >
-              {d}
+              {s.day}
             </div>
           ))}
         </div>
@@ -83,10 +91,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-[0.5rem] my-[1rem]">
         {[
-          [overview?.stats?.weeks ],
-          [overview?.stats?.subtopics ],
-          [overview?.stats?.questions ],
-          [overview?.stats?.projects ],
+          [overview?.stats?.weeks || 0, "Weeks"],
+          [overview?.stats?.subtopics || 0, "Sub-Topics"],
+          [overview?.stats?.questions || 0, "Questions"],
+          [overview?.stats?.projects || 0, "Projects"],
         ].map(([n, l], idx) => (
           <div
             key={idx}
