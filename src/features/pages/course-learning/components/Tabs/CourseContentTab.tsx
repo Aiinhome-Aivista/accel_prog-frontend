@@ -57,15 +57,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   useEffect(() => {
     setIsEditing(false);
-    // Find first incomplete subtopic
-    const w = weeks[curW];
-    if (w && w.subs.length > 0) {
-      const firstIncompleteIndex = w.subs.findIndex((s) => !done.has(s.id));
-      setCurS(firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0);
-    } else {
-      setCurS(0);
-    }
-  }, [curW, done]);
+    setCurS(0); // Reset to first topic when switching weeks
+  }, [curW]);
 
   const handleMarkComplete = async (subtopicId: string) => {
     const w = weeks[curW];
@@ -810,22 +803,18 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               )}
             </button>
 
-            {nextIncompleteSub && (
+            {curS < w.subs.length - 1 && (
               <button
                 className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border-none text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all ${canNext
                     ? "bg-[#E87A2E] text-white cursor-pointer hover:bg-[#D06A20]"
                     : "bg-[#E87A2E] text-white opacity-35 cursor-default pointer-events-none"
                   }`}
-                onClick={() =>
-                  canNext &&
-                  nextIncompleteIndex >= 0 &&
-                  setCurS(nextIncompleteIndex)
-                }
+                onClick={() => canNext && setCurS(curS + 1)}
               >
                 Next:{" "}
-                {nextIncompleteSub.title.length > 20
-                  ? nextIncompleteSub.title.substring(0, 20) + "…"
-                  : nextIncompleteSub.title}
+                {w.subs[curS + 1].title.length > 20
+                  ? w.subs[curS + 1].title.substring(0, 20) + "…"
+                  : w.subs[curS + 1].title}
                 <ChevronRight size={14} />
               </button>
             )}
