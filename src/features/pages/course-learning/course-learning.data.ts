@@ -11,6 +11,8 @@ export const WK: WeekData[] = [
     short: "Week 1",
     ul: true,
     color: "#E87A2E",
+    moduleId: 3,
+    progress: null,
     topics: [
       {
         d: "Day 1",
@@ -72,69 +74,89 @@ export const WK: WeekData[] = [
         id: "w1s5",
         type: "assess",
         title: "Week 1 Assessment",
-        questions: {
-          critical: [
-            {
-              q: 'A healthcare startup says "just use ChatGPT" for medication recommendations. What are 3 reasons this is dangerous, and how would you redesign it with prompt engineering guardrails?',
-              type: "subjective",
-            },
-            {
-              q: "WHY does Chain-of-Thought prompting improve reasoning?",
-              opts: [
-                "Makes the model run longer",
-                "Forces decomposition of problems, reducing logical shortcuts",
-                "Activates a special reasoning mode",
-                "Uses more training data",
-              ],
-              ans: 1,
-              type: "mcq",
-            },
-          ],
-          technical: [
-            {
-              q: "What is the primary difference between a system prompt and a user prompt?",
-              opts: [
-                "System prompts use more tokens",
-                "System prompts set persistent constraints; user prompts are per-turn",
-                "System prompts are encrypted",
-                "No functional difference",
-              ],
-              ans: 1,
-              type: "mcq",
-            },
-            {
-              q: "Write a RACE-framework prompt to analyze EV impact on India's petroleum industry by 2030. Include a CoT instruction.",
-              type: "subjective",
-            },
-          ],
-          problem: [
-            {
-              q: "Design a 3-step prompt chain for processing 10,000 customer support emails: classify urgency, extract core issue, generate draft response. Explain your ordering.",
-              type: "subjective",
-            },
-            {
-              q: "A few-shot prompt with 3 examples gets 70% accuracy. What MOST improves it?",
-              opts: [
-                "Add 10 more examples",
-                "Add CoT reasoning to each example showing WHY the classification was made",
-                "Set temperature to 0",
-                "Remove examples, use zero-shot",
-              ],
-              ans: 1,
-              type: "mcq",
-            },
-          ],
-          subjective: [
-            {
-              q: "Design a system prompt for Indian Railways AI helpdesk, considering: multiple languages, varying digital literacy, scale of operations.",
-              type: "subjective",
-            },
-            {
-              q: '"Prompt engineering will become obsolete as AI gets smarter." Agree or disagree? Give 3 supporting points.',
-              type: "subjective",
-            },
-          ],
-        },
+        categories: [
+          {
+            label: "Critical Reasoning",
+            questions: [
+              {
+                id: 1,
+                q: 'A healthcare startup says "just use ChatGPT" for medication recommendations. What are 3 reasons this is dangerous, and how would you redesign it with prompt engineering guardrails?',
+                type: "subjective",
+              },
+              {
+                id: 2,
+                q: "WHY does Chain-of-Thought prompting improve reasoning?",
+                opts: [
+                  "Makes the model run longer",
+                  "Forces decomposition of problems, reducing logical shortcuts",
+                  "Activates a special reasoning mode",
+                  "Uses more training data",
+                ],
+                ans: 1,
+                type: "mcq",
+              },
+            ],
+          },
+          {
+            label: "Technical Concepts",
+            questions: [
+              {
+                id: 3,
+                q: "What is the primary difference between a system prompt and a user prompt?",
+                opts: [
+                  "System prompts use more tokens",
+                  "System prompts set persistent constraints; user prompts are per-turn",
+                  "System prompts are encrypted",
+                  "No functional difference",
+                ],
+                ans: 1,
+                type: "mcq",
+              },
+              {
+                id: 4,
+                q: "Write a RACE-framework prompt to analyze EV impact on India's petroleum industry by 2030. Include a CoT instruction.",
+                type: "subjective",
+              },
+            ],
+          },
+          {
+            label: "Problem Solving",
+            questions: [
+              {
+                id: 5,
+                q: "Design a 3-step prompt chain for processing 10,000 customer support emails: classify urgency, extract core issue, generate draft response. Explain your ordering.",
+                type: "subjective",
+              },
+              {
+                id: 6,
+                q: "A few-shot prompt with 3 examples gets 70% accuracy. What MOST improves it?",
+                opts: [
+                  "Add 10 more examples",
+                  "Add CoT reasoning to each example showing WHY the classification was made",
+                  "Set temperature to 0",
+                  "Remove examples, use zero-shot",
+                ],
+                ans: 1,
+                type: "mcq",
+              },
+            ],
+          },
+          {
+            label: "Applied Scenarios",
+            questions: [
+              {
+                id: 7,
+                q: "Design a system prompt for Indian Railways AI helpdesk, considering: multiple languages, varying digital literacy, scale of operations.",
+                type: "subjective",
+              },
+              {
+                id: 8,
+                q: '"Prompt engineering will become obsolete as AI gets smarter." Agree or disagree? Give 3 supporting points.',
+                type: "subjective",
+              },
+            ],
+          },
+        ],
       },
       {
         id: "w1s6",
@@ -188,6 +210,8 @@ export const WK: WeekData[] = [
     short: "Week 2",
     ul: false,
     color: "#E8A040",
+    moduleId: 2,
+    progress: null,
     topics: [
       {
         d: "Day 1",
@@ -245,7 +269,7 @@ export const WK: WeekData[] = [
         id: "w2s5",
         type: "assess",
         title: "Week 2 Assessment",
-        questions: { critical: [], technical: [], problem: [], subjective: [] },
+        categories: [],
       },
       {
         id: "w2s6",
@@ -276,6 +300,8 @@ export const WK: WeekData[] = [
     short: "Week 3",
     ul: false,
     color: "#66BB6A",
+    moduleId: 4,
+    progress: null,
     topics: [
       {
         d: "Day 1",
@@ -333,7 +359,7 @@ export const WK: WeekData[] = [
         id: "w3s5",
         type: "assess",
         title: "Week 3 Assessment",
-        questions: { critical: [], technical: [], problem: [], subjective: [] },
+        categories: [],
       },
       {
         id: "w3s6",
@@ -365,6 +391,8 @@ export const WK: WeekData[] = [
     short: "Week 4",
     ul: false,
     color: "#4CAF50",
+    moduleId: 5,
+    progress: null,
     topics: [
       {
         d: "Day 1",
@@ -422,7 +450,7 @@ export const WK: WeekData[] = [
         id: "w4s5",
         type: "assess",
         title: "Week 4 Assessment",
-        questions: { critical: [], technical: [], problem: [], subjective: [] },
+        categories: [],
       },
       {
         id: "w4s6",
