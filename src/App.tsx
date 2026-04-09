@@ -78,7 +78,13 @@ function AppContent() {
 
   const navigate = useNavigate();
 
-  const handleSignIn = (isNewUser: boolean, email: string, name?: string, id?: number, access_control?: any[]) => {
+  const handleSignIn = (
+    isNewUser: boolean,
+    email: string,
+    name?: string,
+    id?: number,
+    access_control?: any[],
+  ) => {
     setIsSignInOpen(false);
     if (name) {
       login({ id, name, email, access_control });
@@ -99,8 +105,8 @@ function AppContent() {
   };
 
   const handleGoHome = () => {
-    navigate('/');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -158,6 +164,7 @@ function AppContent() {
 
 function App() {
   return (
+    //  <Router basename="/ap">
     <Router>
       <ToastProvider>
         <AuthProvider>
