@@ -38,6 +38,7 @@ export interface SubTopic {
   type: 'reading' | 'video' | 'assess' | 'discussion' | 'project';
   title: string;
   content?: string; // HTML content for reading/project
+  videoPath?: string;
   videoTitle?: string;
   videoDesc?: string;
   categories?: AssessmentCategory[]; // Dynamic categories for assessment
@@ -133,6 +134,26 @@ export interface CourseHomeTimelineItem {
   status: "Available" | "Locked";
   title: string;
   week: string;
+}
+
+export interface WeekVideo {
+  duration_sec: number;
+  module_id: number;
+  subtopic_id: number;
+  video_path: string;
+  video_subtitle: string;
+  video_title: string;
+}
+
+export interface CourseIntroVideo {
+  video_path: string;
+  video_subtitle: string;
+  video_title: string;
+}
+
+export interface CourseVideoData {
+  course_intro_video: CourseIntroVideo;
+  week_videos: WeekVideo[];
 }
 
 export interface CourseLearningContent {

@@ -15,6 +15,7 @@ import type {
   CourseLearningContent,
   CourseHomeOverview,
   CourseHomeTimelineItem,
+  CourseVideoData,
 } from "../features/pages/course-learning/course-learning.models";
 
 export const dashboardService = {
@@ -122,5 +123,11 @@ export const dashboardService = {
       url: API_ENDPOINTS.COURSE_HOME_TIMELINE,
       method: "POST",
       data: { course_id: courseId, user_id: userId },
+    }),
+    
+  getCourseVideos: (courseId: number) =>
+    apiRequest<ApiResponse<CourseVideoData>>({
+      url: `${API_ENDPOINTS.GET_COURSE_VIDEOS}?course_id=${courseId}`,
+      method: "GET",
     }),
 };

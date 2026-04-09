@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { CourseHomeOverview, CourseHomeTimelineItem } from "../../course-learning.models";
+import type { CourseHomeOverview, CourseHomeTimelineItem, CourseIntroVideo } from "../../course-learning.models";
 import { dashboardService } from "../../../../../services/dashboardService";
 
 import HeroIcon from "../../../../../assets/hero.svg";
@@ -8,12 +8,14 @@ interface HomeTabProps {
   goToCourseContent: (weekIndex: number) => void;
   courseId: number;
   userId: number;
+  introVideo?: CourseIntroVideo | null;
 }
 
 export const HomeTab: React.FC<HomeTabProps> = ({
   goToCourseContent,
   courseId,
   userId,
+  introVideo,
 }) => {
   const [overview, setOverview] = useState<CourseHomeOverview | null>(null);
   const [timeline, setTimeline] = useState<CourseHomeTimelineItem[]>([]);
@@ -33,6 +35,25 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
   return (
     <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
+      {introVideo && (
+        <div className="mb-[1rem]">
+          <h3 className="font-['DM_Serif_Display'] text-[1rem] text-[#2B2D42] mb-[0.2rem] m-0">
+            {introVideo.video_title}
+          </h3>
+          <p className="text-[0.68rem] text-[#6B6D7B] mb-[0.8rem] m-0">
+            {introVideo.video_subtitle}
+          </p>
+          <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4]">
+            <video
+              key={introVideo.video_path}
+              className="w-full h-full object-cover"
+              src={introVideo.video_path}
+              controls={true}
+            ></video>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[0.8rem] mb-[1rem] flex items-center gap-[0.7rem]">
         <div className="text-[1.6rem]">🔥</div>
         <div>

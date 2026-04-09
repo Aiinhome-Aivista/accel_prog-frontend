@@ -30,6 +30,7 @@ const CourseLearning: React.FC = () => {
   const [curW, setCurW] = useState(0);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
   const [courseName, setCourseName] = useState("Course Learning");
+  const [introVideo, setIntroVideo] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,9 +58,21 @@ const CourseLearning: React.FC = () => {
       if (courseId && userId) {
         try {
           setIsLoading(true);
-          const response = await dashboardService.getCourseLearningContent(Number(courseId), userId);
+          
+          // Fetch both content and videos
+          const [response, videoRes] = await Promise.all([
+            dashboardService.getCourseLearningContent(Number(courseId), userId),
+            dashboardService.getCourseVideos(Number(courseId))
+          ]);
+
           if (response.status === "success" && response.data) {
             setCourseName(response.data.course_name);
+            
+            const videos = videoRes.status === "success" ? videoRes.data : null;
+            if (videos) {
+              setIntroVideo(videos.course_intro_video);
+            }
+
             const mappedWeeks: WeekData[] = response.data.weeks.map((apiWeek: ApiWeek) => ({
               id: `w${apiWeek.week}`,
               t: apiWeek.module_name,
@@ -79,6 +92,18 @@ const CourseLearning: React.FC = () => {
                   title: t.title,
                 };
                 
+                // Find matching video data
+                if (t.type === 'video' && videos) {
+                  const vData = videos.week_videos.find(v => 
+                    v.module_id === apiWeek.module_id && v.subtopic_id === t.subtopic_id
+                  );
+                  if (vData) {
+                    sub.videoPath = vData.video_path;
+                    sub.videoTitle = vData.video_title;
+                    sub.videoDesc = vData.video_subtitle;
+                  }
+                }
+
                 const contentData = t.content.data;
                 if (t.type === 'assessment' && Array.isArray(contentData)) {
                   sub.categories = contentData.map((cat: any) => ({
@@ -204,7 +229,7 @@ const CourseLearning: React.FC = () => {
 
     switch (activeTab) {
       case 'home':
-        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} />;
+        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} introVideo={introVideo} />;
       case 'modules':
         return <ModulesTab />;
       case 'learn':

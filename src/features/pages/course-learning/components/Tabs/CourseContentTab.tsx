@@ -91,7 +91,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     qid: string,
     questionId: number,
     selectedOption: string,
-    label: string,
   ) => {
     const w = weeks[curW];
     const sub = w.subs[curS];
@@ -139,7 +138,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     qid: string,
     questionId: number,
     userAnswer: string,
-    label: string,
   ) => {
     const w = weeks[curW];
     const sub = w.subs[curS];
@@ -392,12 +390,23 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             </div>
           )}
           {sub.type === "video" && (
-            <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative mb-[0.8rem] group">
-              <video
-                className="w-full h-full object-cover"
-                src="https://www.w3schools.com/html/mov_bbb.mp4"
-                controls={true}
-              ></video>
+            <div className="mb-[1rem]">
+              <h4 className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42] mb-[0.2rem] m-0">
+                {sub.videoTitle || sub.title}
+              </h4>
+              {sub.videoDesc && (
+                <p className="text-[0.68rem] text-[#6B6D7B] mb-[0.8rem] m-0">
+                  {sub.videoDesc}
+                </p>
+              )}
+              <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative mb-[0.8rem] group border border-[#E5DDD4]">
+                <video
+                  key={sub.videoPath}
+                  className="w-full h-full object-cover"
+                  src={sub.videoPath}
+                  controls={true}
+                ></video>
+              </div>
             </div>
           )}
           {sub.type === "assess" &&
@@ -529,7 +538,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                           qid,
                                           q.id,
                                           o,
-                                          label,
                                         );
                                       }
                                     }}
@@ -606,7 +614,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                       qid,
                                       q.id,
                                       sel || "",
-                                      label,
                                     )
                                   }
                                   disabled={
