@@ -50,7 +50,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   }, [curW]);
 
   const handleMarkComplete = async (subtopicId: string) => {
-    const moduleId = curW + 1; // Using week index as module ID
+    const w = weeks[curW];
+    const moduleId = w.moduleId;
     const subtopicNum = parseInt(subtopicId.split("s")[1] || "0");
     
     try {
@@ -104,8 +105,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const nextSub = curS < w.subs.length - 1 ? w.subs[curS + 1] : null;
   const canNext = done.has(sub.id);
 
+  // Use local calculation for real-time UI feedback after marking complete
+  // But also consider API values if available
   const doneCount = w.subs.filter((s) => done.has(s.id)).length;
-  const pct = Math.round((doneCount / w.subs.length) * 100);
+  const pct = w.subs.length > 0 ? Math.round((doneCount / w.subs.length) * 100) : 0;
 
   const postDiscussion = () => {
     if (!localMessage.trim()) return;
@@ -171,10 +174,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             <div
               key={si}
               className={`flex items-center gap-[0.45rem] p-[0.45rem_0.6rem] rounded-[8px] cursor-pointer text-[0.73rem] font-medium transition-all mb-[0.15rem] ${
-                a
-                  ? "bg-[#e87a2e1f] text-[#E87A2E] font-semibold"
-                  : d
-                    ? "text-[#4CAF50] hover:bg-[#F9F5F0]"
+                d
+                  ? "bg-[#E8F5E9] text-[#4CAF50] font-semibold"
+                  : a
+                    ? "bg-[#e87a2e1f] text-[#E87A2E] font-semibold"
                     : l
                       ? "opacity-35 cursor-default hover:bg-transparent text-[#6B6D7B]"
                       : "text-[#6B6D7B] hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
@@ -185,10 +188,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             >
               <div
                 className={`w-[7px] h-[7px] rounded-full border-[1.5px] shrink-0 ${
-                  a
-                    ? "bg-[#E87A2E] border-[#E87A2E]"
-                    : d
-                      ? "bg-[#4CAF50] border-[#4CAF50]"
+                  d
+                    ? "bg-[#4CAF50] border-[#4CAF50]"
+                    : a
+                      ? "bg-[#E87A2E] border-[#E87A2E]"
                       : "border-[#E5DDD4] bg-transparent"
                 }`}
               ></div>
@@ -561,8 +564,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             >
               {loadingSubtopic === sub.id ? (
                 <>
-                  <Loader size={14} className="animate-spin" />
-                  Loading...
+                  <Loader size={14} />
+                  Processing...
                 </>
               ) : isDone ? (
                 "✓ Completed"

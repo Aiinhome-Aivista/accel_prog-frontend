@@ -55,6 +55,7 @@ export interface WeekData {
   color: string;
   topics: TopicDay[];
   subs: SubTopic[];
+  moduleId: number;
 }
 
 export interface Flashcard {
