@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import type { WeekData, Question, AssessmentCategory } from "../../course-learning.models";
+import type {
+  WeekData,
+  Question,
+  AssessmentCategory,
+} from "../../course-learning.models";
 
 import {
   UploadCloud,
@@ -40,6 +44,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [loadingSubtopic, setLoadingSubtopic] = useState<string | null>(null);
+  const [submittingQuestion, setSubmittingQuestion] = useState<string | null>(
+    null,
+  );
+  const [questionResponses, setQuestionResponses] = useState<
+    Record<string, any>
+  >({});
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
@@ -49,7 +59,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     // Find first incomplete subtopic
     const w = weeks[curW];
     if (w && w.subs.length > 0) {
-      const firstIncompleteIndex = w.subs.findIndex(s => !done.has(s.id));
+      const firstIncompleteIndex = w.subs.findIndex((s) => !done.has(s.id));
       setCurS(firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0);
     } else {
       setCurS(0);
@@ -60,20 +70,116 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     const w = weeks[curW];
     const moduleId = w.moduleId;
     const subtopicNum = parseInt(subtopicId.split("s")[1] || "0");
-    
+
     try {
       setLoadingSubtopic(subtopicId);
       await dashboardService.completeSubtopicModuleCourseWiseByUser(
         courseId,
         moduleId,
         subtopicNum,
-        userId
+        userId,
       );
       markDone(subtopicId);
     } catch (error) {
       console.error("Error marking subtopic complete:", error);
     } finally {
       setLoadingSubtopic(null);
+    }
+  };
+
+  const handleSubmitMcqAnswer = async (
+    qid: string,
+    questionId: number,
+    selectedOption: string,
+    label: string,
+  ) => {
+    const w = weeks[curW];
+    const sub = w.subs[curS];
+    const moduleId = w.moduleId;
+    const subtopicNum = parseInt(sub.id.split("s")[1] || "0");
+
+    try {
+      setSubmittingQuestion(qid);
+
+      // Call API to submit answer
+      const response = await dashboardService.submitQuestionAnswer(
+        userId,
+        courseId,
+        moduleId,
+        subtopicNum,
+        questionId,
+        selectedOption, // Option text as string
+        0, // time_taken
+      );
+
+      // Store response for display
+      setQuestionResponses((prev) => ({
+        ...prev,
+        [qid]: response,
+      }));
+
+      // Mark as submitted in answers
+      setAnswers((prev) => ({
+        ...prev,
+        [`${qid}_sub`]: 1,
+      }));
+    } catch (error) {
+      console.error("Error submitting MCQ answer:", error);
+      // Still mark as submitted even on error
+      setAnswers((prev) => ({
+        ...prev,
+        [`${qid}_sub`]: 1,
+      }));
+    } finally {
+      setSubmittingQuestion(null);
+    }
+  };
+
+  const handleSubmitTextAnswer = async (
+    qid: string,
+    questionId: number,
+    userAnswer: string,
+    label: string,
+  ) => {
+    const w = weeks[curW];
+    const sub = w.subs[curS];
+    const moduleId = w.moduleId;
+    const subtopicNum = parseInt(sub.id.split("s")[1] || "0");
+
+    try {
+      setSubmittingQuestion(qid);
+
+      // Call API to submit text answer
+      const response = await dashboardService.submitQuestionAnswer(
+        userId,
+        courseId,
+        moduleId,
+        subtopicNum,
+        questionId,
+        userAnswer, // Full text answer
+        0, // time_taken
+      );
+
+      // Store response for display
+      setQuestionResponses((prev) => ({
+        ...prev,
+        [qid]: response,
+      }));
+
+      // Mark as submitted in answers
+      setAnswers((prev) => ({
+        ...prev,
+        [`${qid}_sub`]: 1,
+      }));
+    } catch (error) {
+      console.error("Error submitting text answer:", error);
+      // Still mark as submitted even on error
+      setAnswers((prev) => ({
+        ...prev,
+        [`${qid}_sub`]: 1,
+      }));
+    } finally {
+      setSubmittingQuestion(null);
     }
   };
 
@@ -100,6 +206,9 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   }
 
   const sub = w.subs[curS];
+     const parsedContent = typeof sub.content === "string" ?
+          JSON.parse(sub.content) : sub.content; const discussionData =
+          parsedContent?.data?.[0];
   const isDone = done.has(sub.id);
 
   const isSubLocked = (wi: number, si: number) => {
@@ -123,12 +232,14 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   };
 
   const nextIncompleteIndex = findNextIncompleteIndex();
-  const nextIncompleteSub = nextIncompleteIndex >= 0 ? w.subs[nextIncompleteIndex] : null;
+  const nextIncompleteSub =
+    nextIncompleteIndex >= 0 ? w.subs[nextIncompleteIndex] : null;
 
   // Use local calculation for real-time UI feedback after marking complete
   // But also consider API values if available
   const doneCount = w.subs.filter((s) => done.has(s.id)).length;
-  const pct = w.subs.length > 0 ? Math.round((doneCount / w.subs.length) * 100) : 0;
+  const pct =
+    w.subs.length > 0 ? Math.round((doneCount / w.subs.length) * 100) : 0;
 
   const postDiscussion = () => {
     if (!localMessage.trim()) return;
@@ -280,7 +391,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               </div>
             </div>
           )}
-
           {sub.type === "video" && (
             <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative mb-[0.8rem] group">
               <video
@@ -290,7 +400,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               ></video>
             </div>
           )}
-
           {sub.type === "assess" &&
             sub.categories &&
             sub.categories.map((cat: AssessmentCategory) => {
@@ -301,21 +410,21 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                 "Critical Thinking": "🧠",
                 "Technical Depth": "⚙️",
                 "Problem Solving": "🧩",
-                "Subjective": "✍️",
+                Subjective: "✍️",
               };
 
               const catColors: Record<string, string> = {
                 "Critical Thinking": "#9C27B0",
                 "Technical Depth": "#4285F4",
                 "Problem Solving": "#E87A2E",
-                "Subjective": "#4CAF50",
+                Subjective: "#4CAF50",
               };
 
               const catBg: Record<string, string> = {
                 "Critical Thinking": "rgba(156,39,176,.08)",
                 "Technical Depth": "rgba(66,133,244,.1)",
                 "Problem Solving": "#e87a2e1f",
-                "Subjective": "#E8F5E9",
+                Subjective: "#E8F5E9",
               };
 
               const label = cat.label;
@@ -351,7 +460,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                       const isMcq = q.type === "mcq";
                       const sel = answers[qid];
                       const submitted = answers[`${qid}_sub`];
-
+                      const selectedText = q.opts?.[sel];
                       return (
                         <div
                           key={qi}
@@ -370,16 +479,36 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                 let cls =
                                   "flex items-start gap-[0.4rem] p-[0.45rem_0.6rem] rounded-[8px] border-[1.5px] cursor-pointer text-[0.78rem] transition-all ";
                                 if (sel !== undefined) {
-                                  if (oi === sel && oi === q.ans)
-                                    cls +=
-                                      "border-[#4CAF50] bg-[#E8F5E9] text-[#2E7D32]";
-                                  else if (oi === sel)
-                                    cls +=
-                                      "border-[#EA4335] bg-[#ea433514] text-[#C62828]";
-                                  else if (oi === q.ans)
-                                    cls +=
-                                      "border-[#4CAF50] bg-[#E8F5E9] text-[#2E7D32]";
-                                  else cls += "border-[#E5DDD4] text-[#6B6D7B]";
+                                  // If submitted, show results
+                                  if (submitted) {
+                                    const isCorrect =
+                                      questionResponses[qid]?.is_correct;
+                                    const correctAnswer =
+                                      questionResponses[qid]?.correct_answer;
+
+                                    // selected correct → GREEN
+                                    if (isCorrect && oi === sel)
+                                      cls +=
+                                        "border-[#4CAF50] bg-[#E8F5E9] text-[#2E7D32]";
+                                    // wrong → correct option GREEN
+                                    else if (!isCorrect && o === correctAnswer)
+                                      cls +=
+                                        "border-[#4CAF50] bg-[#E8F5E9] text-[#2E7D32]";
+                                    // wrong → selected RED (FIXED USING TEXT)
+                                    else if (!isCorrect && o === selectedText)
+                                      cls +=
+                                        "border-[#EA4335] bg-[#ea433514] text-[#C62828]";
+                                    else
+                                      cls += "border-[#E5DDD4] text-[#6B6D7B]";
+                                  } else {
+                                    // If submitting (not yet submitted), blur the selected option
+                                    if (oi === sel)
+                                      cls +=
+                                        "border-[#E87A2E] bg-[#e87a2e1f] text-[#E87A2E] opacity-50 cursor-wait";
+                                    else
+                                      cls +=
+                                        "border-[#E5DDD4] text-[#6B6D7B] opacity-50 pointer-events-none";
+                                  }
                                 } else {
                                   cls +=
                                     "border-[#E5DDD4] text-[#6B6D7B] hover:border-[#E87A2E] hover:text-[#E87A2E] hover:bg-[#e87a2e1f]";
@@ -390,30 +519,67 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                     key={oi}
                                     className={cls}
                                     onClick={() => {
-                                      if (sel === undefined)
+                                      if (sel === undefined && !submitted) {
                                         setAnswers((p) => ({
                                           ...p,
                                           [qid]: oi,
                                         }));
+                                        // Call API directly on MCQ selection with option text
+                                        handleSubmitMcqAnswer(
+                                          qid,
+                                          q.id,
+                                          o,
+                                          label,
+                                        );
+                                      }
                                     }}
                                   >
+                                    {/* <div className="w-[15px] h-[15px] rounded-full border-2 shrink-0 mt-[1px] flex items-center justify-center border-current"></div> */}
                                     <div className="w-[15px] h-[15px] rounded-full border-2 shrink-0 mt-[1px] flex items-center justify-center border-current">
-                                      {sel !== undefined &&
-                                        (oi === sel || oi === q.ans) && (
-                                          <div className="w-[7px] h-[7px] rounded-full bg-current"></div>
-                                        )}
+                                      {
+                                        // before submit → selected
+                                        ((!submitted && oi === sel) ||
+                                          // correct selected
+                                          (submitted &&
+                                            questionResponses[qid]
+                                              ?.is_correct &&
+                                            oi === sel) ||
+                                          // wrong case → ONLY correct answer
+                                          (submitted &&
+                                            !questionResponses[qid]
+                                              ?.is_correct &&
+                                            o ===
+                                              questionResponses[qid]
+                                                ?.correct_answer)) && (
+                                          <div
+                                            className={`w-[7px] h-[7px] rounded-full ${
+                                              submitted
+                                                ? "bg-[#4CAF50]" // after submit always green
+                                                : "bg-[#4CAF50]"
+                                            }`}
+                                          />
+                                        )
+                                      }
                                     </div>
                                     {o}
                                   </div>
                                 );
                               })}
-                              {sel !== undefined && (
-                                <div
-                                  className={`p-[0.4rem_0.6rem] rounded-[8px] text-[0.74rem] mt-[0.3rem] leading-[1.4] ${sel === q.ans ? "bg-[#E8F5E9] text-[#2E7D32]" : "bg-[#ea433514] text-[#C62828]"}`}
-                                >
-                                  {sel === q.ans
-                                    ? "Correct!"
-                                    : "Review the reading material."}
+                              {submitted && questionResponses[qid] && (
+                                <div className="mt-[0.6rem] pt-[0.5rem] border-t border-[#E5DDD4] space-y-[0.3rem]">
+                                  {questionResponses[qid]?.is_correct ? (
+                                    <>
+                                      <div className="p-[0.5rem_0.6rem] rounded-[8px] text-[0.74rem] font-semibold flex items-center gap-[0.4rem] bg-[#E8F5E9] text-[#2E7D32] border-[1px] border-[#4CAF50]">
+                                        <span>✓ Correct!</span>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div className="p-[0.3rem_0.5rem] rounded-[5px] text-[0.70rem] bg-[#fce4ec] text-[#c2185b] border-l-[3px] border-[#e91e63] italic">
+                                        Review the reading material.
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -434,15 +600,32 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                               ></textarea>
                               {!submitted && (
                                 <button
-                                  className="px-[1rem] py-[0.4rem] rounded-[7px] bg-[#E87A2E] text-white text-[0.74rem] font-semibold cursor-pointer border-none mt-[0.3rem]"
+                                  className="px-[1rem] py-[0.4rem] rounded-[7px] bg-[#E87A2E] text-white text-[0.74rem] font-semibold cursor-pointer border-none mt-[0.3rem] flex items-center gap-[0.3rem] hover:bg-[#D06A20] transition-all disabled:opacity-50"
                                   onClick={() =>
-                                    setAnswers((p) => ({
-                                      ...p,
-                                      [`${qid}_sub`]: 1,
-                                    }))
+                                    handleSubmitTextAnswer(
+                                      qid,
+                                      q.id,
+                                      sel || "",
+                                      label,
+                                    )
+                                  }
+                                  disabled={
+                                    !sel ||
+                                    !sel.trim() ||
+                                    submittingQuestion === qid
                                   }
                                 >
-                                  Submit
+                                  {submittingQuestion === qid ? (
+                                    <>
+                                      <Loader
+                                        size={12}
+                                        className="animate-spin"
+                                      />
+                                      Submitting...
+                                    </>
+                                  ) : (
+                                    "Submit"
+                                  )}
                                 </button>
                               )}
                               {submitted && (
@@ -459,16 +642,21 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                 </div>
               );
             })}
-
+       
           {sub.type === "discussion" && (
+            
             <div className="mb-[1rem]">
               <div className="bg-[#1A1B2E] rounded-t-[14px] p-[0.9rem_1.1rem] text-white">
                 <h4 className="font-['DM_Serif_Display'] text-[0.88rem] mb-[0.1rem] m-0">
-                  {sub.topic}
+                  {discussionData?.question_text || "Discussion"}
                 </h4>
-                <p className="text-[0.68rem] text-white/50 m-0">
-                  Cohort Alpha-3 · {w.t}
-                </p>
+                {discussionData?.tag && (
+                  <div className="mt-[0.4rem]">
+                    <span className="text-[0.62rem] font-bold bg-[#e87a2e1f] text-[#E87A2E] px-[0.5rem] py-[0.2rem] rounded-[4px]">
+                      {discussionData.tag}
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="bg-white border text-[#2B2D42] border-t-0 border-[#E5DDD4] rounded-b-[14px] p-[0.8rem]">
                 <div className="flex gap-[0.4rem] mb-[0.6rem] items-start">
@@ -488,37 +676,34 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                     Post
                   </button>
                 </div>
-                {(discussions[sub.id] || sub.seeds || []).map(
-                  (m: any, i: number) => (
+                {(discussions[sub.id] || []).map((m: any, i: number) => (
+                  <div
+                    key={i}
+                    className="flex gap-[0.4rem] py-[0.4rem] border-b border-black/5 last:border-none"
+                  >
                     <div
-                      key={i}
-                      className="flex gap-[0.4rem] py-[0.4rem] border-b border-black/5 last:border-none"
+                      className={`w-[26px] h-[26px] rounded-full flex items-center justify-center text-[0.55rem] font-bold shrink-0 ${i % 2 ? "bg-[#E8F5E9] text-[#4CAF50]" : "bg-[#e87a2e1f] text-[#E87A2E]"}`}
                     >
-                      <div
-                        className={`w-[26px] h-[26px] rounded-full flex items-center justify-center text-[0.55rem] font-bold shrink-0 ${i % 2 ? "bg-[#E8F5E9] text-[#4CAF50]" : "bg-[#e87a2e1f] text-[#E87A2E]"}`}
-                      >
-                        {m.a}
+                      {m.a}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-[0.25rem] mb-[0.08rem]">
+                        <span className="text-[0.7rem] font-bold text-[#2B2D42]">
+                          {m.n}
+                        </span>
+                        <span className="text-[0.58rem] text-[#9597A6]">
+                          {m.tm}
+                        </span>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-[0.25rem] mb-[0.08rem]">
-                          <span className="text-[0.7rem] font-bold text-[#2B2D42]">
-                            {m.n}
-                          </span>
-                          <span className="text-[0.58rem] text-[#9597A6]">
-                            {m.tm}
-                          </span>
-                        </div>
-                        <div className="text-[0.74rem] text-[#6B6D7B] leading-[1.5]">
-                          {m.tx}
-                        </div>
+                      <div className="text-[0.74rem] text-[#6B6D7B] leading-[1.5]">
+                        {m.tx}
                       </div>
                     </div>
-                  ),
-                )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
-
           {sub.type === "project" && (
             <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[1.1rem] mb-[1rem]">
               <h4 className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42] mb-[0.3rem] m-0">
@@ -566,7 +751,6 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               ))}
             </div>
           )}
-
           <div className="flex flex-wrap items-center justify-between py-[1rem] mt-[0.6rem] border-t border-[#E5DDD4] gap-[0.5rem]">
             <button
               className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all cursor-pointer ${
@@ -576,7 +760,9 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                     ? "bg-[#E87A2E] text-white border-[#E87A2E] opacity-75 cursor-wait"
                     : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
               }`}
-              onClick={() => !isDone && !loadingSubtopic && handleMarkComplete(sub.id)}
+              onClick={() =>
+                !isDone && !loadingSubtopic && handleMarkComplete(sub.id)
+              }
               disabled={isDone || loadingSubtopic === sub.id}
             >
               {loadingSubtopic === sub.id ? (
@@ -598,7 +784,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                     ? "bg-[#E87A2E] text-white cursor-pointer hover:bg-[#D06A20]"
                     : "bg-[#E87A2E] text-white opacity-35 cursor-default pointer-events-none"
                 }`}
-                onClick={() => canNext && nextIncompleteIndex >= 0 && setCurS(nextIncompleteIndex)}
+                onClick={() =>
+                  canNext &&
+                  nextIncompleteIndex >= 0 &&
+                  setCurS(nextIncompleteIndex)
+                }
               >
                 Next:{" "}
                 {nextIncompleteSub.title.length > 20

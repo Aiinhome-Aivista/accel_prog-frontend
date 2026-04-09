@@ -85,4 +85,27 @@ export const dashboardService = {
       data: { course_id: courseId, module_id: moduleId, subtopic_id: subtopicId, user_id: userId },
     }),
 
+  submitQuestionAnswer: (
+    userId: number,
+    courseId: number,
+    moduleId: number,
+    subtopicId: number,
+    questionId: number,
+    userAnswer: string | number,
+    timeTaken: number = 0
+  ) =>
+    apiRequest({
+      url: API_ENDPOINTS.SUBMIT_USER_ANSWER,
+      method: "POST",
+      data: {
+        user_id: userId,
+        course_id: courseId,
+        module_id: moduleId,
+        subtopic_id: subtopicId,
+        question_id: questionId,
+        user_answer: userAnswer,
+        time_taken: timeTaken,
+      },
+    }),
+
 };
