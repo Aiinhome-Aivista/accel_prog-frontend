@@ -1,10 +1,9 @@
 import React, { useMemo, useRef, useState } from "react";
-import Select, { components, type MenuListProps, type StylesConfig } from "react-select";
-import { Search } from "lucide-react";
 import { useToast } from "../../utils/ToastContext";
 import { courseService } from "../../services/courseService";
 import TiptapEditor from "./TipTapEditor";
 import { useEffect } from "react";
+import SearchableDropdown from "./SearchableDropdown";
 type SubtopicType =
   | "Lesson"
   | "Announcement"
@@ -18,10 +17,19 @@ type SubtopicType =
   | "assessment"
   | "project";
 
-type SelectOption = {
-  value: string;
-  label: string;
-};
+// Define ContentItem type here or import it from a shared location if available
+interface ContentItem {
+  content_id: number;
+  course_id: number;
+  module_id: number;
+  subtopic_id: number;
+  course_name: string;
+  module_name: string;
+  subtopic_title: string;
+  type: string;
+  content: string;
+  mediaFileName: string | null;
+}
 
 interface DropdownCourse {
   course_id: number;
@@ -39,171 +47,31 @@ interface DropdownSubtopic {
   subtopic_id: number;
   title: string;
   type: string;
+  content: string;
+  mediaFileName: string | null;
+  // Add other fields that CreateContent might need to pre-fill
 }
 
 interface DropdownType {
   type: string;
 }
 
-interface SearchableDropdownProps {
-  label: string;
-  required?: boolean;
-  value: string;
-  options: string[];
-  placeholder: string;
-  onChange: (value: string) => void;
-  error?: string;
-  menuKey: string;
-  openDropdownKey: string | null;
-  setOpenDropdownKey: (key: string | null) => void;
+interface CreateContentProps {
+  contentToEdit: ContentItem | null;
+  onOperationComplete: () => void; // Callback to notify AdminDashboard when done
 }
 
-const selectStyles = (
-  hasError: boolean,
-): StylesConfig<SelectOption, false> => ({
-  control: (base, state) => ({
-    ...base,
-    minHeight: "48px",
-    borderRadius: "12px",
-    borderColor: hasError
-      ? "#f87171"
-      : state.isFocused
-        ? "#E87A2E"
-        : "#E5DDD4",
-    boxShadow: "none",
-    "&:hover": {
-      borderColor: hasError ? "#f87171" : "#E87A2E",
-    },
-  }),
-  valueContainer: (base) => ({
-    ...base,
-    padding: "0 12px",
-  }),
-  placeholder: (base) => ({
-    ...base,
-    color: "#9597A6",
-    fontSize: "14px",
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: "#2B2D42",
-    fontSize: "14px",
-  }),
-  input: (base) => ({
-    ...base,
-    color: "#2B2D42",
-    fontSize: "14px",
-  }),
-  indicatorSeparator: (base) => ({
-    ...base,
-    display: "none",
-  }),
-  menu: (base) => ({
-    ...base,
-    borderRadius: "12px",
-    overflow: "hidden",
-    zIndex: 9999,
-  }),
-  menuList: (base) => ({
-    ...base,
-    padding: 0,
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isFocused ? "#F9F5F0" : "#ffffff",
-    color: "#2B2D42",
-    cursor: "pointer",
-    padding: "8px 12px",
-  }),
-});
+interface SaveContentPayload {
+  course_id: number | undefined;
+  module_id: number | undefined;
+  subtopic_id: number | undefined;
+  subtopic_type: SubtopicType | "";
+  content: string;
+  mediaFileName: string | null;
+  created_by: number;
+}
 
-const CustomMenuList = (props: MenuListProps<SelectOption, false>) => {
-  const { selectProps } = props;
-
-  return (
-    <components.MenuList {...props}>
-      {/* Search Header inside the dropdown list */}
-      <div className="sticky top-0 bg-white z-20 p-2 border-b border-[#E5DDD4]">
-        <div className="flex items-center bg-[#F9F5F0] rounded-md px-2.5 py-1.5 border border-[#E5DDD4] focus-within:border-[#E87A2E] transition-colors">
-          <Search size={14} className="text-[#9597A6] mr-2 shrink-0" />
-          <input
-            type="text"
-            autoFocus
-            placeholder="Search..."
-            className="w-full bg-transparent border-none outline-none text-[13px] text-[#2B2D42] placeholder-[#9597A6]"
-            onMouseDown={(e) => e.stopPropagation()} 
-            value={selectProps.inputValue}
-            onChange={(e) => selectProps.onInputChange(e.currentTarget.value, { action: "input-change", prevInputValue: selectProps.inputValue })}
-          />
-        </div>
-      </div>
-      <div className="py-1">{props.children}</div>
-    </components.MenuList>
-  );
-};
-
-const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
-  label,
-  required = false,
-  value,
-  options,
-  placeholder,
-  onChange,
-  error,
-  menuKey,
-  openDropdownKey,
-  setOpenDropdownKey,
-}) => {
-  const [inputValue, setInputValue] = useState("");
-
-  const selectOptions: SelectOption[] = useMemo(() => 
-    options.map((option) => ({
-      value: option,
-      label: option,
-    })), [options]);
-
-  const selectedOption = selectOptions.find((opt) => opt.value === value) ?? null;
-
-  return (
-    <div>
-      <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-
-      <Select
-        options={selectOptions}
-        value={selectedOption}
-        menuIsOpen={openDropdownKey === menuKey}
-        inputValue={inputValue}
-        onMenuOpen={() => setOpenDropdownKey(menuKey)}
-        onInputChange={(val) => setInputValue(val)}
-        onChange={(option) => {
-          onChange(option?.value ?? "");
-        }}
-        onMenuClose={() => {
-          setOpenDropdownKey(null);
-          setInputValue("");
-        }}
-        placeholder={placeholder}
-        
-        isSearchable={true} 
-        // blurInputOnSelect ensures the focus leaves the component after picking an item
-        blurInputOnSelect={true}
-        components={{ 
-          MenuList: CustomMenuList,
-          // Hides the search icon/input from the main select box
-          Input: () => null, 
-        }}
-        noOptionsMessage={() => "No matching options"}
-        styles={selectStyles(!!error)}
-      />
-
-      {error && <p className="mt-1 text-[12px] text-red-500">{error}</p>}
-    </div>
-  );
-};
-
-const CreateContent: React.FC = () => {
+const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperationComplete }) => {
   const { showSuccess, showError } = useToast();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -212,7 +80,7 @@ const CreateContent: React.FC = () => {
   const [allSubtopics, setAllSubtopics] = useState<DropdownSubtopic[]>([]);
   const [allSubtopicTypes, setAllSubtopicTypes] = useState<DropdownType[]>([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loadingDropdowns, setLoadingDropdowns] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
@@ -222,12 +90,13 @@ const CreateContent: React.FC = () => {
   const [subtopicType, setSubtopicType] = useState<SubtopicType | "">("");
   const [editorContent, setEditorContent] = useState("<p></p>");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [videoSource, setVideoSource] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchDropdownData = async () => {
-      setLoading(true);
+      setLoadingDropdowns(true);
       setFetchError(null);
       try {
         const response = await courseService.getContentDropdownData();
@@ -246,12 +115,41 @@ const CreateContent: React.FC = () => {
         setFetchError(err.message || "An unexpected error occurred.");
         showError("Error", err.message || "An unexpected error occurred.");
       } finally {
-        setLoading(false);
+        setLoadingDropdowns(false);
       }
     };
 
     fetchDropdownData();
   }, []);
+
+  const resetForm = () => {
+    setCourseName("");
+    setModuleName("");
+    setSubtopic("");
+    setSubtopicType("");
+    setVideoSource("");
+    setEditorContent("<p></p>");
+    setMediaFile(null);
+    setErrors({});
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  // Effect to populate form when contentToEdit changes
+  useEffect(() => {
+    if (contentToEdit) {
+      setCourseName(contentToEdit.course_name);
+      setModuleName(contentToEdit.module_name);
+      setSubtopic(contentToEdit.subtopic_title);
+      setSubtopicType(contentToEdit.type as SubtopicType);
+      setEditorContent(contentToEdit.content);
+      setMediaFile(null); // Clear file input for edit, user can re-upload if needed
+      setVideoSource(contentToEdit.type === "Video" ? (contentToEdit.mediaFileName ? "Upload" : "Embed") : ""); // Infer video source
+    } else {
+      resetForm();
+    }
+  }, [contentToEdit]); // Rerun when contentToEdit prop changes
 
   const selectedCourseData = useMemo(
     () => allCourses.find((course) => course.course_name === courseName),
@@ -260,7 +158,6 @@ const CreateContent: React.FC = () => {
 
   const moduleOptions = useMemo(() => {
     if (!selectedCourseData) return allModules.map((module) => module.module_name);
-    if (!selectedCourseData) return [];
     return allModules
       .filter((module) => module.course_id === selectedCourseData.course_id)
       .map((module) => module.module_name);
@@ -276,9 +173,9 @@ const CreateContent: React.FC = () => {
     [allModules, moduleName, selectedCourseData],
   );
 
+  
   const subtopicOptions = useMemo(() => {
     if (!selectedModuleData) return allSubtopics.map((sub) => sub.title);
-    if (!selectedModuleData) return [];
     return allSubtopics
       .filter((sub) => sub.module_id === selectedModuleData.module_id)
       .map((sub) => sub.title);
@@ -300,17 +197,7 @@ const CreateContent: React.FC = () => {
   };
 
   const handleCancel = () => {
-    setCourseName("");
-    setModuleName("");
-    setSubtopic("");
-    setSubtopicType("");
-    setEditorContent("<p></p>");
-    setMediaFile(null);
-    setErrors({});
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    onOperationComplete(); // Notify parent that operation is complete (e.g., go back to manage content)
   };
 
   const validateForm = () => {
@@ -361,8 +248,14 @@ const CreateContent: React.FC = () => {
       nextErrors.editorContent = "Content body is required.";
     }
 
-    if (subtopicType === "Video" && !mediaFile) {
-      nextErrors.mediaFile = "Media upload is required for Video type.";
+    // Video specific validation
+    if (subtopicType === "Video") {
+      if (!videoSource) {
+        nextErrors.videoSource = "Video Source is required for Video type.";
+      } else if (videoSource === "Upload" && !mediaFile && !contentToEdit?.mediaFileName) {
+        // If editing and there's an existing mediaFileName, it's fine. Otherwise, require new upload.
+        nextErrors.mediaFile = "Media upload is required for 'Upload' source.";
+      }
     }
 
     setErrors(nextErrors);
@@ -381,23 +274,30 @@ const CreateContent: React.FC = () => {
     const selectedModuleId = allModules.find(m => m.module_name === moduleName && m.course_id === selectedCourseId)?.module_id;
     const selectedSubtopicId = allSubtopics.find(s => s.title === subtopic && s.module_id === selectedModuleId)?.subtopic_id;
 
-    const payload = {
+    const payload: SaveContentPayload = {
       course_id: selectedCourseId,
       module_id: selectedModuleId,
       subtopic_id: selectedSubtopicId,
       subtopic_type: subtopicType,
       content: editorContent,
-      mediaFileName: mediaFile?.name ?? null,
+      mediaFileName: mediaFile?.name ?? contentToEdit?.mediaFileName ?? null, // Keep existing filename if not re-uploaded
       created_by: 1, // Binding the created_by field as per the request
+      // Add videoSource to payload if needed by backend
+      // video_source: videoSource,
     };
 
     try {
-      const response = await courseService.saveContent(payload);
-      if (response.status === "success") {
-        showSuccess("Content Saved", "Content submitted successfully!");
-        handleCancel(); // Reset form after successful submission
+      let response;
+      if (contentToEdit) {
+        response = await courseService.updateContent({ ...payload, content_id: contentToEdit.content_id });
       } else {
-        showError("Submission Failed", response.message || "Failed to save content.");
+        response = await courseService.saveContent(payload);
+      }
+      if (response.status === "success") {
+        showSuccess("Content Saved", `Content ${contentToEdit ? "updated" : "submitted"} successfully!`);
+        onOperationComplete(); // Notify parent to go back to manage content
+      } else {
+        showError("Submission Failed", response.message || `Failed to ${contentToEdit ? "update" : "save"} content.`);
       }
     } catch (err: any) {
       console.error("Error saving content:", err);
@@ -407,7 +307,7 @@ const CreateContent: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (loadingDropdowns) {
     return (
       <div className="flex justify-center items-center h-48">
         <p className="text-gray-600">Loading dropdown data...</p>
@@ -430,7 +330,7 @@ const CreateContent: React.FC = () => {
     >
       <div className="mb-6">
         <h2 className="font-serif text-[1.25rem] text-[#2B2D42] mb-2">
-          Create Content
+          {contentToEdit ? "Edit Content" : "Create Content"}
         </h2>
         <p className="text-[13px] text-[#6B6D7B]">
           Fill all required fields, write the content, and optionally upload media.
@@ -508,7 +408,7 @@ const CreateContent: React.FC = () => {
       <div className="mb-6">
         <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">
           Media Upload{" "}
-          {subtopicType === "Video"? (
+          {subtopicType === "Video" && videoSource === "Upload" ? (
             <span className="text-red-500">*</span>
           ) : (
             <span className="text-[#9597A6]">(Optional)</span>
@@ -532,6 +432,12 @@ const CreateContent: React.FC = () => {
             Selected file: <span className="font-medium">{mediaFile.name}</span>
           </p>
         )}
+        {/* Display existing media file name if editing and no new file selected */}
+        {!mediaFile && contentToEdit?.mediaFileName && (
+          <p className="mt-2 text-[12px] text-[#6B6D7B]">
+            Existing file: <span className="font-medium">{contentToEdit.mediaFileName}</span>
+          </p>
+        )}
 
         {errors.mediaFile && (
           <p className="mt-1 text-[12px] text-red-500">{errors.mediaFile}</p>
@@ -552,7 +458,7 @@ const CreateContent: React.FC = () => {
           className="px-5 py-2.5 rounded-lg bg-[#E87A2E] hover:bg-[#D06A20] text-white font-semibold transition-colors"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? (contentToEdit ? "Updating..." : "Submitting...") : (contentToEdit ? "Update Content" : "Submit")}
         </button>
       </div>
     </form>

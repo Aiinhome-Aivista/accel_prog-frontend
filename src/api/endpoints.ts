@@ -11,4 +11,6 @@ export const API_ENDPOINTS = {
   admin_verify_otp: "/api/v1/admin_verify_otp",
   content_dropdown: "/api/v1/get_master_dropdown_data",
   save_content: "/api/v1/save_content",
+  update_content: "/api/v1/update_content", // New endpoint for updating content
+  get_all_contents: "/api/v1/admin/get_all_contents",
 };
