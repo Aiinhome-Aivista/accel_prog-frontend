@@ -39,18 +39,13 @@ const CourseLearning: React.FC = () => {
     setDone(prev => new Set([...Array.from(prev), id]));
   };
 
-  useEffect(() => {
-    const fetchContent = async () => {
+  const fetchContent = React.useCallback(async () => {
       const courseId = searchParams.get("course_id");
       const userId = user?.id;
 
       if (courseId && userId) {
         try {
           setIsLoading(true);
-          setDone(new Set()); // Reset history
-          setCurW(0); // Reset to week 1
-          setIntroVideo(null); // Clear video from prev course
-          setWeeks([]); // Clear weeks to prevent flash of old content
           
           // Fetch both content and videos
           const [response, videoRes] = await Promise.all([
@@ -86,7 +81,6 @@ const CourseLearning: React.FC = () => {
                   moduleName: apiWeek.module_name,
                 };
                 
-                // Find matching video data
                 if (t.type === 'video' && videos) {
                   const vData = videos.week_videos.find(v => 
                     v.module_id === apiWeek.module_id && v.subtopic_id === t.subtopic_id
@@ -122,7 +116,6 @@ const CourseLearning: React.FC = () => {
             }));
             setWeeks(mappedWeeks);
             
-            // Merge API completion data with localStorage data
             const initialDone = new Set<string>();
             response.data.weeks.forEach(w => {
               w.topics.forEach(t => {
@@ -147,10 +140,23 @@ const CourseLearning: React.FC = () => {
         setIsLoading(false);
         setError("Missing course or user information.");
       }
-    };
+  }, [searchParams, user]);
 
+  // Initial load
+  useEffect(() => {
+    setDone(new Set());
+    setCurW(0);
+    setIntroVideo(null);
+    setWeeks([]);
     fetchContent();
   }, [searchParams, user]);
+
+  // Re-fetch when switching to a week with no content (newly unlocked)
+  useEffect(() => {
+    if (weeks.length > 0 && weeks[curW] && weeks[curW].subs.length === 0 && weeks[curW].ul) {
+      fetchContent();
+    }
+  }, [curW, weeks]);
 
 
 
