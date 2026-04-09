@@ -22,12 +22,13 @@ const CourseLearning: React.FC = () => {
   const { kpiData } = useDashboard();
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "home";
+  const initialWeekIdx = Number(searchParams.get("week_idx") || 0);
   const [activeTab, setActiveTab] = useState(initialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Cross-tab state
   const [done, setDone] = useState<Set<string>>(new Set());
-  const [curW, setCurW] = useState(0);
+  const [curW, setCurW] = useState(initialWeekIdx);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
   const [courseName, setCourseName] = useState("Course Learning");
   const [introVideo, setIntroVideo] = useState<any>(null);
@@ -144,12 +145,13 @@ const CourseLearning: React.FC = () => {
 
   // Initial load
   useEffect(() => {
+    const weekIdx = Number(searchParams.get("week_idx") || 0);
     setDone(new Set());
-    setCurW(0);
+    setCurW(weekIdx);
     setIntroVideo(null);
     setWeeks([]);
     fetchContent();
-  }, [searchParams, user]);
+  }, [searchParams, user, fetchContent]);
 
   // Re-fetch when switching to a week with no content (newly unlocked)
   useEffect(() => {

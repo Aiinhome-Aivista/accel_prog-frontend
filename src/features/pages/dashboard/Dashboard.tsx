@@ -676,9 +676,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       <button
                         className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
                         onClick={() =>
-                          navigate(`/course-learning?course_id=${course.id}`, {
-                            replace: true,
-                          })
+                          navigate(
+                            `/course-learning?course_id=${course.id}&tab=learn&week_idx=${Math.max(0, (course.currentWeek || 1) - 1)}`,
+                            { replace: true },
+                          )
                         }
                       >
                         Continue Learning
