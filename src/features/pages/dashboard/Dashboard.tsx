@@ -399,6 +399,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   }, [user, fetchRecentActivity]);
 
+  useEffect(() => {
+    if (user || !user) { // Trigger it regardless of auth for development
+      refreshKPI();
+    }
+  }, [user, refreshKPI]);
+
   return (
     <div className="min-h-screen bg-[#F3EDE7] text-[#2B2D42] flex flex-col">
       {/* Utility bar */}
