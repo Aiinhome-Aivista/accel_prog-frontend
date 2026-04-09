@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   useEditor,
   EditorContent,
   NodeViewWrapper,
   ReactNodeViewRenderer,
   type Editor,
+  type ReactNodeViewProps,
 } from "@tiptap/react";
 import { Extension } from "@tiptap/core";
 import Document from "@tiptap/extension-document";
@@ -15,6 +16,7 @@ import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
 import Underline from "@tiptap/extension-underline";
 import BulletList from "@tiptap/extension-bullet-list";
+import Blockquote from "@tiptap/extension-blockquote";
 import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import TextAlign from "@tiptap/extension-text-align";
@@ -23,6 +25,9 @@ import { TableCell } from "@tiptap/extension-table-cell";
 import { TableHeader } from "@tiptap/extension-table-header";
 import { TableRow } from "@tiptap/extension-table-row";
 import Image from "@tiptap/extension-image";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { Color } from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import { Plugin, PluginKey } from "prosemirror-state";
 import {
   AlignLeft,
@@ -41,6 +46,10 @@ import {
   ArrowRight,
   Combine,
   Split,
+  Type,
+  Highlighter,
+  Eraser,
+  Quote,
 } from "lucide-react";
 
 type ImageAttrs = {
@@ -50,19 +59,12 @@ type ImageAttrs = {
   align: "left" | "center" | "right";
 };
 
-type ImageComponentProps = {
-  node: { attrs: ImageAttrs };
-  updateAttributes: (attrs: Record<string, any>) => void;
-  deleteNode: () => void;
-  selected: boolean;
-};
-
 const ImageComponent = ({
   node,
   updateAttributes,
   deleteNode,
   selected,
-}: ImageComponentProps) => {
+}: ReactNodeViewProps) => {
   const { src, width, height, align } = node.attrs;
 
   return (
@@ -106,7 +108,7 @@ const ImageComponent = ({
             e.stopPropagation();
             deleteNode();
           }}
-          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-primary rounded-full p-1.5 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
           title="Remove Image"
         >
           <X className="w-4 h-4" />
@@ -114,7 +116,7 @@ const ImageComponent = ({
 
         <div
           contentEditable={false}
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-secondary-900/90 text-primary dark:text-primary px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-3 backdrop-blur-sm border border-secondary-200 dark:border-secondary-600/50 z-10 whitespace-nowrap shadow-md"
+          className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-secondary-900/90 text-primary px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-3 backdrop-blur-sm border border-secondary-200 dark:border-secondary-600/50 z-10 whitespace-nowrap shadow-md"
         >
           <div className="flex items-center gap-1.5">
             <span className="text-secondary-400">W:</span>
@@ -129,9 +131,7 @@ const ImageComponent = ({
               placeholder="500"
             />
           </div>
-
           <div className="w-px h-3 bg-secondary-200 dark:bg-secondary-700" />
-
           <div className="flex items-center gap-1.5">
             <span className="text-secondary-400">H:</span>
             <input
@@ -145,9 +145,7 @@ const ImageComponent = ({
               placeholder="300"
             />
           </div>
-
           <div className="w-px h-3 bg-secondary-200 dark:bg-secondary-700" />
-
           <div className="flex items-center gap-1">
             {(["left", "center", "right"] as const).map((a) => {
               const Icon =
@@ -169,7 +167,7 @@ const ImageComponent = ({
                   }}
                   className={`p-1 rounded transition ${
                     align === a
-                      ? "bg-primary-500 text-primary"
+                      ? "bg-primary-500 text-white"
                       : "hover:bg-secondary-100 dark:hover:bg-secondary-700"
                   }`}
                   title={`Align ${a}`}
@@ -179,9 +177,7 @@ const ImageComponent = ({
               );
             })}
           </div>
-
           <div className="w-px h-3 bg-secondary-200 dark:bg-secondary-700" />
-
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}
@@ -225,9 +221,9 @@ const CustomImage = Image.extend({
       },
     };
   },
-//   addNodeView() {
-//     return ReactNodeViewRenderer(ImageComponent);
-//   },
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageComponent);
+  },
 });
 
 const RomanList = OrderedList.extend({
@@ -260,34 +256,22 @@ const AlphaList = OrderedList.extend({
 
 const TrailingParagraph = Extension.create({
   name: "trailingParagraph",
-
   addProseMirrorPlugins() {
     return [
       new Plugin({
         key: new PluginKey("trailingParagraph"),
         appendTransaction: (transactions, _, newState) => {
-          const docChanged = transactions.some(
-            (transaction) => transaction.docChanged,
-          );
-
-          if (!docChanged) {
-            return null;
-          }
-
+          const docChanged = transactions.some((tr) => tr.docChanged);
+          if (!docChanged) return null;
           const isPaste = transactions.some((tr) => tr.getMeta("paste"));
-          if (isPaste) {
-            return null;
-          }
-
+          if (isPaste) return null;
           const { doc, tr } = newState;
           const lastNode = doc.lastChild;
           const paragraph = newState.schema.nodes.paragraph;
-
           if (lastNode && lastNode.type !== paragraph) {
             tr.insert(doc.content.size, paragraph.create());
             return tr;
           }
-
           return null;
         },
       }),
@@ -307,6 +291,8 @@ export default function TiptapEditor({
   onEditorReady,
 }: TiptapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [bulletColor, setBulletColor] = useState("#E87A2E");
+  const [blockquoteColor, setBlockquoteColor] = useState("#FCF1EA");
 
   const editor = useEditor({
     extensions: [
@@ -317,19 +303,21 @@ export default function TiptapEditor({
       Bold,
       Italic,
       Underline,
+      Blockquote,
       BulletList,
       OrderedList,
       RomanList,
       AlphaList,
       ListItem,
+      TextStyle,
+      Color,
+      Highlight.configure({ multicolor: true }),
       TextAlign.configure({
         types: ["heading", "paragraph", "image"],
         alignments: ["left", "center", "right", "justify"],
       }),
       CustomImage.configure({ allowBase64: true }),
-      Table.configure({
-        resizable: true,
-      }),
+      Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
       TableCell,
@@ -366,20 +354,13 @@ export default function TiptapEditor({
   }, [editor, onEditorReady]);
 
   useEffect(() => {
-    if (!editor || editor.isDestroyed) {
-      return;
-    }
-
-    if (editor.getHTML() === content) {
-      return;
-    }
-
+    if (!editor || editor.isDestroyed) return;
+    if (editor.getHTML() === content) return;
     editor.commands.setContent(content);
   }, [content, editor]);
 
   const insertImageFromFile = (file: File) => {
     if (!editor) return;
-
     const reader = new FileReader();
     reader.onload = (e) => {
       const src = e.target?.result as string;
@@ -398,330 +379,154 @@ export default function TiptapEditor({
     }
   };
 
-  const transformText = (
-    type: "uppercase" | "lowercase" | "sentencecase",
-  ) => {
+  const transformText = (type: "uppercase" | "lowercase" | "sentencecase") => {
     if (!editor) return;
-
     const { from, to } = editor.state.selection;
     const text = editor.state.doc.textBetween(from, to, "");
     let result = text;
-
     if (type === "uppercase") result = text.toUpperCase();
     else if (type === "lowercase") result = text.toLowerCase();
     else if (type === "sentencecase") {
       result = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
     }
-
     editor.chain().focus().deleteSelection().insertContent(result).run();
   };
 
   if (!editor) return null;
 
   const btn = (active: boolean) =>
-    `px-2 py-1 text-xs rounded transition font-medium ${
+    `px-2 py-1 text-xs rounded transition font-medium flex items-center gap-1 ${
       active
-        ? "bg-[#b0cb1f] text-gray-900"
-        : "bg-secondary-100 dark:bg-secondary-700 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-200 dark:hover:bg-secondary-600"
+        ? "bg-[#E87A2E] text-white"
+        : "bg-secondary-100 dark:bg-secondary-700 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-200 dark:hover:bg-secondary-800"
     }`;
 
   return (
-    <div className="rounded-xl border border-secondary-200 dark:border-secondary-700 overflow-hidden">
-      <div className="flex flex-wrap gap-1.5 p-2.5 border-b border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900">
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className={btn(editor.isActive("heading", { level: 1 }))}
-        >
-          H1
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={btn(editor.isActive("heading", { level: 2 }))}
-        >
-          H2
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={btn(editor.isActive("heading", { level: 3 }))}
-        >
-          H3
-        </button>
+    <div
+      className="rounded-xl border border-secondary-200 dark:border-secondary-700 overflow-hidden"
+      style={
+        { "--bullet-color": bulletColor, "--blockquote-bg-color": blockquoteColor } as React.CSSProperties
+      }
+    >
+      <div className="flex flex-wrap items-center gap-1.5 p-2.5 border-b border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900">
+        {/* Headings */}
+        <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={btn(editor.isActive("heading", { level: 1 }))}>H1</button>
+        <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={btn(editor.isActive("heading", { level: 2 }))}>H2</button>
+        <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={btn(editor.isActive("heading", { level: 3 }))}>H3</button>
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
 
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={btn(editor.isActive("bold"))}
-        >
-          Bold
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={btn(editor.isActive("italic"))}
-        >
-          Italic
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={btn(editor.isActive("underline"))}
-        >
-          Underline
-        </button>
+        {/* Basic Marks */}
+        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={btn(editor.isActive("bold"))}>Bold</button>
+        <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={btn(editor.isActive("italic"))}>Italic</button>
+        <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={btn(editor.isActive("underline"))}>Underline</button>
+        <div className="flex items-center">
+          <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={`${btn(editor.isActive("blockquote"))} rounded-r-none`} title="Blockquote"><Quote className="w-4 h-4" /></button>
+          <input
+            type="color"
+            onInput={(e) => setBlockquoteColor((e.target as HTMLInputElement).value)}
+            value={blockquoteColor}
+            className="w-6 h-6 p-0 border-none bg-secondary-100 dark:bg-secondary-700 cursor-pointer rounded-r-md hover:bg-secondary-200 dark:hover:bg-secondary-800"
+            title="Blockquote Background Color"
+          />
+        </div>
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
 
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={btn(editor.isActive("bulletList"))}
-        >
-          • List
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={btn(editor.isActive("orderedList"))}
-        >
-          1,2,3
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            (editor.chain().focus() as any).toggleList("romanList", "listItem").run()
-          }
-          className={btn(editor.isActive("romanList"))}
-        >
-          i,ii,iii
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            (editor.chain().focus() as any).toggleList("alphaList", "listItem").run()
-          }
-          className={btn(editor.isActive("alphaList"))}
-        >
-          a,b,c
-        </button>
+        {/* Colors & Highlight */}
+        <div className="flex items-center gap-1.5 px-1">
+          <div className="relative group/color flex items-center gap-1">
+            <Type className="w-4 h-4 text-secondary-500" />
+            <input
+              type="color"
+              onInput={(e) => editor.chain().focus().setColor((e.target as HTMLInputElement).value).run()}
+              value={editor.getAttributes("textStyle").color || "#000000"}
+              className="w-5 h-5 p-0 border-none bg-transparent cursor-pointer"
+              title="Text Color"
+            />
+          </div>
+          <div className="relative group/highlight flex items-center gap-1">
+            <Highlighter className="w-4 h-4 text-secondary-500" />
+            <input
+              type="color"
+              onInput={(e) => editor.chain().focus().setHighlight({ color: (e.target as HTMLInputElement).value }).run()}
+              value={editor.getAttributes("highlight").color || "#ffff00"}
+              className="w-5 h-5 p-0 border-none bg-transparent cursor-pointer"
+              title="Highlight Color"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().setColor("#000000").unsetHighlight().run()}
+            className={btn(false)}
+            title="Clear Formatting"
+          >
+            <Eraser className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
 
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={btn(editor.isActive({ textAlign: "left" }))}
-          title="Align Left"
-        >
-          <AlignLeft className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={btn(editor.isActive({ textAlign: "center" }))}
-          title="Align Center"
-        >
-          <AlignCenter className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={btn(editor.isActive({ textAlign: "right" }))}
-          title="Align Right"
-        >
-          <AlignRight className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          className={btn(editor.isActive({ textAlign: "justify" }))}
-          title="Justify"
-        >
-          <AlignJustify className="w-4 h-4" />
-        </button>
+        {/* Lists */}
+        <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={btn(editor.isActive("bulletList"))}>• List</button>
+        <div className="relative group/bullet-color flex items-center gap-1 ml-1">
+          <span
+            className="font-bold text-lg text-secondary-500 -mt-1"
+            title="Bullet Color"
+          >
+            •
+          </span>
+          <input
+            type="color"
+            onInput={(e) => setBulletColor((e.target as HTMLInputElement).value)}
+            value={bulletColor}
+            className="w-5 h-5 p-0 border-none bg-transparent cursor-pointer"
+            title="Bullet Color"
+          />
+        </div>
+        <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className={btn(editor.isActive("orderedList"))}>1,2,3</button>
+        <button type="button" onClick={() => (editor.chain().focus() as any).toggleList("romanList", "listItem").run()} className={btn(editor.isActive("romanList"))}>i,ii,iii</button>
+        <button type="button" onClick={() => (editor.chain().focus() as any).toggleList("alphaList", "listItem").run()} className={btn(editor.isActive("alphaList"))}>a,b,c</button>
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
 
-        <button
-          type="button"
-          onClick={() =>
-            editor
-              .chain()
-              .focus()
-              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-              .run()
-          }
-          className={btn(false)}
-          title="Insert Table"
-        >
-          <TableIcon className="w-4 h-4" />
-        </button>
+        {/* Alignment */}
+        <button type="button" onClick={() => editor.chain().focus().setTextAlign("left").run()} className={btn(editor.isActive({ textAlign: "left" }))} title="Align Left"><AlignLeft className="w-4 h-4" /></button>
+        <button type="button" onClick={() => editor.chain().focus().setTextAlign("center").run()} className={btn(editor.isActive({ textAlign: "center" }))} title="Align Center"><AlignCenter className="w-4 h-4" /></button>
+        <button type="button" onClick={() => editor.chain().focus().setTextAlign("right").run()} className={btn(editor.isActive({ textAlign: "right" }))} title="Align Right"><AlignRight className="w-4 h-4" /></button>
+        <button type="button" onClick={() => editor.chain().focus().setTextAlign("justify").run()} className={btn(editor.isActive({ textAlign: "justify" }))} title="Justify"><AlignJustify className="w-4 h-4" /></button>
 
+        <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
+
+        {/* Tables */}
+        <button type="button" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} className={btn(false)} title="Insert Table"><TableIcon className="w-4 h-4" /></button>
+        
         {editor.isActive("table") && (
           <>
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().addColumnBefore().run()}
-              className={btn(false)}
-              title="Add Column Before"
-            >
-              <div className="flex items-center gap-1">
-                <ArrowLeft size={12} />
-                <Columns className="w-3 h-3" />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().addColumnAfter().run()}
-              className={btn(false)}
-              title="Add Column After"
-            >
-              <div className="flex items-center gap-1">
-                <Columns className="w-3 h-3" />
-                <ArrowRight size={12} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().deleteColumn().run()}
-              className={btn(false)}
-              title="Delete Column"
-            >
-              <div className="flex items-center gap-1 text-red-500">
-                <Columns className="w-3 h-3" />
-                <X size={12} />
-              </div>
-            </button>
-
-            <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().addRowBefore().run()}
-              className={btn(false)}
-              title="Add Row Before"
-            >
-              <div className="flex items-center gap-1">
-                <ArrowUp size={12} />
-                <Rows className="w-3 h-3" />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().addRowAfter().run()}
-              className={btn(false)}
-              title="Add Row After"
-            >
-              <div className="flex items-center gap-1">
-                <Rows className="w-3 h-3" />
-                <ArrowDown size={12} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().deleteRow().run()}
-              className={btn(false)}
-              title="Delete Row"
-            >
-              <div className="flex items-center gap-1 text-red-500">
-                <Rows className="w-3 h-3" />
-                <X size={12} />
-              </div>
-            </button>
-
-            <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().mergeCells().run()}
-              disabled={!editor.can().mergeCells()}
-              className={btn(false)}
-              title="Merge Cells"
-            >
-              <Combine className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().splitCell().run()}
-              disabled={!editor.can().splitCell()}
-              className={btn(false)}
-              title="Split Cell"
-            >
-              <Split className="w-4 h-4" />
-            </button>
-
-            <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
-
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().deleteTable().run()}
-              className={btn(false)}
-              title="Delete Table"
-            >
-              <Trash2 className="w-4 h-4 text-red-500" />
-            </button>
+            <button type="button" onClick={() => editor.chain().focus().addColumnBefore().run()} className={btn(false)} title="Add Column Before"><div className="flex items-center gap-1"><ArrowLeft size={12} /><Columns className="w-3 h-3" /></div></button>
+            <button type="button" onClick={() => editor.chain().focus().addColumnAfter().run()} className={btn(false)} title="Add Column After"><div className="flex items-center gap-1"><Columns className="w-3 h-3" /><ArrowRight size={12} /></div></button>
+            <button type="button" onClick={() => editor.chain().focus().deleteColumn().run()} className={btn(false)} title="Delete Column"><div className="flex items-center gap-1 text-red-500"><Columns className="w-3 h-3" /><X size={12} /></div></button>
+            <button type="button" onClick={() => editor.chain().focus().addRowBefore().run()} className={btn(false)} title="Add Row Before"><div className="flex items-center gap-1"><ArrowUp size={12} /><Rows className="w-3 h-3" /></div></button>
+            <button type="button" onClick={() => editor.chain().focus().addRowAfter().run()} className={btn(false)} title="Add Row After"><div className="flex items-center gap-1"><Rows className="w-3 h-3" /><ArrowDown size={12} /></div></button>
+            <button type="button" onClick={() => editor.chain().focus().deleteRow().run()} className={btn(false)} title="Delete Row"><div className="flex items-center gap-1 text-red-500"><Rows className="w-3 h-3" /><X size={12} /></div></button>
+            <button type="button" onClick={() => editor.chain().focus().mergeCells().run()} disabled={!editor.can().mergeCells()} className={btn(false)} title="Merge Cells"><Combine className="w-4 h-4" /></button>
+            <button type="button" onClick={() => editor.chain().focus().splitCell().run()} disabled={!editor.can().splitCell()} className={btn(false)} title="Split Cell"><Split className="w-4 h-4" /></button>
+            <button type="button" onClick={() => editor.chain().focus().deleteTable().run()} className={btn(false)} title="Delete Table"><Trash2 className="w-4 h-4 text-red-500" /></button>
           </>
         )}
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
 
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className={btn(false)}
-          title="Insert Image"
-        >
-          <ImageIcon className="w-4 h-4" />
-        </button>
-
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileInput}
-          accept="image/*"
-          className="hidden"
-        />
+        {/* Images */}
+        <button type="button" onClick={() => fileInputRef.current?.click()} className={btn(false)} title="Insert Image"><ImageIcon className="w-4 h-4" /></button>
+        <input type="file" ref={fileInputRef} onChange={handleFileInput} accept="image/*" className="hidden" />
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
 
-        <button
-          type="button"
-          onClick={() => transformText("uppercase")}
-          className={btn(false)}
-          title="UPPERCASE"
-        >
-          ABC
-        </button>
-        <button
-          type="button"
-          onClick={() => transformText("lowercase")}
-          className={btn(false)}
-          title="lowercase"
-        >
-          abc
-        </button>
-        <button
-          type="button"
-          onClick={() => transformText("sentencecase")}
-          className={btn(false)}
-          title="Sentence case"
-        >
-          Abc
-        </button>
+        {/* Case Transforms */}
+        <button type="button" onClick={() => transformText("uppercase")} className={btn(false)} title="UPPERCASE">ABC</button>
+        <button type="button" onClick={() => transformText("lowercase")} className={btn(false)} title="lowercase">abc</button>
+        <button type="button" onClick={() => transformText("sentencecase")} className={btn(false)} title="Sentence case">Abc</button>
       </div>
 
       <EditorContent
@@ -733,19 +538,22 @@ export default function TiptapEditor({
           prose prose-sm dark:prose-invert max-w-none
           [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6
           [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-5
+          [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-2 [&_h3]:mt-4
           [&_table]:w-full [&_table]:my-4 [&_table]:border-collapse [&_table]:table-fixed
           [&_th]:relative [&_th]:border [&_th]:border-gray-300 dark:[&_th]:border-gray-600 [&_th]:p-2 [&_th]:font-bold [&_th]:text-left [&_th]:bg-gray-100 dark:[&_th]:bg-gray-700
           [&_td]:relative [&_td]:border [&_td]:border-gray-300 dark:[&_td]:border-gray-600 [&_td]:p-2 [&_td]:align-top
-          [&.selectedCell]:after:content-[''] [&.selectedCell]:after:absolute [&.selectedCell]:after:inset-0 [&.selectedCell]:after:bg-[#b0cb1f]/30 [&_.selectedCell]:after:pointer-events-none
-          [&.column-resize-handle]:absolute [&.column-resize-handle]:right-[-2px] [&.column-resize-handle]:top-0 [&.column-resize-handle]:bottom-[-2px] [&.column-resize-handle]:w-1 [&.column-resize-handle]:z-20 [&.column-resize-handle]:bg-[#b0cb1f] [&.column-resize-handle]:pointer-events-none
+          [&.selectedCell]:after:content-[''] [&.selectedCell]:after:absolute [&.selectedCell]:after:inset-0 [&.selectedCell]:after:bg-[#E87A2E]/20 [&_.selectedCell]:after:pointer-events-none
+          [&.column-resize-handle]:absolute [&.column-resize-handle]:right-[-2px] [&.column-resize-handle]:top-0 [&.column-resize-handle]:bottom-[-2px] [&.column-resize-handle]:w-1 [&.column-resize-handle]:z-20 [&.column-resize-handle]:bg-[#E87A2E] [&.column-resize-handle]:pointer-events-none
           [&.resize-cursor]:cursor-col-resize
-          [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-2 [&_h3]:mt-4
-          [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-4
+          [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-4 [&_ul_::marker]:[color:var(--bullet-color)]
           [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-4
           [&_ol[type='i']]:list-[lower-roman]
           [&_ol[type='a']]:list-[lower-alpha]
           [&_li]:mb-1
+          [&_blockquote]:my-4 [&_blockquote]:[background-color:var(--blockquote-bg-color)] [&_blockquote]:p-4 [&_blockquote]:rounded-lg
+          [&_blockquote_p]:mb-2
           [&_p]:mb-3
+          [&_mark]:px-0.5 [&_mark]:rounded-sm
           focus:outline-none
         "
       />

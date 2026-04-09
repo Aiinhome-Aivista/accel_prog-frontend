@@ -3,8 +3,9 @@ import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
-import { Home, PlusSquare } from "lucide-react";
+import { Home, PlusSquare, FileQuestion } from "lucide-react";
 import CreateContent from "../../../components/shared/CreateContent";
+import CreateQuestion from "../../../components/shared/CreateQuestion";
 
 interface DashboardProps {
   onLogout: () => void;
@@ -16,7 +17,9 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const [navOpen, setNavOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"home" | "create-content">("home");
+  const [activeTab, setActiveTab] = useState<
+    "home" | "create-content" | "create-question"
+  >("home");
 
   const [contentTitle, setContentTitle] = useState("");
   const [editorContent, setEditorContent] = useState("<p></p>");
@@ -36,7 +39,9 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     setEditorContent("<p></p>");
   };
 
-  const sidebarItemClass = (tab: "home" | "create-content") =>
+  const sidebarItemClass = (
+    tab: "home" | "create-content" | "create-question"
+  ) =>
     `w-full flex items-center gap-3 px-4 py-3 text-left text-[0.9rem] border-l-[3px] transition-all ${
       activeTab === tab
         ? "bg-[#E87A2E]/10 text-[#E87A2E] border-l-[#E87A2E] font-semibold"
@@ -136,6 +141,18 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <PlusSquare className="w-4 h-4" />
               <span>Create Content</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("create-question");
+                setNavOpen(false);
+              }}
+              className={sidebarItemClass("create-question")}
+            >
+              <FileQuestion className="w-4 h-4" />
+              <span>Create Question</span>
+            </button>
           </div>
         </aside>
 
@@ -155,10 +172,9 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               </>
             )}
 
-            {activeTab === "create-content" && (
+            {activeTab === "create-content" && <CreateContent />}
 
-              <CreateContent />
-            )}
+            {activeTab === "create-question" && <CreateQuestion />}
           </div>
         </main>
       </div>

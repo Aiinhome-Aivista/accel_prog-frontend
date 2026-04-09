@@ -5,7 +5,6 @@ import { useToast } from "../../utils/ToastContext";
 import { courseService } from "../../services/courseService";
 import TiptapEditor from "./TipTapEditor";
 import { useEffect } from "react";
-
 type SubtopicType =
   | "Lesson"
   | "Announcement"
@@ -261,6 +260,7 @@ const CreateContent: React.FC = () => {
 
   const moduleOptions = useMemo(() => {
     if (!selectedCourseData) return allModules.map((module) => module.module_name);
+    if (!selectedCourseData) return [];
     return allModules
       .filter((module) => module.course_id === selectedCourseData.course_id)
       .map((module) => module.module_name);
@@ -278,6 +278,7 @@ const CreateContent: React.FC = () => {
 
   const subtopicOptions = useMemo(() => {
     if (!selectedModuleData) return allSubtopics.map((sub) => sub.title);
+    if (!selectedModuleData) return [];
     return allSubtopics
       .filter((sub) => sub.module_id === selectedModuleData.module_id)
       .map((sub) => sub.title);
@@ -454,7 +455,7 @@ const CreateContent: React.FC = () => {
           menuKey="moduleName"
           openDropdownKey={openDropdownKey}
           setOpenDropdownKey={setOpenDropdownKey}
-          label="Model Name"
+          label="Module Name"
           required
           value={moduleName}
           options={moduleOptions}
