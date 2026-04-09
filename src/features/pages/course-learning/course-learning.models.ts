@@ -107,6 +107,34 @@ export interface ApiWeek {
   week: number;
 }
 
+export interface CourseHomeOverview {
+  course_name: string;
+  stats: {
+    projects: number;
+    questions: number;
+    subtopics: number;
+    weeks: number;
+  };
+  welcome_text: string;
+  streak?: {
+    count: number;
+    text: string;
+    description: string;
+    history: {
+      day: string;
+      status: "completed" | "current" | "pending";
+    }[];
+  };
+}
+
+export interface CourseHomeTimelineItem {
+  module_id: number;
+  progress: string;
+  status: "Available" | "Locked";
+  title: string;
+  week: string;
+}
+
 export interface CourseLearningContent {
   course_id: number;
   course_name: string;
