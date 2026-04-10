@@ -254,13 +254,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       setStats((prevStats) =>
         prevStats.map((s) => {
           if (s.label === "In Progress")
-            return { ...s, value: kpiData.in_progress_count.toString() };
+            return { ...s, value: (kpiData.in_progress_count ?? 0).toString() };
           if (s.label === "Completed")
-            return { ...s, value: kpiData.completed_count.toString() };
+            return { ...s, value: (kpiData.completed_count ?? 0).toString() };
           if (s.label === "Day Streak")
-            return { ...s, value: kpiData.streak_days.toString() };
+            return { ...s, value: (kpiData.streak_days ?? 0).toString() };
           if (s.label === "Progress")
-            return { ...s, value: `${kpiData.overall_progress}%` };
+            return { ...s, value: `${kpiData.overall_progress ?? 0}%` };
           return s;
         }),
       );

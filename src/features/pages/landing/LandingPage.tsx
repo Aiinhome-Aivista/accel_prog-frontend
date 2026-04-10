@@ -360,8 +360,8 @@ function LandingPage({
                             .slice(0, 2)
                             .join(" "),
                         )
-                    ).map((tag) => (
-                      <span className="course-tag" key={tag}>
+                    ).map((tag, i) => (
+                      <span className="course-tag" key={`${tag}-${i}`}>
                         {tag}
                       </span>
                     ))}
