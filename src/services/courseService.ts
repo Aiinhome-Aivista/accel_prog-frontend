@@ -48,7 +48,7 @@ export const courseService = {
   }) =>
     apiRequest({
       url: API_ENDPOINTS.save_content,
-      method: "PUT", // Assuming PUT for updates
+      method: "POST", // Assuming PUT for updates
       data,
     }),
 

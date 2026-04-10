@@ -52,6 +52,39 @@ import {
   Quote,
 } from "lucide-react";
 
+// Custom Blockquote extension for per-node background color
+const CustomBlockquote = Blockquote.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      backgroundColor: {
+        default: "#FCF1EA",
+        parseHTML: (element) => element.style.backgroundColor || "#FCF1EA",
+        renderHTML: (attributes) => ({
+          style: `background-color: ${attributes.backgroundColor}`,
+        }),
+      },
+    };
+  },
+});
+
+// Custom BulletList extension for per-list bullet color
+const CustomBulletList = BulletList.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      bulletColor: {
+        default: "#E87A2E",
+        parseHTML: (element) =>
+          element.style.getPropertyValue("--bullet-color") || "#E87A2E",
+        renderHTML: (attributes) => ({
+          style: `--bullet-color: ${attributes.bulletColor}`,
+        }),
+      },
+    };
+  },
+});
+
 type ImageAttrs = {
   src: string;
   width: string | number;
@@ -291,8 +324,6 @@ export default function TiptapEditor({
   onEditorReady,
 }: TiptapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [bulletColor, setBulletColor] = useState("#E87A2E");
-  const [blockquoteColor, setBlockquoteColor] = useState("#FCF1EA");
 
   const editor = useEditor({
     extensions: [
@@ -303,8 +334,8 @@ export default function TiptapEditor({
       Bold,
       Italic,
       Underline,
-      Blockquote,
-      BulletList,
+      CustomBlockquote,
+      CustomBulletList,
       OrderedList,
       RomanList,
       AlphaList,
@@ -403,11 +434,7 @@ export default function TiptapEditor({
 
   return (
     <div
-      className="rounded-xl border border-secondary-200 dark:border-secondary-700 overflow-hidden"
-      style={
-        { "--bullet-color": bulletColor, "--blockquote-bg-color": blockquoteColor } as React.CSSProperties
-      }
-    >
+      className="rounded-xl border border-secondary-200 dark:border-secondary-700 overflow-hidden">
       <div className="flex flex-wrap items-center gap-1.5 p-2.5 border-b border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900">
         {/* Headings */}
         <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={btn(editor.isActive("heading", { level: 1 }))}>H1</button>
@@ -421,14 +448,16 @@ export default function TiptapEditor({
         <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={btn(editor.isActive("italic"))}>Italic</button>
         <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={btn(editor.isActive("underline"))}>Underline</button>
         <div className="flex items-center">
-          <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={`${btn(editor.isActive("blockquote"))} rounded-r-none`} title="Blockquote"><Quote className="w-4 h-4" /></button>
-          <input
-            type="color"
-            onInput={(e) => setBlockquoteColor((e.target as HTMLInputElement).value)}
-            value={blockquoteColor}
-            className="w-6 h-6 p-0 border-none bg-secondary-100 dark:bg-secondary-700 cursor-pointer rounded-r-md hover:bg-secondary-200 dark:hover:bg-secondary-800"
-            title="Blockquote Background Color"
-          />
+          <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={`${btn(editor.isActive("blockquote"))} ${editor.isActive("blockquote") ? 'rounded-r-none' : ''}`} title="Blockquote"><Quote className="w-4 h-4" /></button>
+          {editor.isActive("blockquote") && (
+            <input
+              type="color"
+              onInput={(e) => editor.chain().focus().updateAttributes("blockquote", { backgroundColor: (e.target as HTMLInputElement).value }).run()}
+              value={editor.getAttributes("blockquote").backgroundColor || '#FCF1EA'}
+              className="w-6 h-6 p-0 border-none bg-secondary-100 dark:bg-secondary-700 cursor-pointer rounded-r-md hover:bg-secondary-200 dark:hover:bg-secondary-800"
+              title="Blockquote Background Color"
+            />
+          )}
         </div>
 
         <div className="w-px bg-secondary-200 dark:bg-secondary-700 mx-0.5" />
@@ -469,21 +498,24 @@ export default function TiptapEditor({
 
         {/* Lists */}
         <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={btn(editor.isActive("bulletList"))}>• List</button>
-        <div className="relative group/bullet-color flex items-center gap-1 ml-1">
-          <span
-            className="font-bold text-lg text-secondary-500 -mt-1"
-            title="Bullet Color"
-          >
-            •
-          </span>
-          <input
-            type="color"
-            onInput={(e) => setBulletColor((e.target as HTMLInputElement).value)}
-            value={bulletColor}
-            className="w-5 h-5 p-0 border-none bg-transparent cursor-pointer"
-            title="Bullet Color"
-          />
-        </div>
+        {editor.isActive("bulletList") && (
+          <div className="relative group/bullet-color flex items-center gap-1 ml-1">
+            <span
+              className="font-bold text-lg -mt-1"
+              style={{ color: editor.getAttributes("bulletList").bulletColor || '#E87A2E' }}
+              title="Bullet Color"
+            >
+              •
+            </span>
+            <input
+              type="color"
+              onInput={(e) => editor.chain().focus().updateAttributes("bulletList", { bulletColor: (e.target as HTMLInputElement).value }).run()}
+              value={editor.getAttributes("bulletList").bulletColor || '#E87A2E'}
+              className="w-5 h-5 p-0 border-none bg-transparent cursor-pointer"
+              title="Bullet Color"
+            />
+          </div>
+        )}
         <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className={btn(editor.isActive("orderedList"))}>1,2,3</button>
         <button type="button" onClick={() => (editor.chain().focus() as any).toggleList("romanList", "listItem").run()} className={btn(editor.isActive("romanList"))}>i,ii,iii</button>
         <button type="button" onClick={() => (editor.chain().focus() as any).toggleList("alphaList", "listItem").run()} className={btn(editor.isActive("alphaList"))}>a,b,c</button>
@@ -550,7 +582,7 @@ export default function TiptapEditor({
           [&_ol[type='i']]:list-[lower-roman]
           [&_ol[type='a']]:list-[lower-alpha]
           [&_li]:mb-1
-          [&_blockquote]:my-4 [&_blockquote]:[background-color:var(--blockquote-bg-color)] [&_blockquote]:p-4 [&_blockquote]:rounded-lg
+          [&_blockquote]:my-4 [&_blockquote]:p-4 [&_blockquote]:rounded-lg
           [&_blockquote_p]:mb-2
           [&_p]:mb-3
           [&_mark]:px-0.5 [&_mark]:rounded-sm
