@@ -16,6 +16,7 @@ interface Question {
   options?: string[];
   correct_answer: string[] | null;
   marks: number;
+  category_id?: number;
 }
 
 interface Section {
@@ -86,6 +87,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCance
           options: q.options || [],
           correct_answer: q.correct_answer || [],
           marks: q.marks,
+          category_id: q.category_id,
         });
       });
       setSections(Object.values(grouped));
@@ -180,7 +182,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         course_id: Number(cId),
         module_id: Number(mId),
         subtopic_id: Number(sId),
-        category_id: Number(category?.category_id || 1),
+        category_id: Number(q.category_id || category?.category_id ),
         type_id: Number(isMcq ? 1 : 2),
         question_text: String(q.question_text),
         option_a: isMcq ? String(q.options?.[0] || "") : "",
