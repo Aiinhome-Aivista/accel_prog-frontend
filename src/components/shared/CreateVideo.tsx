@@ -214,6 +214,7 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
   </div>;
 
   return (
+    <div className="px-5">
     <form onSubmit={handleSubmit} className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)]">
       <div className="mb-6">
         <h2 className="font-serif text-[1.25rem] text-[#2B2D42] mb-2">
@@ -288,7 +289,8 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
           {isSubmitting ? (videoToEdit ? "Updating..." : "Submitting...") : (videoToEdit ? "Update Video" : "Submit Video")}
         </button>
       </div>
-    </form>
+      </form>
+      </div>
   );
 };
 
