@@ -44,14 +44,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       <div className="streak-card">
         <div className="streak-icon">🔥</div>
         <div>
-          <h4 className="text-[0.8rem] font-bold text-[#2B2D42] m-0">
+          <h4 className="streak-title">
             {weeklyStreak ? `${weeklyStreak.streak_days}-Day Streak` : (overview?.streak?.text || "0-Day Streak")}
           </h4>
-          <p className="text-[0.68rem] text-[#6B6D7B] m-0">
+          <p className="streak-sub">
             {weeklyStreak?.streak_days && weeklyStreak.streak_days > 0 ? "You're on fire! Keep it up." : (overview?.streak?.description || "Start learning today!")}
           </p>
         </div>
-        <div className="flex gap-[0.2rem] ml-auto">
+        <div className="streak-days">
           {(weeklyStreak?.weekly || overview?.streak?.history || [
             { day: "M", status: "pending" },
             { day: "T", status: "pending" },
@@ -81,23 +81,23 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       </div>
 
       {introVideo && (
-        <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center">
-          <div className="absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
-            <div className="w-[45px] h-[45px] bg-[#E87A2E] rounded-full flex items-center justify-center mb-[0.6rem] shadow-lg">
-              <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-[2px]"></div>
+        <div className="intro-video-wrapper bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center">
+          <div className="video-overlay-content absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
+            <div className="video-play-btn w-[45px] h-[45px] bg-[#E87A2E] rounded-full flex items-center justify-center mb-[0.6rem] shadow-lg">
+              <div className="video-play-icon w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-[2px]"></div>
             </div>
-            <h3 className="font-['DM_Serif_Display'] text-[1.1rem] md:text-[1.3rem] mb-[0.2rem] drop-shadow-md">
+            <h3 className="video-title font-['DM_Serif_Display'] text-[1.1rem] md:text-[1.3rem] mb-[0.2rem] drop-shadow-md">
               {introVideo.video_title}
             </h3>
-            <p className="text-[0.7rem] md:text-[0.78rem] opacity-90 drop-shadow-md m-0">
+            <p className="video-subtitle text-[0.7rem] md:text-[0.78rem] opacity-90 drop-shadow-md m-0">
               {introVideo.video_subtitle}
             </p>
           </div>
-          <div className="absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
+          <div className="video-overlay-bg absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
           
           <video
             key={introVideo.video_path}
-            className="w-full h-full object-cover z-0 relative"
+            className="video-element w-full h-full object-cover z-0 relative"
             src={introVideo.video_path}
             controls={true}
             onPlay={(e) => {
@@ -170,7 +170,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             return (
               <div
                 key={`t-${i}`}
-                className="flex gap-[0.5rem] items-center py-[0.5rem] border-b border-black/5 cursor-pointer last:border-none hover:bg-black/5 transition-colors"
+                className="timeline-item flex gap-[0.5rem] items-center py-[0.5rem] border-b border-black/5 cursor-pointer last:border-none hover:bg-black/5 transition-colors"
                 onClick={() => goToCourseContent(i)}
               >
                 <div
