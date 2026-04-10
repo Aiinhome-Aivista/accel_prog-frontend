@@ -41,6 +41,7 @@
   overflow: hidden;
 }
 
+
 .reg-topbar {
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
@@ -81,17 +82,29 @@
   height: 16px;
 }
 
+.reg-layout-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+}
+
 .reg-layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 2rem;
-  padding: 2rem 1.5rem;
-  flex: 1;
-  height: 100vh;
-  width: min(100%, 1100px);
-  margin: 0 1.5rem 0 auto;
+  /* [robot illustration] [sidebar] [main form] */
+  grid-template-columns: 240px 200px minmax(0, 1fr);
+  gap: 1.5rem 2.5rem;
+  /* row-gap column-gap */
+  padding: 1.5rem 1rem;
+  width: min(96vw, 1400px);
+  margin: 0 auto;
+  /* guarantees equal left & right space on all screens */
+  height: 100%;
   overflow: hidden;
-  transform: none;
+  position: relative;
 }
 
 .reg-sidebar {
@@ -204,11 +217,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 680px;
-  height: 100%;
+  /* height fills available grid row; subtract topbar+banner ~160px */
+  height: calc(100vh - 160px);
   min-height: 0;
   overflow-y: auto;
-  max-height: calc(100vh - 220px);
 }
 
 .reg-form-header {
@@ -217,7 +229,8 @@
   background: var(--bg-light);
 
   position: sticky;
-  top: 0; /* sticks to top of container */
+  top: 0;
+  /* sticks to top of container */
   z-index: 10;
 }
 
@@ -538,14 +551,19 @@
   opacity: 0.95;
 } */
 
+/* Robot illustration sits in the first grid column */
 .reg-hero-img {
-  height: 24rem;
-  width: 20rem;
-  position: fixed;
-  top: 12.2rem;
-  left: 5.5rem;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  /* align to top of the grid row so the image top matches the content start */
+  align-self: start;
+  position: static;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.92;
 }
 
 .hero h1 {
@@ -572,25 +590,39 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
+/* ── 1200px: collapse the illustration column, keep sidebar + form side by side ── */
 @media (max-width: 1200px) {
   .reg-layout {
-    grid-template-columns: 1fr;
-    padding: 1.8rem 1rem;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 1.2rem;
+    padding: 1.2rem 0.75rem;
+    max-width: 96vw;
+  }
+
+  .reg-hero-img {
+    display: none;
   }
 
   .reg-sidebar {
-    position: relative;
-    top: auto;
-    align-self: stretch;
+    position: sticky;
+    top: 0;
+    align-self: start;
   }
 }
 
+/* ── 1024px: stack sidebar above the form ── */
 @media (max-width: 1024px) {
   .reg-layout {
-    display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem 1rem;
+    gap: 1.2rem;
+    padding: 1.2rem 1.2rem;
+    max-width: 700px;
+    height: auto;
+    overflow: visible;
+  }
+
+  .reg-layout-wrapper {
+    overflow: visible;
   }
 
   .reg-sidebar {
@@ -602,6 +634,7 @@
 
   .reg-main {
     order: 2;
+    max-height: none;
   }
 
   .reg-topbar {
@@ -617,18 +650,12 @@
   }
 
   .reg-hero-img {
-    position: absolute;
-    width: clamp(12rem, 16vw, 14rem);
-    height: auto;
-    top: 40%;
-    left: 50%;
-    right: auto;
-    opacity: 0.2;
-    transform: translate(-50%, -50%);
+    display: none;
   }
 }
 
 @media (max-width: 768px) {
+
   html,
   body {
     height: auto !important;
@@ -638,7 +665,8 @@
   .reg-page {
     height: auto !important;
     max-height: none !important;
-    overflow: visible !important; /* ✅ FIX */
+    overflow: visible !important;
+    /* ✅ FIX */
   }
 
   .reg-layout {
@@ -649,7 +677,8 @@
   .reg-main {
     height: auto !important;
     max-height: none !important;
-    overflow: visible !important; /* ✅ IMPORTANT */
+    overflow: visible !important;
+    /* ✅ IMPORTANT */
   }
 
   .reg-form-body {
