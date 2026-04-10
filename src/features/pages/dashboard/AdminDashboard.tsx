@@ -26,19 +26,19 @@ interface ContentItem {
 }
 
 interface VideoItem {
-  video_mapping_id: number;
+  mapping_id: number;
   course_id: number;
-  module_id: number;
-  subtopic_id: number;
+  module_id: number | null;
+  subtopic_id: number | null;
   video_title: string;
   video_subtitle: string;
   video_path: string;
-  thumbnail_path: string;
   duration_sec: number;
   is_intro_video: boolean;
-  course_name?: string;
-  module_name?: string;
-  subtopic_title?: string;
+  created_at?: string;
+  course_name: string;
+  module_name: string | null;
+  title: string | null;
 }
 // interface QuestionPaperItem {
 //   question_paper_id: number;

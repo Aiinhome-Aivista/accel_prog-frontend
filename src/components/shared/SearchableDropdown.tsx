@@ -59,6 +59,7 @@ const selectStyles = (
     ...base,
     color: "#2B2D42",
     fontSize: "14px",
+    caretColor: "transparent",
   }),
   indicatorSeparator: (base) => ({
     ...base,
@@ -165,8 +166,8 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
         blurInputOnSelect={true}
         components={{
           MenuList: CustomMenuList,
-          // Hides the search icon/input from the main select box
-          Input: () => null,
+          // The input is required for the control to be clickable. readOnly prevents typing.
+          Input: (props) => <components.Input {...props} readOnly />,
         }}
         noOptionsMessage={() => "No matching options"}
         styles={selectStyles(!!error)}

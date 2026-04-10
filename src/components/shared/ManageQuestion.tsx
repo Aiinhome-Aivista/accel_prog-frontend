@@ -93,8 +93,8 @@ const ManageQuestion: React.FC<ManageQuestionProps> = ({ setActiveTab, onEdit })
   }
 
   return (
-    <div className=" rounded-lg">
-      <div className="px-5">
+    <div className="rounded-lg px-5">
+      <div className="">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-3">
           <h2 className="font-serif text-[1.25rem] text-[#2B2D42]">Manage Assessments</h2>
           <button
@@ -117,7 +117,7 @@ const ManageQuestion: React.FC<ManageQuestionProps> = ({ setActiveTab, onEdit })
         </div>
       </div>
 
-      <div className="overflow-x-auto px-5 rounded-lg">
+      <div className="overflow-x-auto rounded-lg">
         <table className="w-full text-sm text-left">
           <thead className="text-xs text-[#6B6D7B] uppercase bg-[#F9F5F0]">
             <tr>
