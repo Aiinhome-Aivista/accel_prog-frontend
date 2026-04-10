@@ -4,20 +4,20 @@ import { useToast } from "../../utils/ToastContext";
 import { Edit, Trash2, Search, Video } from "lucide-react";
 
 interface VideoItem {
-  video_mapping_id: number;
+  mapping_id: number;
   course_id: number;
-  module_id: number;
-  subtopic_id: number;
+  module_id: number | null;
+  subtopic_id: number | null;
   video_title: string;
   video_subtitle: string;
   video_path: string;
-  thumbnail_path: string;
+//   thumbnail_path?: string;
   duration_sec: number;
   is_intro_video: boolean;
-  created_at: string;
+  created_at?: string;
   course_name: string;
-  module_name: string;
-  subtopic_title: string;
+  module_name: string | null;
+  title: string | null; // This is the subtopic title from the API
 }
 
 interface ManageVideoProps {
@@ -35,7 +35,7 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
     const fetchVideos = async () => {
       try {
         setLoading(true);
-        const response = await (courseService as any).getAllVideos(); // Assumes this service method exists
+        const response = await courseService.getAllVideos();
         if (response.status === "success" && Array.isArray(response.data)) {
           setVideos(response.data);
         } else {
@@ -50,7 +50,8 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
     fetchVideos();
   }, [showError]);
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -70,7 +71,8 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
       (item) =>
         item.video_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.course_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.module_name.toLowerCase().includes(searchTerm.toLowerCase())
+        (item.module_name && item.module_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [videos, searchTerm]);
 
@@ -113,6 +115,7 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
           <thead className="text-xs text-[#6B6D7B] uppercase bg-[#F9F5F0]">
             <tr>
               <th className="px-6 py-3">Sl. No.</th>
+              {/* <th className="px-6 py-3">Thumbnail</th> */}
               <th className="px-6 py-3">Video Title</th>
               <th className="px-6 py-3">Course / Module / Subtopic</th>
               <th className="px-6 py-3 text-center">Duration</th>
@@ -122,12 +125,15 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
           </thead>
           <tbody>
             {filteredVideos.map((item, index) => (
-              <tr key={item.video_mapping_id} className="bg-white border-b border-[#E5DDD4] hover:bg-[#F9F5F0] transition-colors">
+              <tr key={item.mapping_id} className="bg-white border-b border-[#E5DDD4] hover:bg-[#F9F5F0] transition-colors">
                 <td className="px-6 py-4 text-gray-600">{index + 1}</td>
+                {/* <td className="px-6 py-4">
+                  <img src={item.thumbnail_path || `https://via.placeholder.com/120x70.png?text=No+Image`} alt="Thumbnail" className="w-24 h-14 object-cover rounded-md bg-gray-100" />
+                </td> */}
                 <td className="px-6 py-4 font-bold text-[#2B2D42]">{item.video_title}</td>
                 <td className="px-6 py-4">
                   <div className="font-medium text-gray-800">{item.course_name}</div>
-                  <div className="text-xs text-gray-500">{item.module_name} / {item.subtopic_title}</div>
+                  <div className="text-xs text-gray-500">{item.module_name || 'Course Level'} / {item.title || 'N/A'}</div>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <div className="text-gray-800 font-medium">{formatDuration(item.duration_sec)}</div>

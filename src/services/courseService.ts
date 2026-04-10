@@ -84,4 +84,10 @@ export const courseService = {
       url: API_ENDPOINTS.get_all_questions,
       method: "GET",
     }),
+
+  getAllVideos: () =>
+    apiRequest({
+      url: API_ENDPOINTS.get_course_video_mapping,
+      method: "GET",
+    }),
 };
