@@ -85,9 +85,15 @@ export const courseService = {
       method: "GET",
     }),
 
-  getAllVideos: () =>   
-  apiRequest({
-    url: API_ENDPOINTS.get_course_video_mapping,
-    method: "GET",
-  }),
+  getAllVideos: () =>
+    apiRequest({
+      url: API_ENDPOINTS.get_course_video_mapping,
+      method: "GET",
+    }),
+  saveCourseVideo: (data: any) =>
+    apiRequest({
+      url: API_ENDPOINTS.save_course_video,
+      method: "POST",
+      data,
+    }),
 };

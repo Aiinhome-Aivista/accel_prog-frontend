@@ -34,5 +34,6 @@ export const API_ENDPOINTS = {
   get_all_contents: "/api/v1/admin/get_all_contents",
   get_all_questions: "/api/v1/get-assessment-questions",
   manage_questions: "/api/v1/manage-assessment-questions",
-  get_course_video_mapping: "/api/v1/admin/get_course_video_mapping" // Single endpoint for all question operations
+  get_course_video_mapping: "/api/v1/admin/get_course_video_mapping",
+  save_course_video: "/api/v1/admin/save_course_video",
 };

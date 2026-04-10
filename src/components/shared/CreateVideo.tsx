@@ -3,6 +3,7 @@ import { useToast } from "../../utils/ToastContext";
 import { courseService } from "../../services/courseService";
 import SearchableDropdown from "./SearchableDropdown";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "../../hooks/context/AuthContext";
 
 // Based on the user's SQL query
 interface VideoItem {
@@ -44,6 +45,7 @@ interface CreateVideoProps {
 }
 
 const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationComplete }) => {
+  const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   const videoInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -59,8 +61,7 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
   
   const [videoTitle, setVideoTitle] = useState("");
   const [videoSubtitle, setVideoSubtitle] = useState("");
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnailPath, setThumbnailPath] = useState("");
+  const [videoPath, setVideoPath] = useState("");
   const [duration, setDuration] = useState<number | string>("");
   const [isIntro, setIsIntro] = useState(false);
 
@@ -71,7 +72,7 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
     const fetchDropdownData = async () => {
       setLoadingDropdowns(true);
       try {
-        const response = await courseService.getContentDropdownData(); // Re-use existing dropdown data endpoint
+        const response = await courseService.getContentDropdownData();
         if (response.status === "success" && response.data) {
           setAllCourses(response.data.courses);
           setAllModules(response.data.modules);
@@ -94,12 +95,10 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
     setSubtopic("");
     setVideoTitle("");
     setVideoSubtitle("");
-    setVideoFile(null);
-    setThumbnailPath("");
+    setVideoPath("");
     setDuration("");
     setIsIntro(false);
     setErrors({});
-    if (videoInputRef.current) videoInputRef.current.value = "";
   };
 
   useEffect(() => {
@@ -109,10 +108,9 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
       setSubtopic(videoToEdit.title || "");
       setVideoTitle(videoToEdit.video_title);
       setVideoSubtitle(videoToEdit.video_subtitle);
+      setVideoPath(videoToEdit.video_path);
       setDuration(videoToEdit.duration_sec);
       setIsIntro(videoToEdit.is_intro_video);
-      setVideoFile(null);
-      setThumbnailPath(videoToEdit.thumbnail_path || "");
     } else {
       resetForm();
     }
@@ -150,8 +148,7 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
     if (!moduleName) nextErrors.moduleName = "Module is required.";
     if (!subtopic) nextErrors.subtopic = "Subtopic is required.";
     if (!videoTitle) nextErrors.videoTitle = "Video Title is required.";
-    if (!videoToEdit && !videoFile) nextErrors.videoFile = "Video file is required.";
-    if (!thumbnailPath) nextErrors.thumbnailPath = "Thumbnail path is required.";
+    if (!videoPath) nextErrors.videoPath = "Video Path is required.";
     if (duration === "" || Number(duration) <= 0) nextErrors.duration = "Duration must be a positive number.";
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -162,7 +159,6 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
     if (!validateForm()) return;
     setIsSubmitting(true);
 
-    const formData = new FormData();
     const selectedCourseId = selectedCourseData?.course_id;
     const selectedModuleId = selectedModuleData?.module_id;
     const selectedSubtopicId = allSubtopics.find(s => s.title === subtopic && s.module_id === selectedModuleId)?.subtopic_id;
@@ -173,33 +169,29 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
       return;
     }
 
-    // Add action for the backend to distinguish between create and update
+    const payload: any = {
+      course_id: Number(selectedCourseId),
+      module_id: Number(selectedModuleId),
+      subtopic_id: Number(selectedSubtopicId),
+      video_title: videoTitle,
+      video_subtitle: videoSubtitle,
+      video_path: videoPath,
+      duration_sec: Number(duration),
+      is_intro_video: isIntro,
+      user_id: user?.id || 1
+    };
+
     if (videoToEdit) {
-      formData.append("action", "update");
-      formData.append("video_mapping_id", String(videoToEdit.mapping_id));
-    } else {
-      formData.append("action", "insert");
+      payload.video_mapping_id = videoToEdit.mapping_id;
     }
 
-    formData.append("course_id", String(selectedCourseId));
-    formData.append("module_id", String(selectedModuleId));
-    formData.append("subtopic_id", String(selectedSubtopicId));
-    formData.append("video_title", videoTitle);
-    formData.append("video_subtitle", videoSubtitle);
-    formData.append("duration_sec", String(duration));
-    formData.append("is_intro_video", String(isIntro));
-    formData.append("thumbnail_path", thumbnailPath);
-
-    if (videoFile) formData.append("video", videoFile);
-
     try {
-      let response;
-      response = await (courseService as any).manageVideos(formData);
+      const response = await courseService.saveCourseVideo(payload);
       if (response.status === "success") {
-        showSuccess("Video Saved", `Video ${videoToEdit ? "updated" : "created"} successfully!`);
+        showSuccess("Video Saved", `Video mapping ${videoToEdit ? "updated" : "saved"} successfully!`);
         onOperationComplete();
       } else {
-        showError("Submission Failed", response.message || `Failed to ${videoToEdit ? "update" : "save"} video.`);
+        showError("Submission Failed", response.message || `Failed to ${videoToEdit ? "update" : "save"} video mapping.`);
       }
     } catch (err: any) {
       showError("Submission Error", err.message || "An unexpected error occurred.");
@@ -245,48 +237,41 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
         <div>
-          <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">Video File {videoToEdit ? <span className="text-gray-400">(Optional)</span> : <span className="text-red-500">*</span>}</label>
-          <input ref={videoInputRef} type="file" accept="video/*" onChange={e => setVideoFile(e.target.files?.[0] ?? null)} className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none file:mr-4 file:rounded-md file:border-0 file:bg-[#E87A2E]/10 file:px-3 file:py-2 file:text-[#E87A2E] ${errors.videoFile ? "border-red-400" : "border-[#E5DDD4]"}`} />
-          {errors.videoFile && <p className="mt-1 text-[12px] text-red-500">{errors.videoFile}</p>}
-          {videoToEdit?.video_path && !videoFile && <p className="mt-2 text-xs text-gray-500">Current file: {videoToEdit.video_path}</p>}
-        </div>
-        {/* <div>
-          <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">Thumbnail Path <span className="text-red-500">*</span></label>
-          <input
-            type="text"
-            value={thumbnailPath}
-            onChange={(e) => setThumbnailPath(e.target.value)}
-            placeholder="https://example.com/thumbnail.jpg"
-            className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none ${
-              errors.thumbnailPath ? "border-red-400" : "border-[#E5DDD4]"
-            }`}
+          <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">Video Path <span className="text-red-500">*</span></label>
+          <input 
+            type="text" 
+            value={videoPath} 
+            onChange={e => setVideoPath(e.target.value)} 
+            placeholder="/videos/example.mp4"
+            className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none ${errors.videoPath ? "border-red-400" : "border-[#E5DDD4]"}`} 
           />
-          {errors.thumbnailPath && <p className="mt-1 text-[12px] text-red-500">{errors.thumbnailPath}</p>}
-          {thumbnailPath && <img src={thumbnailPath} alt="Thumbnail Preview" className="mt-2 rounded-lg w-48 h-auto object-cover bg-gray-100" onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')} onLoad={(e) => ((e.target as HTMLImageElement).style.display = 'block')} />}
-        </div> */}
-                <div className="flex items-center pt-6">
+          {errors.videoPath && <p className="mt-1 text-[12px] text-red-500">{errors.videoPath}</p>}
+        </div>
+        <div>
+          <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">Duration (seconds) <span className="text-red-500">*</span></label>
+          <input 
+            type="number" 
+            value={duration} 
+            onChange={e => setDuration(e.target.value)} 
+            placeholder="e.g. 120"
+            className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none ${errors.duration ? "border-red-400" : "border-[#E5DDD4]"}`} 
+          />
+          {errors.duration && <p className="mt-1 text-[12px] text-red-500">{errors.duration}</p>}
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <div className="flex items-center">
           <input type="checkbox" id="isIntro" checked={isIntro} onChange={e => setIsIntro(e.target.checked)} className="w-4 h-4 accent-[#E87A2E]" />
           <label htmlFor="isIntro" className="ml-2 text-sm font-medium text-[#2B2D42]">Is this an introduction video?</label>
         </div>
       </div>
 
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-        <div>
-          <label className="block text-[12px] font-semibold text-[#6B6D7B] mb-2">Duration (seconds) <span className="text-red-500">*</span></label>
-          <input type="number" value={duration} onChange={e => setDuration(e.target.value)} className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none ${errors.duration ? "border-red-400" : "border-[#E5DDD4]"}`} />
-          {errors.duration && <p className="mt-1 text-[12px] text-red-500">{errors.duration}</p>}
-        </div>
-        <div className="flex items-center pt-6">
-          <input type="checkbox" id="isIntro" checked={isIntro} onChange={e => setIsIntro(e.target.checked)} className="w-4 h-4 accent-[#E87A2E]" />
-          <label htmlFor="isIntro" className="ml-2 text-sm font-medium text-[#2B2D42]">Is this an introduction video?</label>
-        </div>
-      </div> */}
-
       <div className="flex justify-between items-center mt-6">
         <button type="button" onClick={handleCancel} className="px-5 py-2.5 rounded-lg border border-[#E5DDD4] text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] transition-colors">Cancel</button>
         <button type="submit" className="px-5 py-2.5 rounded-lg bg-[#E87A2E] hover:bg-[#D06A20] text-white font-semibold transition-colors flex items-center" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 animate-spin" size={18} />}
-          {isSubmitting ? (videoToEdit ? "Updating..." : "Submitting...") : (videoToEdit ? "Update Video" : "Submit Video")}
+          {isSubmitting ? (videoToEdit ? "Updating..." : "Submitting...") : (videoToEdit ? "Update Video" : "Submit Video Mapping")}
         </button>
       </div>
       </form>
