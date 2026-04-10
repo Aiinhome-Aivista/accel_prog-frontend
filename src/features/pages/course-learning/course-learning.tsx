@@ -20,17 +20,32 @@ import type { ApiWeek, WeekData } from './course-learning.models';
 const CourseLearning: React.FC = () => {
   const { user } = useAuth();
   const { kpiData } = useDashboard();
-  const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get("tab") || "home";
-  const initialWeekIdx = Number(searchParams.get("week_idx") || 0);
-  const initialSubIdx = Number(searchParams.get("sub_idx") || 0);
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const getStoredState = () => {
+    const courseId = searchParams.get("course_id");
+    if (courseId && user) {
+      try {
+        const item = localStorage.getItem(`course_state_${user.id}_${courseId}`);
+        if (item) return JSON.parse(item);
+      } catch (e) {
+        // ignore
+      }
+    }
+    return null;
+  };
+
+  const storedState = getStoredState();
+  const initialTab = searchParams.get("tab") || storedState?.activeTab || "home";
+  const initialWeekIdx = Number(searchParams.get("week_idx") ?? storedState?.curW ?? 0);
+  const initialSubIdx = Number(searchParams.get("sub_idx") ?? storedState?.curS ?? 0);
+  
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Cross-tab state
   const [done, setDone] = useState<Set<string>>(new Set());
-  const [curW, setCurW] = useState(initialWeekIdx);
-  const [curS, setCurS] = useState(initialSubIdx);
+  const [curW, setCurW] = useState<number>(initialWeekIdx);
+  const [curS, setCurS] = useState<number>(initialSubIdx);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
   const [courseName, setCourseName] = useState("Course Learning");
   const [introVideo, setIntroVideo] = useState<any>(null);
@@ -121,15 +136,37 @@ const CourseLearning: React.FC = () => {
             setWeeks(mappedWeeks);
             
             const initialDone = new Set<string>();
-            response.data.weeks.forEach(w => {
-              w.topics.forEach(t => {
+            let foundUnfinished = false;
+            let autoW = 0;
+            let autoS = 0;
+
+            response.data.weeks.forEach((w: any, wi: number) => {
+              w.topics.forEach((t: any, si: number) => {
                 if (t.is_completed) {
                   initialDone.add(`w${w.week}s${t.subtopic_id}`);
+                } else if (!foundUnfinished && !w.is_locked) {
+                  autoW = wi;
+                  autoS = si;
+                  foundUnfinished = true;
                 }
               });
             });
             
             setDone(initialDone);
+
+            // Auto-forward to the furthest topic if the current one is completed
+            // This prevents users from being dumped back to topic 1 on revisit
+            const currentSubtopicId = mappedWeeks[curW]?.subs[curS]?.id;
+            if (currentSubtopicId && initialDone.has(currentSubtopicId)) {
+                if (foundUnfinished) {
+                    setCurW(autoW);
+                    setCurS(autoS);
+                } else {
+                    setCurW(mappedWeeks.length - 1);
+                    setCurS(mappedWeeks[mappedWeeks.length - 1].subs.length - 1);
+                }
+            }
+
             setError(null);
           } else if (response.status === "error") {
             setError(response.message || "Failed to load course content");
@@ -144,19 +181,34 @@ const CourseLearning: React.FC = () => {
         setIsLoading(false);
         setError("Missing course or user information.");
       }
-  }, [searchParams, user]);
+  }, [searchParams.get("course_id"), user]);
 
   // Initial load
   useEffect(() => {
-    const weekIdx = Number(searchParams.get("week_idx") || 0);
-    const subIdx = Number(searchParams.get("sub_idx") || 0);
+    const courseId = searchParams.get("course_id");
+    let savedW = 0;
+    let savedS = 0;
+    if (courseId && user) {
+      try {
+        const item = localStorage.getItem(`course_state_${user.id}_${courseId}`);
+        if (item) {
+          const parsed = JSON.parse(item);
+          savedW = parsed.curW ?? 0;
+          savedS = parsed.curS ?? 0;
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+    const weekIdx = Number(searchParams.get("week_idx") ?? savedW);
+    const subIdx = Number(searchParams.get("sub_idx") ?? savedS);
     setDone(new Set());
     setCurW(weekIdx);
     setCurS(subIdx);
     setIntroVideo(null);
     setWeeks([]);
     fetchContent();
-  }, [searchParams, user, fetchContent]);
+  }, [searchParams.get("course_id"), user, fetchContent]);
 
   // Re-fetch when switching to a week with no content (newly unlocked)
   useEffect(() => {
@@ -165,7 +217,7 @@ const CourseLearning: React.FC = () => {
     }
   }, [curW, weeks]);
 
-  // Persist state to localStorage
+  // Persist state to localStorage and sync URL
   useEffect(() => {
     const courseId = searchParams.get("course_id");
     if (courseId && user) {
@@ -175,8 +227,16 @@ const CourseLearning: React.FC = () => {
         curS
       };
       localStorage.setItem(`course_state_${user.id}_${courseId}`, JSON.stringify(state));
+      
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        if (next.get("tab") !== activeTab) next.set("tab", activeTab);
+        if (next.get("week_idx") !== curW.toString()) next.set("week_idx", curW.toString());
+        if (next.get("sub_idx") !== curS.toString()) next.set("sub_idx", curS.toString());
+        return next;
+      }, { replace: true });
     }
-  }, [activeTab, curW, curS, searchParams, user]);
+  }, [activeTab, curW, curS, searchParams.get("course_id"), user, setSearchParams]);
 
 
 

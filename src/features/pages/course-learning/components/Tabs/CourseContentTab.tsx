@@ -56,6 +56,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     Record<string, any>
   >({});
   const [submittingDiscussion, setSubmittingDiscussion] = useState(false);
+  const [unansweredQuestions, setUnansweredQuestions] = useState<Set<string>>(new Set());
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
@@ -67,6 +68,26 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const handleMarkComplete = async (subtopicId: string) => {
     const w = weeks[curW];
     if (!w) return;
+    const sub = w.subs[curS];
+    if (!sub) return;
+
+    if (sub.type === "assess" && sub.categories) {
+      const missingQids = new Set<string>();
+      sub.categories.forEach((cat) => {
+        cat.questions?.forEach((q, qi) => {
+          const qid = `${sub.id}_${cat.label}_${qi}`;
+          if (!answers[`${qid}_sub`]) {
+            missingQids.add(qid);
+          }
+        });
+      });
+
+      if (missingQids.size > 0) {
+        setUnansweredQuestions(missingQids);
+        return;
+      }
+    }
+
     const moduleId = w.moduleId;
     const subtopicNum = parseInt(subtopicId.split("s")[1] || "0");
 
@@ -88,7 +109,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
         // Auto-switch to next week if available
         if (curW < weeks.length - 1) {
           setCurW(curW + 1);
+          setCurS(0);
         }
+      } else {
+        // Auto-switch to next subtopic
+        setCurS(curS + 1);
       }
     } catch (error) {
       console.error("Error marking subtopic complete:", error);
@@ -529,7 +554,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                             {label} · Q{qi + 1}
                           </div>
                           <div className="text-[0.82rem] text-[#2B2D42] font-semibold leading-[1.5] mb-[0.5rem]">
-                            {q.q} {q.marks ? `(${q.marks}m)` : ""}
+                            {q.q} <span className="text-red-500">*</span>
                           </div>
 
                           {isMcq ? (
@@ -583,6 +608,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                           ...p,
                                           [qid]: oi,
                                         }));
+                                        setUnansweredQuestions(prev => {
+                                          const next = new Set(prev);
+                                          next.delete(qid);
+                                          return next;
+                                        });
                                         // Call API directly on MCQ selection with option text
                                         handleSubmitMcqAnswer(
                                           qid,
@@ -647,11 +677,17 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                 placeholder="Write your answer..."
                                 value={sel || ""}
                                 onChange={(e) => {
-                                  if (!submitted)
+                                  if (!submitted) {
                                     setAnswers((p) => ({
                                       ...p,
                                       [qid]: e.target.value,
                                     }));
+                                    setUnansweredQuestions(prev => {
+                                      const next = new Set(prev);
+                                      next.delete(qid);
+                                      return next;
+                                    });
+                                  }
                                 }}
                                 disabled={submitted}
                               ></textarea>
@@ -689,6 +725,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                   Submitted for review.
                                 </div>
                               )}
+                            </div>
+                          )}
+                          {unansweredQuestions.has(qid) && !submitted && (
+                            <div className="mt-[0.6rem] text-[0.74rem] text-red-500 font-semibold flex items-center gap-[0.35rem] bg-red-50 p-[0.4rem_0.6rem] rounded-[6px] border border-red-100">
+                              <span className="text-[0.8rem]">⚠️</span> Please answer this question to proceed.
                             </div>
                           )}
                         </div>
@@ -832,17 +873,17 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
             {curS < w.subs.length - 1 && (
               <button
-                className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border-none text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all ${canNext
+                className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border-none text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all max-w-[200px] md:max-w-[400px] ${canNext
                     ? "bg-[#E87A2E] text-white cursor-pointer hover:bg-[#D06A20]"
                     : "bg-[#E87A2E] text-white opacity-35 cursor-default pointer-events-none"
                   }`}
                 onClick={() => canNext && setCurS(curS + 1)}
               >
-                Next:{" "}
-                {w.subs[curS + 1].title.length > 20
-                  ? w.subs[curS + 1].title.substring(0, 20) + "…"
-                  : w.subs[curS + 1].title}
-                <ChevronRight size={14} />
+                <span className="shrink-0">Next:</span>
+                <span className="truncate flex-1 text-left" title={w.subs[curS + 1].title}>
+                  {w.subs[curS + 1].title}
+                </span>
+                <ChevronRight size={14} className="shrink-0" />
               </button>
             )}
           </div>
