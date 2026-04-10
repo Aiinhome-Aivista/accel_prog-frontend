@@ -268,11 +268,11 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {/* Main Content */}
         <main
           className={`flex-1 py-8 pb-16 md:ml-[220px] ${
-            activeTab.startsWith("manage-") ? "" : "px-5"
+            activeTab.startsWith("manage-") || activeTab.startsWith("create-") ? "" : "px-5"
           }`}
         >
           <div
-            className={`${!activeTab.startsWith("manage-") ? "max-w-[1060px]" : ""} w-full mx-auto`}
+            className={`${(!activeTab.startsWith("manage-") && !activeTab.startsWith("create-")) ? "max-w-[1060px] px-5" : "px-0"} w-full mx-auto`}
           >
             {activeTab === "home" && (
               <>

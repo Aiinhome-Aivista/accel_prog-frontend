@@ -215,7 +215,10 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
     }
   };
 
-  if (loadingDropdowns) return <div className="p-20 text-center text-gray-500">Loading Data...</div>;
+  if (loadingDropdowns) return <div className="flex flex-col justify-center items-center min-h-[80vh] gap-3">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E87A2E]"></div>
+    <p className="text-[0.82rem] text-[#9597A6]">Loading Data</p>
+  </div>;
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)]">
