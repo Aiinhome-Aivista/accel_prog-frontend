@@ -189,11 +189,13 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
     setCourseName(value);
     setModuleName("");
     setSubtopic("");
+    if (errors.courseName) setErrors((prev) => ({ ...prev, courseName: "" }));
   };
 
   const handleModuleChange = (value: string) => {
     setModuleName(value);
     setSubtopic("");
+    if (errors.moduleName) setErrors((prev) => ({ ...prev, moduleName: "" }));
   };
 
   const handleCancel = () => {
@@ -309,8 +311,9 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
 
   if (loadingDropdowns) {
     return (
-      <div className="flex justify-center items-center h-48">
-        <p className="text-gray-600">Loading dropdown data...</p>
+      <div className="flex flex-col justify-center items-center min-h-[80vh] gap-3">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E87A2E]"></div>
+        <p className="text-[0.82rem] text-[#9597A6]">Loading Data</p>
       </div>
     );
   }
@@ -324,10 +327,11 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)]"
-    >
+    <div className="px-5">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)] w-full"
+      >
       <div className="mb-6">
         <h2 className="font-serif text-[1.25rem] text-[#2B2D42] mb-2">
           {contentToEdit ? "Edit Content" : "Create Content"}
@@ -373,7 +377,10 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
           value={subtopic}
           options={subtopicOptions}
           placeholder="Select subtopic"
-          onChange={setSubtopic}
+          onChange={(val) => {
+            setSubtopic(val);
+            if (errors.subtopic) setErrors((prev) => ({ ...prev, subtopic: "" }));
+          }}
           error={errors.subtopic}
         />
 
@@ -386,7 +393,10 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
           value={subtopicType}
           options={subtopicTypeOptions}
           placeholder="Select type"
-          onChange={(value) => setSubtopicType(value as SubtopicType)}
+          onChange={(value) => {
+            setSubtopicType(value as SubtopicType);
+            if (errors.subtopicType) setErrors((prev) => ({ ...prev, subtopicType: "" }));
+          }}
           error={errors.subtopicType}
         />
       </div>
@@ -398,7 +408,13 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
       </div>
 
       <div className="mb-2">
-        <TiptapEditor content={editorContent} onChange={setEditorContent} />
+        <TiptapEditor 
+          content={editorContent} 
+          onChange={(content) => {
+            setEditorContent(content);
+            if (errors.editorContent) setErrors((prev) => ({ ...prev, editorContent: "" }));
+          }} 
+        />
       </div>
 
       {errors.editorContent && (
@@ -419,7 +435,10 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
           ref={fileInputRef}
           type="file"
           accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx"
-          onChange={(e) => setMediaFile(e.target.files?.[0] ?? null)}
+          onChange={(e) => {
+            setMediaFile(e.target.files?.[0] ?? null);
+            if (errors.mediaFile) setErrors((prev) => ({ ...prev, mediaFile: "" }));
+          }}
           className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none file:mr-4 file:rounded-md file:border-0 file:bg-[#E87A2E]/10 file:px-3 file:py-2 file:text-[#E87A2E] ${
             errors.mediaFile
               ? "border-red-400 focus:border-red-500"
@@ -462,6 +481,7 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
         </button>
       </div>
     </form>
+   </div>
   );
 };
 

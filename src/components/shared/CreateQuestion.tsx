@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Plus, Trash2, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "../../utils/ToastContext";
 import { courseService } from "../../services/courseService";
-import { useAuth } from "../../hooks/context/AuthContext";
+// import { useAuth } from "../../hooks/context/AuthContext";
 import SearchableDropdown from "./SearchableDropdown";
 
 /** --- Types --- **/
@@ -31,14 +31,13 @@ interface CreateQuestionProps {
 }
 
 const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCancel }) => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   
   const [allCourses, setAllCourses] = useState<any[]>([]);
   const [allModules, setAllModules] = useState<any[]>([]);
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [allSubtopics, setAllSubtopics] = useState<any[]>([]);
-  const [allSubtopicTypes, setAllSubtopicTypes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
@@ -58,7 +57,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCance
         setAllCourses(res.data.courses);
         setAllModules(res.data.modules);
         setAllSubtopics(res.data.subtopics);
-        setAllSubtopicTypes(res.data.types);
         setAllCategories(res.data.categories || []);
       }
       setLoading(false);
@@ -172,7 +170,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   const questionList = sections.flatMap((section) => {
     const category = allCategories.find(cat => cat.category_name === section.section_title);
     
-    return section.questions.map((q, idx) => {
+    return section.questions.map((q) => {
       const isMcq = q.type === "multiple_choice";
 
       return {
@@ -237,11 +235,14 @@ const handleSubmit = async (e: React.FormEvent) => {
     )}
   </button>
 </div>
-  if (loading) return <div className="p-20 text-center text-gray-500">Loading Data...</div>;
+  if (loading) return <div className="flex flex-col justify-center items-center min-h-[80vh] gap-3">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E87A2E]"></div>
+    <p className="text-[0.82rem] text-[#9597A6]">Loading Data</p>
+  </div>;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-[#F9F5F0] min-h-screen p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl border border-[#E5DDD4] p-8 shadow-sm">
+    <form onSubmit={handleSubmit} className=" min-h-screen p-6">
+      <div className="w-full bg-white rounded-2xl border border-[#E5DDD4] p-8 shadow-sm">
         <h2 className="text-2xl font-serif mb-6">{questionToEdit ? "Edit Assessment" : "Create Assessment"}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
