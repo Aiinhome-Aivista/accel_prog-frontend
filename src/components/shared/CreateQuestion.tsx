@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Plus, Trash2, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "../../utils/ToastContext";
 import { courseService } from "../../services/courseService";
-import { useAuth } from "../../hooks/context/AuthContext";
+// import { useAuth } from "../../hooks/context/AuthContext";
 import SearchableDropdown from "./SearchableDropdown";
 
 /** --- Types --- **/
@@ -31,14 +31,13 @@ interface CreateQuestionProps {
 }
 
 const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCancel }) => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   
   const [allCourses, setAllCourses] = useState<any[]>([]);
   const [allModules, setAllModules] = useState<any[]>([]);
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [allSubtopics, setAllSubtopics] = useState<any[]>([]);
-  const [allSubtopicTypes, setAllSubtopicTypes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
@@ -58,7 +57,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCance
         setAllCourses(res.data.courses);
         setAllModules(res.data.modules);
         setAllSubtopics(res.data.subtopics);
-        setAllSubtopicTypes(res.data.types);
         setAllCategories(res.data.categories || []);
       }
       setLoading(false);
@@ -172,7 +170,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   const questionList = sections.flatMap((section) => {
     const category = allCategories.find(cat => cat.category_name === section.section_title);
     
-    return section.questions.map((q, idx) => {
+    return section.questions.map((q) => {
       const isMcq = q.type === "multiple_choice";
 
       return {

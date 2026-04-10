@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   useEditor,
   EditorContent,
@@ -85,12 +85,12 @@ const CustomBulletList = BulletList.extend({
   },
 });
 
-type ImageAttrs = {
-  src: string;
-  width: string | number;
-  height: string | number;
-  align: "left" | "center" | "right";
-};
+// type ImageAttrs = {
+//   src: string;
+//   width: string | number;
+//   height: string | number;
+//   align: "left" | "center" | "right";
+// };
 
 const ImageComponent = ({
   node,
