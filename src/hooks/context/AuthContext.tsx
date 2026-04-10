@@ -54,6 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('user_name');
     localStorage.removeItem('token');
     localStorage.removeItem('app_view'); // Cleanup old routing state if any
+    sessionStorage.removeItem('just_registered'); // Ensure next login says "Welcome back"
   };
 
   const value = {

@@ -62,12 +62,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     return sessionStorage.getItem("just_registered") === "true";
   });
 
-  useEffect(() => {
-    if (isJustRegistered) {
-      sessionStorage.removeItem("just_registered");
-    }
-  }, [isJustRegistered]);
-
   const [enrolledCourses, setEnrolledCourses] = useState<CourseData[]>([]);
   const [completedEnrolledCourses, setCompletedEnrolledCourses] = useState<
     CourseData[]
