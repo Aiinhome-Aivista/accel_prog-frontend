@@ -1,0 +1,115 @@
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  top: 50px;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 50;
+  display: none;
+  transition: opacity 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .sidebar-overlay {
+    display: none !important;
+  }
+}
+
+.sidebar {
+  width: 200px;
+  background: #ffffff;
+  border-right: 1px solid #E5DDD4;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  position: fixed;
+  top: 50px;
+  height: calc(100vh - 50px);
+  z-index: 50;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: static;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-header {
+  padding: 0.8rem 0.9rem 0.6rem;
+  border-bottom: 1px solid #E5DDD4;
+}
+
+.sidebar-subtitle {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9597A6;
+}
+
+.sidebar-title {
+  font-size: 0.85rem;
+  color: #2B2D42;
+  line-height: 1.2;
+  font-weight: 500;
+  font-family: "DM Serif Display", serif;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.3rem 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  color: #6B6D7B;
+  transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+  background: #F9F5F0;
+  color: #2B2D42;
+}
+
+.sidebar-item.active {
+  background: rgba(232, 122, 46, 0.12);
+  color: #E87A2E;
+  border-left: 3px solid #E87A2E;
+  font-weight: 600;
+}
+
+.sidebar-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.sidebar-badge {
+  margin-left: auto;
+  background: rgba(232, 122, 46, 0.12);
+  color: #E87A2E;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 0.06rem 0.3rem;
+  border-radius: 999px;
+}
+
+.sidebar-footer {
+  padding: 0.5rem 0.8rem;
+  border-top: 1px solid #E5DDD4;
+  font-size: 0.6rem;
+  color: #9597A6;
+  text-align: center;
+}

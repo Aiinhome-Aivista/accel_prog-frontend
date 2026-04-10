@@ -9,6 +9,7 @@ import {
   Library,
   LifeBuoy,
 } from "lucide-react";
+import "./Sidebar.css";
 
 interface SidebarProps {
   activeTab: string;
@@ -37,34 +38,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       <div
-        className={`fixed inset-0 top-[50px] bg-black/30 z-50 md:hidden transition-opacity ${isOpen ? "block" : "hidden"}`}
+        className={`sidebar-overlay ${isOpen ? "block" : "hidden"}`}
         onClick={() => setIsOpen(false)}
       />
       <div
-        className={`w-[200px] bg-white border-r border-[#E5DDD4] flex flex-col shrink-0 overflow-y-auto transition-transform ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} fixed md:static top-[50px] h-[calc(100vh-50px)] z-50`}
+        className={`sidebar ${isOpen ? "translate-x-0" : ""} `}
       >
-        <div className="p-[0.8rem_0.9rem_0.6rem] border-b border-[#E5DDD4]">
-          <div className="text-[0.55rem] font-bold uppercase tracking-[0.06em] text-[#9597A6]">
+        <div className="sidebar-header">
+          <div className="sidebar-subtitle">
             Course 1 · Foundation
           </div>
           <div
-            className="font-['DM_Serif_Display'] text-[0.85rem] text-[#2B2D42] leading-[1.2] font-medium"
+            className="sidebar-title"
             style={{ fontFamily: '"DM Serif Display", serif' }}
           >
             The AI Consumer & Builder
           </div>
         </div>
-        <div className="flex-1 py-[0.3rem]">
+        <div className="sidebar-nav">
           {NAV_ITEMS.map((n) => {
             const Icon = n.i;
             const isActive = activeTab === n.id;
             return (
               <div
                 key={n.id}
-                className={`flex items-center gap-[0.5rem] p-[0.5rem_0.8rem] cursor-pointer text-[0.74rem] font-medium border-l-[3px] transition-all ${
+                className={`sidebar-item ${
                   isActive
-                    ? "bg-[#e87a2e1f] text-[#E87A2E] border-l-[#E87A2E] font-semibold"
-                    : "text-[#6B6D7B] border-l-transparent hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
+                    ? "active"
+                    : " "
                 }`}
                 onClick={() => {
                   setActiveTab(n.id);
@@ -72,12 +73,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
               >
                 <Icon
-                  className={`w-[14px] h-[14px] shrink-0 ${isActive ? "opacity-100" : "opacity-50"}`}
+                  className={`sidebar-icon  ${isActive ? "opacity-100" : ""}`}
                   strokeWidth={isActive ? 2 : 1.5}
                 />
                 <span className="flex-1">{n.l}</span>
                 {n.c && (
-                  <span className="ml-auto bg-[#e87a2e1f] text-[#E87A2E] text-[0.55rem] font-bold p-[0.06rem_0.3rem] rounded-full">
+                  <span className="sidebar-badge">
                     {n.c}
                   </span>
                 )}
@@ -85,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </div>
-        <div className="p-[0.5rem_0.8rem] border-t border-[#E5DDD4] text-[0.6rem] text-[#9597A6] text-center">
+        <div className="sidebar-footer">
           MokshPath © 2026
         </div>
       </div>
