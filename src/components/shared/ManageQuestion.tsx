@@ -85,17 +85,17 @@ const ManageQuestion: React.FC<ManageQuestionProps> = ({ setActiveTab, onEdit })
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex flex-col justify-center items-center min-h-[80vh] gap-3">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E87A2E]"></div>
-        <p className="ml-3 text-gray-600">Loading assessments...</p>
+        <p className="text-[0.82rem] text-[#9597A6]">Loading assessments...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg border border-[#E5DDD4] shadow-sm">
-      <div className="p-6">
-        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+    <div className=" rounded-lg">
+      <div className="px-5">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-3">
           <h2 className="font-serif text-[1.25rem] text-[#2B2D42]">Manage Assessments</h2>
           <button
             onClick={() => setActiveTab("create-question")}
@@ -117,7 +117,7 @@ const ManageQuestion: React.FC<ManageQuestionProps> = ({ setActiveTab, onEdit })
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto px-5 rounded-lg">
         <table className="w-full text-sm text-left">
           <thead className="text-xs text-[#6B6D7B] uppercase bg-[#F9F5F0]">
             <tr>
