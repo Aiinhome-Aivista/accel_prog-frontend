@@ -82,16 +82,16 @@
 }
 
 .reg-layout {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
+ display: grid;
+  grid-template-columns: auto 220px minmax(0, 1fr);
   gap: 2rem;
-  padding: 2rem 1.5rem;
-  flex: 1;
-  height: 100vh;
-  width: min(100%, 1100px);
-  margin: 0 1.5rem 0 auto;
-  overflow: hidden;
-  transform: none;
+
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  padding: 2rem;
+  align-items: center;
 }
 
 .reg-sidebar {
@@ -538,12 +538,17 @@
   opacity: 0.95;
 } */
 
+.reg-hero-wrap{
+  width: clamp(200px, 18vw, 280px);
+  height: auto;
+  }
+
 .reg-hero-img {
   height: 24rem;
   width: 20rem;
-  position: fixed;
+  position: absolute;
   top: 12.2rem;
-  left: 5.5rem;
+  left:auto;
   z-index: 0;
   pointer-events: none;
 }

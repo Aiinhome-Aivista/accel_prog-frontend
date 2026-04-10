@@ -215,8 +215,11 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
           </p>
         </div>
       </div>
-      <img className="reg-hero-img" src={swamiji} alt="swamiji" />
       <div className="reg-layout">
+        <div className="reg-hero-wrap">
+  <img className="reg-hero-img" src={swamiji} alt="swamiji" />
+</div>
+
         <div className="reg-sidebar">
           <div className="reg-progress-pct">{progressPct}% Complete</div>
           <div className="reg-progress-bar">
