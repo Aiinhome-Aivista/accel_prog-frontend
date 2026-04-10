@@ -85,9 +85,9 @@ const ManageQuestion: React.FC<ManageQuestionProps> = ({ setActiveTab, onEdit })
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex flex-col justify-center items-center min-h-[80vh] gap-3">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E87A2E]"></div>
-        <p className="ml-3 text-gray-600">Loading assessments...</p>
+        <p className="text-[0.82rem] text-[#9597A6]">Loading assessments...</p>
       </div>
     );
   }
