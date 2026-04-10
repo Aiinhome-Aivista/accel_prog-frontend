@@ -75,7 +75,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     if (sub.type === "assess" && sub.categories) {
       const missingQids = new Set<string>();
       sub.categories.forEach((cat) => {
-        cat.questions?.forEach((qi) => {
+        cat.questions?.forEach((_q, qi) => {
           const qid = `${sub.id}_${cat.label}_${qi}`;
           if (!answers[`${qid}_sub`]) {
             missingQids.add(qid);
@@ -85,6 +85,22 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
       if (missingQids.size > 0) {
         setUnansweredQuestions(missingQids);
+        return;
+      }
+    }
+
+    if (sub.type === "discussion") {
+      const userHasPosted = (discussions[sub.id] || []).some((m: any) => m.n === "You");
+      if (!userHasPosted) {
+        setUnansweredQuestions(new Set([sub.id + "_disc"]));
+        return;
+      }
+    }
+
+    if (sub.type === "project") {
+      const hasUploaded = (uploads[sub.id] || []).length > 0;
+      if (!hasUploaded) {
+        setUnansweredQuestions(new Set([sub.id + "_proj"]));
         return;
       }
     }
@@ -298,6 +314,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           [sub.id]: [newMsg, ...(prev[sub.id] || sub.seeds || [])],
         }));
         setLocalMessage("");
+        setUnansweredQuestions((prev) => {
+          const next = new Set(prev);
+          next.delete(sub.id + "_disc");
+          return next;
+        });
       }
     } catch (error) {
       console.error("Error posting discussion:", error);
@@ -309,6 +330,14 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
     const file = e.target.files[0];
+
+    // File size limit: 10MB
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      alert("File is too large. Max limit is 10MB.");
+      return;
+    }
+
     const w = weeks[curW];
     const sub = w.subs[curS];
 
@@ -330,6 +359,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           ...prev,
           [sub.id]: [...(prev[sub.id] || []), uploadedFileName],
         }));
+        setUnansweredQuestions((prev) => {
+          const next = new Set(prev);
+          next.delete(sub.id + "_proj");
+          return next;
+        });
       }
     } catch (error) {
       console.error("Error uploading project:", error);
@@ -824,6 +858,11 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                     </div>
                   </div>
                 ))}
+                {unansweredQuestions.has(sub.id + "_disc") && (
+                  <div className="mt-[0.6rem] text-[0.74rem] text-red-500 font-semibold flex items-center gap-[0.35rem] bg-red-50 p-[0.4rem_0.6rem] rounded-[6px] border border-red-100">
+                    <span className="text-[0.8rem]">⚠️</span> Please participate in the discussion to proceed.
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -877,6 +916,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   disabled={uploadingProject || (uploads[sub.id] || []).length > 0}
                 />
               </label>
+
+              {unansweredQuestions.has(sub.id + "_proj") && (
+                <div className="mt-[0.6rem] text-[0.74rem] text-red-500 font-semibold flex items-center gap-[0.35rem] bg-red-50 p-[0.4rem_0.6rem] rounded-[6px] border border-red-100">
+                  <span className="text-[0.8rem]">⚠️</span> Please upload your project to proceed.
+                </div>
+              )}
 
               {(uploads[sub.id] || []).map((f: string, i: number) => (
                 <div
