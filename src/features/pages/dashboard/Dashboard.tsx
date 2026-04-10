@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 // import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
@@ -37,7 +37,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { kpiData, refreshKPI } = useDashboard();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
