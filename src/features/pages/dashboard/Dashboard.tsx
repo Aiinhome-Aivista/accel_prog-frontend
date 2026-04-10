@@ -8,7 +8,7 @@ import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import HeroIcon from "../../../assets/hero.svg";
-import "./dashboard.css";
+import "./Dash.css"
 
 import type {
   DashboardData,
