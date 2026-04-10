@@ -19,6 +19,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 }) => {
   const [overview, setOverview] = useState<CourseHomeOverview | null>(null);
   const [timeline, setTimeline] = useState<CourseHomeTimelineItem[]>([]);
+  const [weeklyStreak, setWeeklyStreak] = useState<{ streak_days: number; weekly: any[] } | null>(null);
 
   useEffect(() => {
     if (courseId) {
@@ -31,6 +32,11 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         if (res.status === 'success' && res.data) setTimeline(res.data);
       }).catch((err: any) => console.error("Error fetching timeline", err));
     }
+    if (userId) {
+      dashboardService.getUserWeeklyStreak(userId).then((res: any) => {
+        if (res.status === 'success' && res.data) setWeeklyStreak(res.data);
+      }).catch((err: any) => console.error("Error fetching weekly streak", err));
+    }
   }, [courseId, userId]);
 
   return (
@@ -39,12 +45,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="text-[1.6rem]">🔥</div>
         <div>
           <h4 className="text-[0.8rem] font-bold text-[#2B2D42] m-0">
-            {overview?.streak?.text || "0-Day Streak"}
+            {weeklyStreak ? `${weeklyStreak.streak_days}-Day Streak` : (overview?.streak?.text || "0-Day Streak")}
           </h4>
-          <p className="text-[0.68rem] text-[#6B6D7B] m-0">{overview?.streak?.description || "Start learning today!"}</p>
+          <p className="text-[0.68rem] text-[#6B6D7B] m-0">
+            {weeklyStreak?.streak_days && weeklyStreak.streak_days > 0 ? "You're on fire! Keep it up." : (overview?.streak?.description || "Start learning today!")}
+          </p>
         </div>
         <div className="flex gap-[0.2rem] ml-auto">
-          {(overview?.streak?.history || [
+          {(weeklyStreak?.weekly || overview?.streak?.history || [
             { day: "M", status: "pending" },
             { day: "T", status: "pending" },
             { day: "W", status: "pending" },
@@ -52,20 +60,23 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             { day: "F", status: "pending" },
             { day: "S", status: "pending" },
             { day: "S", status: "pending" }
-          ]).map((s, i) => (
-            <div
-              key={i}
-              className={`w-[17px] h-[17px] rounded-[3px] flex items-center justify-center text-[0.48rem] font-bold ${
-                s.status === "completed"
-                  ? "bg-[#e87a2e1f] text-[#E87A2E]"
-                  : s.status === "current"
+          ]).map((s, i) => {
+            // Map API response to UI status
+            const isActive = s.is_active || s.status === "completed" || s.status === "current";
+            return (
+              <div
+                key={i}
+                className={`w-[19px] h-[19px] rounded-[4px] flex items-center justify-center text-[0.55rem] font-bold transition-all ${
+                  isActive
                     ? "bg-[#E87A2E] text-white"
                     : "bg-[#F9F5F0] text-[#9597A6]"
-              }`}
-            >
-              {s.day}
-            </div>
-          ))}
+                }`}
+                title={s.date}
+              >
+                {s.day.charAt(0)}
+              </div>
+            );
+          })}
         </div>
       </div>
 

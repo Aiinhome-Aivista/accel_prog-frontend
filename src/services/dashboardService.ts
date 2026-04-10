@@ -151,4 +151,11 @@ export const dashboardService = {
         answer: answer,
       },
     }),
+
+  getUserWeeklyStreak: (userId: number) =>
+    apiRequest<ApiResponse<{ streak_days: number; weekly: any[] }>>({
+      url: API_ENDPOINTS.GET_USER_WEEKLY_STREAK,
+      method: "POST",
+      data: { user_id: userId },
+    }),
 };

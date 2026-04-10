@@ -22,5 +22,6 @@ export const API_ENDPOINTS = {
   COURSE_HOME_OVERVIEW: "/api/v1/course_home_overview",
   COURSE_HOME_TIMELINE: "/api/v1/course_home_timeline",
   GET_COURSE_VIDEOS: "/api/v1/get_course_videos",
-  SUBMIT_COHORT_ANSWER: "/api/v1/submit_cohort_answer"
+  SUBMIT_COHORT_ANSWER: "/api/v1/submit_cohort_answer",
+  GET_USER_WEEKLY_STREAK: "/api/v1/get_user_weekly_streak"
 };
