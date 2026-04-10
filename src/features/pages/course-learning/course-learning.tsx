@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, ChevronLeft } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { AiCompanion } from './components/AiCompanion';
@@ -41,6 +41,7 @@ const CourseLearning: React.FC = () => {
   
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   
   // Cross-tab state
   const [done, setDone] = useState<Set<string>>(new Set());
@@ -238,6 +239,13 @@ const CourseLearning: React.FC = () => {
     }
   }, [activeTab, curW, curS, searchParams.get("course_id"), user, setSearchParams]);
 
+  // Scroll content area to top whenever the active tab changes
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [activeTab]);
+
 
 
   useEffect(() => {
@@ -369,7 +377,7 @@ const CourseLearning: React.FC = () => {
           setIsOpen={setIsSidebarOpen} 
           courseName={courseName}
         />
-        <div className="flex-1 overflow-y-auto bg-[#F3EDE7] relative">
+        <div ref={contentRef} className="flex-1 overflow-y-auto bg-[#F3EDE7] relative">
           {renderActiveTab()}
         </div>
       </div>
