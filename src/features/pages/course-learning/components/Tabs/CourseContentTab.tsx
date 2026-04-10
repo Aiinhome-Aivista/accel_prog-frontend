@@ -75,7 +75,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     if (sub.type === "assess" && sub.categories) {
       const missingQids = new Set<string>();
       sub.categories.forEach((cat) => {
-        cat.questions?.forEach((q, qi) => {
+        cat.questions?.forEach((qi) => {
           const qid = `${sub.id}_${cat.label}_${qi}`;
           if (!answers[`${qid}_sub`]) {
             missingQids.add(qid);
@@ -112,10 +112,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           setCurW(curW + 1);
           setCurS(0);
         }
-      } else {
-        // Auto-switch to next subtopic
-        setCurS(curS + 1);
-      }
+      } 
     } catch (error) {
       console.error("Error marking subtopic complete:", error);
     } finally {
@@ -314,7 +311,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     const file = e.target.files[0];
     const w = weeks[curW];
     const sub = w.subs[curS];
-    
+
     // Prepare FormData
     const formData = new FormData();
     formData.append("user_id", userId.toString());
@@ -326,7 +323,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     try {
       setUploadingProject(true);
       const response = await dashboardService.uploadProjectSubmission(formData);
-      
+
       if (response && (response.status === "success" || response.message?.includes("success"))) {
         const uploadedFileName = response.file_name || file.name;
         setUploads((prev) => ({
@@ -380,12 +377,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             <div
               key={si}
               className={`flex items-center gap-[0.45rem] p-[0.45rem_0.6rem] rounded-[8px] cursor-pointer text-[0.73rem] font-medium transition-all mb-[0.15rem] ${d
-                  ? "bg-[#E8F5E9] text-[#4CAF50] font-semibold"
-                  : a
-                    ? "bg-[#e87a2e1f] text-[#E87A2E] font-semibold"
-                    : l
-                      ? "opacity-35 cursor-default hover:bg-transparent text-[#6B6D7B]"
-                      : "text-[#6B6D7B] hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
+                ? "bg-[#E8F5E9] text-[#4CAF50] font-semibold"
+                : a
+                  ? "bg-[#e87a2e1f] text-[#E87A2E] font-semibold"
+                  : l
+                    ? "opacity-35 cursor-default hover:bg-transparent text-[#6B6D7B]"
+                    : "text-[#6B6D7B] hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
                 }`}
               onClick={() => {
                 if (!l) setCurS(si);
@@ -393,10 +390,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             >
               <div
                 className={`w-[7px] h-[7px] rounded-full border-[1.5px] shrink-0 ${d
-                    ? "bg-[#4CAF50] border-[#4CAF50]"
-                    : a
-                      ? "bg-[#E87A2E] border-[#E87A2E]"
-                      : "border-[#E5DDD4] bg-transparent"
+                  ? "bg-[#4CAF50] border-[#4CAF50]"
+                  : a
+                    ? "bg-[#E87A2E] border-[#E87A2E]"
+                    : "border-[#E5DDD4] bg-transparent"
                   }`}
               ></div>
               <Icon size={13} className="opacity-40 shrink-0" />
@@ -476,16 +473,16 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                 {(sub.videoDesc || sub.videoDuration) && (
                   <p className="text-[0.7rem] md:text-[0.78rem] opacity-90 drop-shadow-md m-0">
                     {sub.videoDesc}{sub.videoDesc && sub.videoDuration ? " · " : ""}
-                    {sub.videoDuration ? 
-                      (sub.videoDuration >= 60 
-                        ? `${Math.floor(sub.videoDuration / 60)} min${sub.videoDuration % 60 > 0 ? ` ${sub.videoDuration % 60} sec` : ''}` 
-                        : `${sub.videoDuration} sec`) 
+                    {sub.videoDuration ?
+                      (sub.videoDuration >= 60
+                        ? `${Math.floor(sub.videoDuration / 60)} min${sub.videoDuration % 60 > 0 ? ` ${sub.videoDuration % 60} sec` : ''}`
+                        : `${sub.videoDuration} sec`)
                       : ""}
                   </p>
                 )}
               </div>
               <div className="absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
-              
+
               <video
                 key={sub.videoPath}
                 className="w-full h-full object-cover z-0 relative"
@@ -665,8 +662,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                                               ?.correct_answer)) && (
                                           <div
                                             className={`w-[7px] h-[7px] rounded-full ${submitted
-                                                ? "bg-[#4CAF50]" // after submit always green
-                                                : "bg-[#4CAF50]"
+                                              ? "bg-[#4CAF50]" // after submit always green
+                                              : "bg-[#4CAF50]"
                                               }`}
                                           />
                                         )
@@ -894,10 +891,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           <div className="flex flex-wrap items-center justify-between py-[1rem] mt-[0.6rem] border-t border-[#E5DDD4] gap-[0.5rem]">
             <button
               className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all cursor-pointer ${isDone
-                  ? "bg-[#4CAF50] text-white border-[#4CAF50] hover:bg-[#388E3C]"
-                  : loadingSubtopic === sub.id
-                    ? "bg-[#E87A2E] text-white border-[#E87A2E] opacity-75 cursor-wait"
-                    : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
+                ? "bg-[#4CAF50] text-white border-[#4CAF50] hover:bg-[#388E3C]"
+                : loadingSubtopic === sub.id
+                  ? "bg-[#E87A2E] text-white border-[#E87A2E] opacity-75 cursor-wait"
+                  : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
                 }`}
               onClick={() =>
                 !isDone && !loadingSubtopic && handleMarkComplete(sub.id)
@@ -919,8 +916,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             {curS < w.subs.length - 1 && (
               <button
                 className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border-none text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all max-w-[200px] md:max-w-[400px] ${canNext
-                    ? "bg-[#E87A2E] text-white cursor-pointer hover:bg-[#D06A20]"
-                    : "bg-[#E87A2E] text-white opacity-35 cursor-default pointer-events-none"
+                  ? "bg-[#E87A2E] text-white cursor-pointer hover:bg-[#D06A20]"
+                  : "bg-[#E87A2E] text-white opacity-35 cursor-default pointer-events-none"
                   }`}
                 onClick={() => canNext && setCurS(curS + 1)}
               >
@@ -948,10 +945,10 @@ const WeekTabs: React.FC<{
       <button
         key={i}
         className={`px-[1rem] py-[0.45rem] rounded-full border-[1.5px] font-semibold text-[0.72rem] transition-all font-inherit ${i === curW
-            ? "bg-[#E87A2E] text-white border-[#E87A2E]"
-            : !wk.ul
-              ? "bg-white border-[#E5DDD4] text-[#6B6D7B] opacity-40 cursor-default hover:border-[#E5DDD4] hover:text-[#6B6D7B]"
-              : "bg-white border-[#E5DDD4] text-[#6B6D7B] cursor-pointer hover:border-[#E87A2E] hover:text-[#E87A2E]"
+          ? "bg-[#E87A2E] text-white border-[#E87A2E]"
+          : !wk.ul
+            ? "bg-white border-[#E5DDD4] text-[#6B6D7B] opacity-40 cursor-default hover:border-[#E5DDD4] hover:text-[#6B6D7B]"
+            : "bg-white border-[#E5DDD4] text-[#6B6D7B] cursor-pointer hover:border-[#E87A2E] hover:text-[#E87A2E]"
           }`}
         onClick={() => wk.ul && setCurW(i)}
       >

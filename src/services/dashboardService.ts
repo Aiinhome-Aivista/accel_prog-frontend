@@ -15,7 +15,7 @@ import type {
   CourseLearningContent,
   CourseHomeOverview,
   CourseHomeTimelineItem,
-  CourseVideoData,
+  // CourseVideoData,
 } from "../features/pages/course-learning/course-learning.models";
 
 export const dashboardService = {
