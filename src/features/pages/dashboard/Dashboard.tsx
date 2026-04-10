@@ -969,23 +969,23 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             activities.map((act, index) => (
               <div
                 key={index}
-                className="recent-activity-item flex items-start gap-3 p-3.5 hover:bg-[#F9F5F0] transition-colors border-b last:border-b-0 border-[rgba(0,0,0,.04)]"
+                className="recent-activity-item hover:bg-[#F9F5F0]  last:border-b-0 border-[rgba(0,0,0,.04)]"
               >
                 <div
-                  className="recent-activity-icon w-[32px] h-[32px] rounded-lg flex items-center justify-center text-[13.5px] shrink-0"
+                  className="recent-activity-icon"
                   style={{ background: act.iconBg || "rgba(232,122,46,.1)" }}
                 >
                   {act.icon || "🚀"}
                 </div>
-                <div className="recent-activity-content flex-1 mt-0.5">
-                  <h4 className="recent-activity-title text-[12.5px] font-semibold text-[#2B2D42] mb-[2px]">
+                <div className="recent-activity-content">
+                  <h4 className="recent-activity-title">
                     {act.title}
                   </h4>
-                  <p className="recent-activity-description text-[11.2px] text-[#6B6D7B] leading-[1.45]">
+                  <p className="recent-activity-description">
                     {act.description}
                   </p>
                 </div>
-                <div className="recent-activity-time text-[9.5px] text-[#9597A6] shrink-0 ml-auto whitespace-nowrap mt-1">
+                <div className="recent-activity-time">
                   {act.time}
                 </div>
               </div>
