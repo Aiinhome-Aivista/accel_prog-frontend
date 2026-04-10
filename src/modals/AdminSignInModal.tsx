@@ -185,11 +185,11 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           </div>
         )}
         <button
-          className="btn-signin btn-signin-fill"
+          className="btn-signin btn-signin-fill w-full mt-4 text-center justify-center flex items-center"
           onClick={handleVerifyOtp}
           disabled={!isOtpSent || !otpCode.trim() || isVerifying}
         >
-          {isVerifying ? "Signing In..." : "Sign In"}
+          <span className="w-full text-center">{isVerifying ? "Signing In..." : "Sign In"}</span>
         </button>
       </div>
     </div>

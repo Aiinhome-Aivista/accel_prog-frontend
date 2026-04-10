@@ -309,8 +309,9 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
 
   if (loadingDropdowns) {
     return (
-      <div className="flex justify-center items-center h-48">
-        <p className="text-gray-600">Loading dropdown data...</p>
+      <div className="flex flex-col justify-center items-center min-h-[80vh] gap-3">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E87A2E]"></div>
+        <p className="text-[0.82rem] text-[#9597A6]">Loading Data</p>
       </div>
     );
   }
@@ -324,10 +325,11 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)]"
-    >
+    <div className="px-5">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-[16px] border border-[#E5DDD4] p-6 shadow-[0_2px_8px_rgba(43,45,66,.04)] w-full"
+      >
       <div className="mb-6">
         <h2 className="font-serif text-[1.25rem] text-[#2B2D42] mb-2">
           {contentToEdit ? "Edit Content" : "Create Content"}
@@ -462,6 +464,7 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
         </button>
       </div>
     </form>
+   </div>
   );
 };
 

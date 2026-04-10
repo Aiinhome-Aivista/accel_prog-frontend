@@ -3,13 +3,14 @@ import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 // import { useToast } from "../../../utils/ToastContext";
 import { useNavigate } from "react-router-dom";
-import { Home, List, BookCopy, Video } from "lucide-react";
+import { Home, List, BookCopy, Video, LogOut } from "lucide-react";
 import CreateContent from "../../../components/shared/CreateContent";
 import CreateQuestion from "../../../components/shared/CreateQuestion";
 import ManageContent from "../../../components/shared/ManageContent";
 import ManageQuestion from "../../../components/shared/ManageQuestion";
 import ManageVideo from "../../../components/shared/ManageVideo";
 import CreateVideo from "../../../components/shared/CreateVideo";
+import LogoutModal from "../../../modals/LogoutModal";
 
 // Define ContentItem type here or import it if it's in a shared file
 interface ContentItem {
@@ -68,7 +69,7 @@ type AdminTab = "home" | "create-content" | "create-question" | "manage-content"
 
 const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { user } = useAuth();
-  //const { showSuccess } = useToast();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const getTabFromHash = useCallback((): AdminTab => {
@@ -159,7 +160,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <button
             type="button"
             className="w-[34px] h-[34px] rounded-full bg-[#E87A2E]/10 flex items-center justify-center text-[12px] font-bold text-[#E87A2E] cursor-pointer border-none"
-            onClick={onLogout}
+            onClick={() => setIsLogoutModalOpen(true)}
             title="Click to Sign Out"
           >
             {user?.name?.[0]?.toUpperCase() || "A"}
@@ -189,33 +190,34 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Sidebar */}
 <aside
-  className={`fixed top-[60px] left-0 h-[calc(100vh-60px)] w-[220px] bg-white border-r border-[#E5DDD4] z-50 transition-transform overflow-y-auto ${
+  className={`fixed top-[60px] left-0 h-[calc(100vh-60px)] w-[220px] bg-white border-r border-[#E5DDD4] z-50 transition-transform flex flex-col ${
     navOpen ? "translate-x-0" : "-translate-x-full"
   } md:translate-x-0`}
 >
-          <div className="p-4 border-b border-[#E5DDD4]">
-            <h2 className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-[#9597A6]">
-              Admin Panel
-            </h2>
-            <p className="text-[0.95rem] font-serif text-[#2B2D42] mt-1">
-              Dashboard
-            </p>
-          </div>
+          <div className="overflow-y-auto">
+            <div className="p-4 border-b border-[#E5DDD4]">
+              <h2 className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-[#9597A6]">
+                Admin Panel
+              </h2>
+              <p className="text-[0.95rem] font-serif text-[#2B2D42] mt-1">
+                Dashboard
+              </p>
+            </div>
 
-          <div className="py-2">
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab("home");
-                setNavOpen(false);
-              }}
-              className={sidebarItemClass("home")}
-            >
-              <Home className="w-4 h-4" />
-              <span>Home</span>
-            </button>
+            <div className="py-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("home");
+                  setNavOpen(false);
+                }}
+                className={sidebarItemClass("home")}
+              >
+                <Home className="w-4 h-4" />
+                <span>Home</span>
+              </button>
 
-            {/* <button
+              {/* <button
               type="button"
               onClick={() => handleTabChange("create-content")}
               className={sidebarItemClass("create-content")}
@@ -223,37 +225,34 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <PlusSquare className="w-4 h-4" />
               <span>Create Content</span>
             </button> */}
+              <button
+                type="button"
+                onClick={() => handleTabChange("manage-content")}
+                className={sidebarItemClass("manage-content")}
+              >
+                <List className="w-4 h-4" />
+                <span>Manage Content</span>
+              </button>
 
+              <button
+                type="button"
+                onClick={() => handleTabChange("manage-video")}
+                className={sidebarItemClass("manage-video")}
+              >
+                <Video className="w-4 h-4" />
+                <span>Manage Videos</span>
+              </button>
 
+              <button
+                type="button"
+                onClick={() => handleTabChange("manage-question")}
+                className={sidebarItemClass("manage-question")}
+              >
+                <BookCopy className="w-4 h-4" />
+                <span>Manage Questions</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => handleTabChange("manage-content")}
-              className={sidebarItemClass("manage-content")}
-            >
-              <List className="w-4 h-4" />
-              <span>Manage Content</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleTabChange("manage-video")}
-              className={sidebarItemClass("manage-video")}
-            >
-              <Video className="w-4 h-4" />
-              <span>Manage Videos</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleTabChange("manage-question")}
-              className={sidebarItemClass("manage-question")}
-            >
-              <BookCopy className="w-4 h-4" />
-              <span>Manage Questions</span>
-            </button>
-
-            {/* <button
+              {/* <button
               type="button"
               onClick={() => handleTabChange("create-question")}
               className={sidebarItemClass("create-question")}
@@ -261,18 +260,28 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <FileQuestion className="w-4 h-4" />
               <span>Create Question</span>
             </button> */}
-
+            </div>
+          </div>
+          <div className="mt-auto p-2 border-t border-[#E5DDD4]">
+            <button
+              type="button"
+              onClick={() => setIsLogoutModalOpen(true)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left text-[0.9rem] border-l-[3px] transition-all text-red-500 border-l-transparent hover:bg-red-50 hover:text-red-600 font-medium"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
           </div>
         </aside>
 
         {/* Main Content */}
         <main
           className={`flex-1 py-8 pb-16 md:ml-[220px] ${
-            activeTab.startsWith("manage-") ? "" : "px-5"
+            activeTab.startsWith("manage-") || activeTab.startsWith("create-") ? "" : "px-5"
           }`}
         >
           <div
-            className={`${!activeTab.startsWith("manage-") ? "max-w-[1060px]" : ""} w-full mx-auto`}
+            className={`${(!activeTab.startsWith("manage-") && !activeTab.startsWith("create-")) ? "max-w-[1060px] px-5" : "px-0"} w-full mx-auto`}
           >
             {activeTab === "home" && (
               <>
@@ -340,6 +349,12 @@ const AdminDashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </div>
         </main>
       </div>
+
+      <LogoutModal
+        open={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={onLogout}
+      />
     </div>
   );
 };
