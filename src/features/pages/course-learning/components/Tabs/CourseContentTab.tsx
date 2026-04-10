@@ -57,6 +57,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   >({});
   const [submittingDiscussion, setSubmittingDiscussion] = useState(false);
   const [unansweredQuestions, setUnansweredQuestions] = useState<Set<string>>(new Set());
+  const [uploadingProject, setUploadingProject] = useState(false);
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
@@ -308,13 +309,36 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
     }
   };
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    const fileNames = Array.from(e.target.files).map((f) => f.name);
-    setUploads((prev) => ({
-      ...prev,
-      [sub.id]: [...(prev[sub.id] || []), ...fileNames],
-    }));
+    const file = e.target.files[0];
+    const w = weeks[curW];
+    const sub = w.subs[curS];
+    
+    // Prepare FormData
+    const formData = new FormData();
+    formData.append("user_id", userId.toString());
+    formData.append("course_id", courseId.toString());
+    formData.append("module_id", w.moduleId.toString());
+    formData.append("subtopic_id", parseInt(sub.id.split("s")[1] || "0").toString());
+    formData.append("file", file);
+
+    try {
+      setUploadingProject(true);
+      const response = await dashboardService.uploadProjectSubmission(formData);
+      
+      if (response && (response.status === "success" || response.message?.includes("success"))) {
+        const uploadedFileName = response.file_name || file.name;
+        setUploads((prev) => ({
+          ...prev,
+          [sub.id]: [...(prev[sub.id] || []), uploadedFileName],
+        }));
+      }
+    } catch (error) {
+      console.error("Error uploading project:", error);
+    } finally {
+      setUploadingProject(false);
+    }
   };
 
   // const toggleEdit = () => {
@@ -817,22 +841,43 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
               <label
                 htmlFor={`fu${sub.id}`}
-                className="border-2 border-dashed border-[#E5DDD4] rounded-[14px] p-[1.3rem] text-center cursor-pointer transition-all mb-[0.4rem] block hover:border-[#E87A2E] hover:bg-[#e87a2e1f]"
+                className={`border-2 border-dashed border-[#E5DDD4] rounded-[14px] p-[1.3rem] text-center transition-all mb-[0.4rem] block ${uploadingProject || (uploads[sub.id] || []).length > 0 ? "opacity-50 pointer-events-none cursor-not-allowed" : "cursor-pointer hover:border-[#E87A2E] hover:bg-[#e87a2e1f]"}`}
               >
-                <UploadCloud
-                  size={22}
-                  className="text-[#9597A6] mx-auto mb-[0.2rem] opacity-70"
-                />
-                <p className="text-[0.72rem] text-[#9597A6] m-0">
-                  Drop files or{" "}
-                  <strong className="text-[#E87A2E]">browse</strong>
-                </p>
+                {uploadingProject ? (
+                  <>
+                    <Loader size={22} className="text-[#E87A2E] mx-auto mb-[0.2rem] animate-spin" />
+                    <p className="text-[0.72rem] text-[#E87A2E] font-medium m-0">
+                      Uploading project...
+                    </p>
+                  </>
+                ) : (uploads[sub.id] || []).length > 0 ? (
+                  <>
+                    <CheckCircle2
+                      size={22}
+                      className="text-[#4CAF50] mx-auto mb-[0.2rem]"
+                    />
+                    <p className="text-[0.72rem] text-[#4CAF50] font-medium m-0">
+                      Project Already Submitted
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud
+                      size={22}
+                      className="text-[#9597A6] mx-auto mb-[0.2rem] opacity-70"
+                    />
+                    <p className="text-[0.72rem] text-[#9597A6] m-0">
+                      Drop files or{" "}
+                      <strong className="text-[#E87A2E]">browse</strong>
+                    </p>
+                  </>
+                )}
                 <input
                   type="file"
                   id={`fu${sub.id}`}
-                  multiple
                   className="hidden"
                   onChange={handleUpload}
+                  disabled={uploadingProject || (uploads[sub.id] || []).length > 0}
                 />
               </label>
 

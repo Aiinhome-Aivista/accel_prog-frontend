@@ -45,6 +45,7 @@ export const dashboardService = {
       method: "POST",
       data,
     }),
+
   getEnrolledCourses: (userId: number) =>
     apiRequest<EnrolledCoursesResponse>({
       url: `${API_ENDPOINTS.GET_ENROLLED_COURSES}?user_id=${userId}`,
@@ -74,6 +75,7 @@ export const dashboardService = {
       url: API_ENDPOINTS.GET_FLASHCARDS,
       method: "GET",
     }),
+
   getCourseLearningContent: (courseId: number, userId: number) =>
     apiRequest<ApiResponse<CourseLearningContent>>({
       url: API_ENDPOINTS.GET_COURSE_LEARNING_CONTENT,
@@ -81,11 +83,21 @@ export const dashboardService = {
       data: { course_id: courseId, user_id: userId },
     }),
 
-  completeSubtopicModuleCourseWiseByUser: (courseId: number, moduleId: number, subtopicId: number, userId: number) =>
+  completeSubtopicModuleCourseWiseByUser: (
+    courseId: number,
+    moduleId: number,
+    subtopicId: number,
+    userId: number
+  ) =>
     apiRequest({
-      url: API_ENDPOINTS.COMPLETE_SUBTOPIC_MODULE_COURSE_WISE_BY_USER,  
+      url: API_ENDPOINTS.COMPLETE_SUBTOPIC_MODULE_COURSE_WISE_BY_USER,
       method: "POST",
-      data: { course_id: courseId, module_id: moduleId, subtopic_id: subtopicId, user_id: userId },
+      data: {
+        course_id: courseId,
+        module_id: moduleId,
+        subtopic_id: subtopicId,
+        user_id: userId,
+      },
     }),
 
   submitQuestionAnswer: (
@@ -124,7 +136,7 @@ export const dashboardService = {
       method: "POST",
       data: { course_id: courseId, user_id: userId },
     }),
-    
+
   getCourseVideos: (courseId: number) =>
     apiRequest<any>({
       url: `${API_ENDPOINTS.GET_COURSE_VIDEOS}?course_id=${courseId}`,
@@ -157,5 +169,13 @@ export const dashboardService = {
       url: API_ENDPOINTS.GET_USER_WEEKLY_STREAK,
       method: "POST",
       data: { user_id: userId },
+    }),
+
+  uploadProjectSubmission: (formData: FormData) =>
+    apiRequest<any>({
+      url: API_ENDPOINTS.UPLOAD_PROJECT_SUBMISSION,
+      method: "POST",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
     }),
 };

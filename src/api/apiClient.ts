@@ -15,8 +15,10 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // You can add more dynamic headers here
-    config.headers["Content-Type"] = "application/json";
+    // Only set default Content-Type if not already specified and not FormData
+    if (!config.headers["Content-Type"] && !(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+    }
 
     return config;
   },

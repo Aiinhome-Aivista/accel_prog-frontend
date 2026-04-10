@@ -58,16 +58,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const displayInitial = displayName !== "Learner" ? displayName[0].toUpperCase() : "L";
 
   // Check if user just registered (sessionStorage is more reliable than location state)
-  const [isJustRegistered, setIsJustRegistered] = useState(false);
+  const [isJustRegistered] = useState(() => {
+    return sessionStorage.getItem("just_registered") === "true";
+  });
 
   useEffect(() => {
-    const flag = sessionStorage.getItem("just_registered");
-    if (flag === "true") {
-      setIsJustRegistered(true);
-      // Optional: Clear it so refresh shows "Welcome back"
+    if (isJustRegistered) {
       sessionStorage.removeItem("just_registered");
     }
-  }, []);
+  }, [isJustRegistered]);
 
   const [enrolledCourses, setEnrolledCourses] = useState<CourseData[]>([]);
   const [completedEnrolledCourses, setCompletedEnrolledCourses] = useState<
