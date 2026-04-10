@@ -416,23 +416,47 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             </div>
           )}
           {sub.type === "video" && (
-            <div className="mb-[1rem]">
-              <h4 className="font-['DM_Serif_Display'] text-[0.9rem] text-[#2B2D42] mb-[0.2rem] m-0">
-                {sub.videoTitle || sub.title}
-              </h4>
-              {sub.videoDesc && (
-                <p className="text-[0.68rem] text-[#6B6D7B] mb-[0.8rem] m-0">
-                  {sub.videoDesc}
-                </p>
-              )}
-              <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative mb-[0.8rem] group border border-[#E5DDD4]">
-                <video
-                  key={sub.videoPath}
-                  className="w-full h-full object-cover"
-                  src={sub.videoPath}
-                  controls={true}
-                ></video>
+            <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center">
+              <div className="absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
+                <div className="w-[45px] h-[45px] bg-[#E87A2E] rounded-full flex items-center justify-center mb-[0.6rem] shadow-lg">
+                  <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-[2px]"></div>
+                </div>
+                <h3 className="font-['DM_Serif_Display'] text-[1.1rem] md:text-[1.3rem] mb-[0.2rem] drop-shadow-md">
+                  {sub.videoTitle || sub.title}
+                </h3>
+                {(sub.videoDesc || sub.videoDuration) && (
+                  <p className="text-[0.7rem] md:text-[0.78rem] opacity-90 drop-shadow-md m-0">
+                    {sub.videoDesc}{sub.videoDesc && sub.videoDuration ? " · " : ""}
+                    {sub.videoDuration ? 
+                      (sub.videoDuration >= 60 
+                        ? `${Math.floor(sub.videoDuration / 60)} min${sub.videoDuration % 60 > 0 ? ` ${sub.videoDuration % 60} sec` : ''}` 
+                        : `${sub.videoDuration} sec`) 
+                      : ""}
+                  </p>
+                )}
               </div>
+              <div className="absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
+              
+              <video
+                key={sub.videoPath}
+                className="w-full h-full object-cover z-0 relative"
+                src={sub.videoPath}
+                controls={true}
+                onPlay={(e) => {
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    const overlays = parent.querySelectorAll('.video-overlay');
+                    overlays.forEach(n => ((n as HTMLElement).style.opacity = '0'));
+                  }
+                }}
+                onPause={(e) => {
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    const overlays = parent.querySelectorAll('.video-overlay');
+                    overlays.forEach(n => ((n as HTMLElement).style.opacity = '1'));
+                  }
+                }}
+              ></video>
             </div>
           )}
           {sub.type === "assess" &&

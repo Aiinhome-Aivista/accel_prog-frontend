@@ -126,7 +126,7 @@ export const dashboardService = {
     }),
     
   getCourseVideos: (courseId: number) =>
-    apiRequest<ApiResponse<CourseVideoData>>({
+    apiRequest<any>({
       url: `${API_ENDPOINTS.GET_COURSE_VIDEOS}?course_id=${courseId}`,
       method: "GET",
     }),

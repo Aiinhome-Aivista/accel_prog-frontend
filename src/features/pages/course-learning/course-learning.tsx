@@ -59,7 +59,7 @@ const CourseLearning: React.FC = () => {
           if (response.status === "success" && response.data) {
             setCourseName(response.data.course_name);
             
-            const videos = videoRes.status === "success" ? videoRes.data : null;
+            const videos = videoRes.status === "success" ? videoRes.data : (videoRes.course_intro_video || videoRes.week_videos ? videoRes : null);
             if (videos) {
               setIntroVideo(videos.course_intro_video);
             }
@@ -85,13 +85,14 @@ const CourseLearning: React.FC = () => {
                 };
                 
                 if (t.type === 'video' && videos) {
-                  const vData = videos.week_videos.find(v => 
+                  const vData = videos.week_videos?.find((v: any) => 
                     v.module_id === apiWeek.module_id && v.subtopic_id === t.subtopic_id
                   );
                   if (vData) {
                     sub.videoPath = vData.video_path;
                     sub.videoTitle = vData.video_title;
                     sub.videoDesc = vData.video_subtitle;
+                    sub.videoDuration = vData.duration_sec;
                   }
                 }
 
@@ -258,7 +259,7 @@ const CourseLearning: React.FC = () => {
       case 'support':
         return <SupportTab />;
       default:
-        return <HomeTab goToCourseContent={(w) => { setCurW(w); setCurS(0); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} />;
+        return <HomeTab goToCourseContent={(w) => { setCurW(w); setCurS(0); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} introVideo={introVideo} />;
     }
   };
 

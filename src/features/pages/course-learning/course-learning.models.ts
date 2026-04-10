@@ -41,6 +41,7 @@ export interface SubTopic {
   content?: any; // HTML for reading OR data array for others
   videoTitle?: string;
   videoDesc?: string;
+  videoDuration?: number;
   categories?: AssessmentCategory[]; // Dynamic categories for assessment
   topic?: string; // Discussion topic
   seeds?: TopicSeed[];
