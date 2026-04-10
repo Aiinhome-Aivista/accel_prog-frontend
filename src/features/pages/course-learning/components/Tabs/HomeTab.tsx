@@ -66,10 +66,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             return (
               <div
                 key={i}
-                className={`w-[19px] h-[19px] rounded-[4px] flex items-center justify-center text-[0.55rem] font-bold transition-all ${
+                className={`status-box ${
                   isActive
-                    ? "bg-[#E87A2E] text-white"
-                    : "bg-[#F9F5F0] text-[#9597A6]"
+                    ? "active"
+                    : "inactive"
                 }`}
                 title={s.date}
               >
@@ -170,7 +170,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             return (
               <div
                 key={`t-${i}`}
-                className="timeline-item flex gap-[0.5rem] items-center py-[0.5rem] border-b border-black/5 cursor-pointer last:border-none hover:bg-black/5 transition-colors"
+                className="timeline-item "
                 onClick={() => goToCourseContent(i)}
               >
                 <div
@@ -179,20 +179,20 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                     backgroundColor: t.status === 'Available' ? (i === 0 ? "#E87A2E" : i === 1 ? "#E8A040" : "#4CAF50") : "#9597A6",
                   }}
                 ></div>
-                <div className="flex-1">
-                  <div className="text-[0.76rem] font-semibold text-[#2B2D42]">
+                <div className="timeline-text-block">
+                  <div className="timeline-text">
                     {t.title}
                   </div>
-                  <div className="text-[0.64rem] text-[#6B6D7B]">
+                  <div className="timeline-subtext">
                     {t.progress} completed ·{" "}
                     {t.status}
                   </div>
                 </div>
                 <div
-                  className={`text-[0.6rem] font-semibold px-[0.45rem] py-[0.18rem] rounded-full ${
+                  className={`timeline-badge ${
                     t.status === 'Available'
-                      ? "bg-[#e87a2e1f] text-[#E87A2E]"
-                      : "bg-[#F9F5F0] text-[#9597A6]"
+                      ? "active"
+                      : "locked"
                   }`}
                 >
                   {t.week}
