@@ -4,6 +4,7 @@ import { useAuth } from "../../../../../hooks/context/AuthContext";
 import { dashboardService } from "../../../../../services/dashboardService";
 
 interface Topic {
+  is_completed?: boolean;
   is_locked: boolean;
   subtitle: string | null;
   title: string;
@@ -123,13 +124,17 @@ export const ModulesTab: React.FC = () => {
                       {day.topics.map((tp, idx) => (
                         <div
                           key={idx}
-                          className="flex gap-[0.4rem] p-[0.35rem_0.5rem] rounded-[8px] bg-[#F9F5F0] mb-[0.25rem] text-[0.74rem] text-[#6B6D7B] leading-[1.4] items-start"
+                          className={`flex gap-[0.4rem] p-[0.35rem_0.5rem] rounded-[8px] mb-[0.25rem] text-[0.74rem] leading-[1.4] items-start ${
+                            tp.is_completed ? "bg-[#edf7ed] text-[#1e4620]" : "bg-[#F9F5F0] text-[#6B6D7B]"
+                          }`}
                         >
-                          <span className="text-[0.62rem] font-bold text-[#E87A2E] shrink-0 min-w-[45px]">
+                          <span className={`text-[0.62rem] font-bold shrink-0 min-w-[45px] ${
+                            tp.is_completed ? "text-[#2e7d32]" : "text-[#E87A2E]"
+                          }`}>
                             {day.day ? `Day ${day.day}` : "Topics"}
                           </span>
                           <div>
-                            <strong className="text-[#2B2D42]">
+                            <strong className={tp.is_completed ? "text-[#1e4620]" : "text-[#2B2D42]"}>
                               {tp.title}
                             </strong>
                             {/* {tp.is_locked ? " 🔒" : ""} */}
