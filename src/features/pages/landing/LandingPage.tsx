@@ -587,7 +587,7 @@ function LandingPage({
           <div className="cta-box fade-in">
             <img
               src={HeroIcon}
-              className="mb-6 h-60 w-60"
+              className="cta-image"
               alt="Logo"
               aria-hidden="true"
             />

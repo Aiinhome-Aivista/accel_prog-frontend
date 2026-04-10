@@ -164,10 +164,10 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           </svg>
         </button>
 
-        <div className="modal-brand flex items-center justify-center w-full mx-auto">
+        <div className="modal-brand">
           <img
             src={HeroIcon}
-            className="mb-6 h-40 w-40"
+            className="modal-logo"
             alt="Logo"
             aria-hidden="true"
           />
