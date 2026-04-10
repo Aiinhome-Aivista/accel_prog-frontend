@@ -489,6 +489,8 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 disabled={isNavigating}
                 onClick={() => {
                   setIsNavigating(true);
+                  // Use sessionStorage as it's more reliable than navigation state for redirects
+                  sessionStorage.setItem("just_registered", "true");
                   // Brief delay to show loader before navigation
                   setTimeout(() => navigate("/dashboard"), 600);
                 }}

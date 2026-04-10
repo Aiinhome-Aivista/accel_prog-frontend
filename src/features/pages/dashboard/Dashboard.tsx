@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 // import LogoIcon from "../../../assets/logogod.svg";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import { useToast } from "../../../utils/ToastContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import dashboardData from "./dashboardData.json";
 import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
@@ -37,11 +37,38 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { kpiData, refreshKPI } = useDashboard();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [availableCourses, setAvailableCourses] = useState<CourseData[]>([]);
+
+  // Function to format name to Proper Case (e.g., SONIA KHATUN -> Sonia Khatun)
+  const formatName = (name: string) => {
+    if (!name) return "";
+    return name
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  const displayName = user?.name ? formatName(user.name) : "Learner";
+  const displayInitial = displayName !== "Learner" ? displayName[0].toUpperCase() : "L";
+
+  // Check if user just registered (sessionStorage is more reliable than location state)
+  const [isJustRegistered, setIsJustRegistered] = useState(false);
+
+  useEffect(() => {
+    const flag = sessionStorage.getItem("just_registered");
+    if (flag === "true") {
+      setIsJustRegistered(true);
+      // Optional: Clear it so refresh shows "Welcome back"
+      sessionStorage.removeItem("just_registered");
+    }
+  }, []);
+
   const [enrolledCourses, setEnrolledCourses] = useState<CourseData[]>([]);
   const [completedEnrolledCourses, setCompletedEnrolledCourses] = useState<
     CourseData[]
@@ -496,14 +523,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[13px] font-semibold text-[#2B2D42] hidden sm:block">
-            {user?.name || "Learner"}
+            {displayName}
           </span>
           <div
             className="w-[34px] h-[34px] rounded-full bg-[#E87A2E]/10 flex items-center justify-center text-[12px] font-bold text-[#E87A2E] cursor-pointer"
             onClick={() => setIsLogoutModalOpen(true)}
             title="Click to Sign Out"
           >
-            {user?.name?.[0].toUpperCase() || "L"}
+            {displayInitial}
           </div>
           <button
             className="md:hidden p-1 flex flex-col gap-1 cursor-pointer bg-transparent border-none"
@@ -535,7 +562,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 className=" text-[clamp(1.4rem,2.5vw,1.8rem)] text-[#2B2D42] mb-1 font-bold"
                 style={{ fontFamily: '"DM Serif Display", serif' }}
               >
-                {typedDashboardData.welcome.title}, {user?.name || "Learner"}!
+                {isJustRegistered ? "Welcome" : "Welcome back"}, {displayName}!
               </h1>
               <p className="text-[13.5px] text-[#6B6D7B] leading-relaxed">
                 {typedDashboardData.welcome.streakText.replace(
