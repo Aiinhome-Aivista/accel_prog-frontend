@@ -92,15 +92,41 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionToEdit, onCance
     }
   }, [questionToEdit, loading]);
 
-  const moduleOptions = useMemo(() => {
-    const cid = allCourses.find(c => c.course_name === courseName)?.course_id;
-    return cid ? allModules.filter(m => m.course_id === cid).map(m => m.module_name) : [];
-  }, [allCourses, allModules, courseName]);
 
+  const selectedCourseData = useMemo(
+    () => allCourses.find((course) => course.course_name === courseName),
+    [allCourses, courseName],
+  );
+
+  const moduleOptions = useMemo(() => {
+    if (!selectedCourseData) return allModules.map((module) => module.module_name);
+    return allModules
+      .filter((module) => module.course_id === selectedCourseData.course_id)
+      .map((module) => module.module_name);
+  }, [allModules, selectedCourseData]);
+
+  const selectedModuleData = useMemo(
+    () =>
+      allModules.find(
+        (module) =>
+          module.module_name === moduleName &&
+          module.course_id === selectedCourseData?.course_id,
+      ),
+    [allModules, moduleName, selectedCourseData],
+  );
+
+  
   const subtopicOptions = useMemo(() => {
-    const mid = allModules.find(m => m.module_name === moduleName)?.module_id;
-    return mid ? allSubtopics.filter(s => s.module_id === mid).map(s => s.title) : [];
-  }, [allModules, allSubtopics, moduleName]);
+    if (!selectedModuleData) return allSubtopics.map((sub) => sub.title);
+    return allSubtopics
+      .filter((sub) => sub.module_id === selectedModuleData.module_id)
+      .map((sub) => sub.title);
+  }, [allSubtopics, selectedModuleData]);
+
+  // const subtopicTypeOptions = useMemo(() => {
+  //   return allSubtopicTypes.map(type => type.type);
+  // }, [allSubtopicTypes]);
+
 
   const handleSubtopicChange = (value: string) => {
     setSubtopic(value);
