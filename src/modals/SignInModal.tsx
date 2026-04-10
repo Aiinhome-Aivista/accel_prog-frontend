@@ -38,7 +38,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("Firebase Success:", result.user);
+      // console.log("Firebase Success:", result.user);
 
       // Call Backend API
       const response = await authService.googleSignIn({
@@ -47,7 +47,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         is_google_verified: true,
       });
 
-      console.log("Backend Success:", response);
+      // console.log("Backend Success:", response);
 
       if (response.status === "success") {
         // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
@@ -92,7 +92,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     setIsSending(true);
     try {
       const response = await authService.sendOtp({ email });
-      console.log("Send OTP Success:", response);
+      // console.log("Send OTP Success:", response);
       if (response.status === "success") {
         setIsOtpSent(true);
         // alert("OTP sent successfully to your email!");
@@ -119,7 +119,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         email,
         otp_code: otpCode,
       });
-      console.log("Verify OTP Success:", response);
+      // console.log("Verify OTP Success:", response);
       if (response.status === "success") {
         // If is_new_user is explicitly false (either top-level or inside data), it's an existing user
         const isExistingUser =
