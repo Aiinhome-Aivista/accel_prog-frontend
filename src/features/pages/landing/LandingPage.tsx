@@ -5,7 +5,7 @@ import Header from "../../../common/Header";
 import Footer from "../../../common/Footer";
 import type { CourseItem, ProgramStats } from "../../../types/registration";
 import HeroIcon from "../../../assets/hero.svg";
-
+import UpArrowScroll from '../../../components/shared/UpArrowScroll'
 interface LandingPageProps {
   onSignInClick: () => void;
   onExploreCourse: (index: number) => void;
@@ -613,6 +613,7 @@ function LandingPage({
         onCloseNav={onCloseNav}
         onGoHome={onGoHome}
       />
+      <UpArrowScroll />
     </div>
   );
 }

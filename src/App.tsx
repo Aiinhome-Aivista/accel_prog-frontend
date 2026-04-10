@@ -26,6 +26,8 @@ import Dashboard from "./features/pages/dashboard/Dashboard";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import type { CourseItem } from "./types/registration";
 import CourseLearning from "./features/pages/course-learning/course-learning";
+import AdminSignInModal from "./modals/AdminSignInModal";
+import AdminDashboard from "./features/pages/dashboard/AdminDashboard";
 
 // Effects component to handle route-based side effects like animations
 function RouteEffects() {
@@ -69,25 +71,37 @@ function RouteEffects() {
 
 function AppContent() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isAdminSignInOpen, setIsAdminSignInOpen] = useState(false);
   const [courseIndex, setCourseIndex] = useState<number | null>(null);
   const [courseData, setCourseData] = useState<CourseItem[]>([]);
   const [navOpen, setNavOpen] = useState(false);
+
+  const location = useLocation();
+
+  useEffect(() => {
+  if (location.pathname === "/admin") {
+    setIsAdminSignInOpen(true);
+  } else {
+    setIsAdminSignInOpen(false);
+  }
+}, [location.pathname]);
 
   const { login, logout } = useAuth();
   const { resetRegistration } = useRegistration();
 
   const navigate = useNavigate();
 
-  const handleSignIn = (
-    isNewUser: boolean,
-    email: string,
-    name?: string,
-    id?: number,
-    access_control?: any[],
-  ) => {
+  const handleSignIn = (isNewUser: boolean, email: string, name?: string, id?: number, access_control?: any[]) => {
     setIsSignInOpen(false);
+    setIsAdminSignInOpen(false);
     if (name) {
       login({ id, name, email, access_control });
+    }
+
+    // If signed in via admin modal, go to admin dashboard
+    if (isAdminSignInOpen) {
+      navigate("/admin/admin-dashboard");
+      return;
     }
 
     if (isNewUser) {
@@ -135,6 +149,16 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
+        {/* admin signin */}
+        <Route 
+          path="/admin"
+          element={null}
+        />
+
+        <Route path="/admin/admin-dashboard" element={<AdminDashboard
+        onLogout={handleLogout} />} />
+
         <Route
           path="/dashboard"
           element={
@@ -152,6 +176,17 @@ function AppContent() {
         onClose={() => setIsSignInOpen(false)}
         onSignIn={handleSignIn}
       />
+
+      <AdminSignInModal 
+        open={isAdminSignInOpen}
+        onClose={() => {
+          setIsAdminSignInOpen(false);
+          navigate("/");
+        }}
+        onSignIn={handleSignIn}
+      />
+
+
 
       <DetailModal
         courseIndex={courseIndex}
