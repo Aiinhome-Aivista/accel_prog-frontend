@@ -189,11 +189,13 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
     setCourseName(value);
     setModuleName("");
     setSubtopic("");
+    if (errors.courseName) setErrors((prev) => ({ ...prev, courseName: "" }));
   };
 
   const handleModuleChange = (value: string) => {
     setModuleName(value);
     setSubtopic("");
+    if (errors.moduleName) setErrors((prev) => ({ ...prev, moduleName: "" }));
   };
 
   const handleCancel = () => {
@@ -375,7 +377,10 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
           value={subtopic}
           options={subtopicOptions}
           placeholder="Select subtopic"
-          onChange={setSubtopic}
+          onChange={(val) => {
+            setSubtopic(val);
+            if (errors.subtopic) setErrors((prev) => ({ ...prev, subtopic: "" }));
+          }}
           error={errors.subtopic}
         />
 
@@ -388,7 +393,10 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
           value={subtopicType}
           options={subtopicTypeOptions}
           placeholder="Select type"
-          onChange={(value) => setSubtopicType(value as SubtopicType)}
+          onChange={(value) => {
+            setSubtopicType(value as SubtopicType);
+            if (errors.subtopicType) setErrors((prev) => ({ ...prev, subtopicType: "" }));
+          }}
           error={errors.subtopicType}
         />
       </div>
@@ -400,7 +408,13 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
       </div>
 
       <div className="mb-2">
-        <TiptapEditor content={editorContent} onChange={setEditorContent} />
+        <TiptapEditor 
+          content={editorContent} 
+          onChange={(content) => {
+            setEditorContent(content);
+            if (errors.editorContent) setErrors((prev) => ({ ...prev, editorContent: "" }));
+          }} 
+        />
       </div>
 
       {errors.editorContent && (
@@ -421,7 +435,10 @@ const CreateContent: React.FC<CreateContentProps> = ({ contentToEdit, onOperatio
           ref={fileInputRef}
           type="file"
           accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx"
-          onChange={(e) => setMediaFile(e.target.files?.[0] ?? null)}
+          onChange={(e) => {
+            setMediaFile(e.target.files?.[0] ?? null);
+            if (errors.mediaFile) setErrors((prev) => ({ ...prev, mediaFile: "" }));
+          }}
           className={`w-full rounded-[12px] border bg-white px-4 py-3 text-[14px] text-[#2B2D42] outline-none file:mr-4 file:rounded-md file:border-0 file:bg-[#E87A2E]/10 file:px-3 file:py-2 file:text-[#E87A2E] ${
             errors.mediaFile
               ? "border-red-400 focus:border-red-500"
