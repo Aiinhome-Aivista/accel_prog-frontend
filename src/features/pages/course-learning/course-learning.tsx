@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, ChevronLeft } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { AiCompanion } from './components/AiCompanion';
@@ -20,58 +20,154 @@ import type { ApiWeek, WeekData } from './course-learning.models';
 const CourseLearning: React.FC = () => {
   const { user } = useAuth();
   const { kpiData } = useDashboard();
-  const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get("tab") || "home";
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const getStoredState = () => {
+    const courseId = searchParams.get("course_id");
+    if (courseId && user) {
+      try {
+        const item = localStorage.getItem(`course_state_${user.id}_${courseId}`);
+        if (item) return JSON.parse(item);
+      } catch (e) {
+        // ignore
+      }
+    }
+    return null;
+  };
+
+  const storedState = getStoredState();
+  const initialTab = searchParams.get("tab") || storedState?.activeTab || "home";
+  const initialWeekIdx = Number(searchParams.get("week_idx") ?? storedState?.curW ?? 0);
+  const initialSubIdx = Number(searchParams.get("sub_idx") ?? storedState?.curS ?? 0);
+  
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   
   // Cross-tab state
   const [done, setDone] = useState<Set<string>>(new Set());
-  const [curW, setCurW] = useState(0);
+  const [curW, setCurW] = useState<number>(initialWeekIdx);
+  const [curS, setCurS] = useState<number>(initialSubIdx);
   const [weeks, setWeeks] = useState<WeekData[]>([]);
+  const [courseName, setCourseName] = useState("Course Learning");
+  const [introVideo, setIntroVideo] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchContent = async () => {
+  // API is the source of truth for completion state
+  const markDone = (id: string) => {
+    setDone(prev => new Set([...Array.from(prev), id]));
+  };
+
+  const fetchContent = React.useCallback(async () => {
       const courseId = searchParams.get("course_id");
       const userId = user?.id;
 
       if (courseId && userId) {
         try {
           setIsLoading(true);
-          const response = await dashboardService.getCourseLearningContent(Number(courseId), userId);
+          
+          // Fetch both content and videos
+          const [response, videoRes] = await Promise.all([
+            dashboardService.getCourseLearningContent(Number(courseId), userId),
+            dashboardService.getCourseVideos(Number(courseId))
+          ]);
+
           if (response.status === "success" && response.data) {
+            setCourseName(response.data.course_name);
+            
+            const videos = videoRes.status === "success" ? videoRes.data : (videoRes.course_intro_video || videoRes.week_videos ? videoRes : null);
+            if (videos) {
+              setIntroVideo(videos.course_intro_video);
+            }
+
             const mappedWeeks: WeekData[] = response.data.weeks.map((apiWeek: ApiWeek) => ({
               id: `w${apiWeek.week}`,
               t: apiWeek.module_name,
               short: `Week ${apiWeek.week}`,
               ul: !apiWeek.is_locked,
               color: apiWeek.week === 1 ? "#E87A2E" : apiWeek.week === 2 ? "#E8A040" : apiWeek.week === 3 ? "#66BB6A" : "#4CAF50",
+              moduleId: apiWeek.module_id,
               topics: apiWeek.topics.map(t => ({
                 d: `Topic ${t.subtopic_id}`,
                 t: t.title,
                 n: t.subtitle || "",
               })),
-              subs: apiWeek.topics.map(t => ({
-                id: `w${apiWeek.week}s${t.subtopic_id}`,
-                type: (t.type === 'assessment' ? 'assess' : t.type) as any,
-                title: t.title,
-                content: t.content.data || "",
-              }))
+              subs: apiWeek.topics.map(t => {
+                const sub: any = {
+                  id: `w${apiWeek.week}s${t.subtopic_id}`,
+                  type: (t.type === 'assessment' ? 'assess' : t.type) as any,
+                  title: t.title,
+                  moduleName: apiWeek.module_name,
+                };
+                
+                if (t.type === 'video' && videos) {
+                  const vData = videos.week_videos?.find((v: any) => 
+                    v.module_id === apiWeek.module_id && v.subtopic_id === t.subtopic_id
+                  );
+                  if (vData) {
+                    sub.videoPath = vData.video_path;
+                    sub.videoTitle = vData.video_title;
+                    sub.videoDesc = vData.video_subtitle;
+                    sub.videoDuration = vData.duration_sec;
+                  }
+                }
+
+                const contentData = t.content.data;
+                if (t.type === 'assessment' && Array.isArray(contentData)) {
+                  sub.categories = contentData.map((cat: any) => ({
+                    label: cat.category_name,
+                    questions: cat.questions.map((q: any) => ({
+                      id: q.question_id,
+                      q: q.question_text,
+                      type: q.type_id === 1 ? 'mcq' : 'subjective',
+                      opts: q.options || undefined,
+                      marks: q.marks
+                    }))
+                  }));
+                } else {
+                  sub.content = contentData;
+                  if (t.type === 'discussion' && Array.isArray(contentData)) {
+                    sub.topic = contentData[0]?.question_text || "";
+                  }
+                }
+                return sub;
+              }),
+              progress: apiWeek.progress
             }));
             setWeeks(mappedWeeks);
             
-            // Initialize 'done' set from API progress if available
             const initialDone = new Set<string>();
-            response.data.weeks.forEach(w => {
-              w.topics.forEach(t => {
+            let foundUnfinished = false;
+            let autoW = 0;
+            let autoS = 0;
+
+            response.data.weeks.forEach((w: any, wi: number) => {
+              w.topics.forEach((t: any, si: number) => {
                 if (t.is_completed) {
                   initialDone.add(`w${w.week}s${t.subtopic_id}`);
+                } else if (!foundUnfinished && !w.is_locked) {
+                  autoW = wi;
+                  autoS = si;
+                  foundUnfinished = true;
                 }
               });
             });
+            
             setDone(initialDone);
+
+            // Auto-forward to the furthest topic if the current one is completed
+            // This prevents users from being dumped back to topic 1 on revisit
+            const currentSubtopicId = mappedWeeks[curW]?.subs[curS]?.id;
+            if (currentSubtopicId && initialDone.has(currentSubtopicId)) {
+                if (foundUnfinished) {
+                    setCurW(autoW);
+                    setCurS(autoS);
+                } else {
+                    setCurW(mappedWeeks.length - 1);
+                    setCurS(mappedWeeks[mappedWeeks.length - 1].subs.length - 1);
+                }
+            }
+
             setError(null);
           } else if (response.status === "error") {
             setError(response.message || "Failed to load course content");
@@ -86,18 +182,71 @@ const CourseLearning: React.FC = () => {
         setIsLoading(false);
         setError("Missing course or user information.");
       }
-    };
+  }, [searchParams.get("course_id"), user]);
 
+  // Initial load
+  useEffect(() => {
+    const courseId = searchParams.get("course_id");
+    let savedW = 0;
+    let savedS = 0;
+    if (courseId && user) {
+      try {
+        const item = localStorage.getItem(`course_state_${user.id}_${courseId}`);
+        if (item) {
+          const parsed = JSON.parse(item);
+          savedW = parsed.curW ?? 0;
+          savedS = parsed.curS ?? 0;
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+    const weekIdx = Number(searchParams.get("week_idx") ?? savedW);
+    const subIdx = Number(searchParams.get("sub_idx") ?? savedS);
+    setDone(new Set());
+    setCurW(weekIdx);
+    setCurS(subIdx);
+    setIntroVideo(null);
+    setWeeks([]);
     fetchContent();
-  }, [searchParams, user]);
+  }, [searchParams.get("course_id"), user, fetchContent]);
 
-  const markDone = (id: string) => {
-    setDone(prev => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  };
+  // Re-fetch when switching to a week with no content (newly unlocked)
+  useEffect(() => {
+    if (weeks.length > 0 && weeks[curW] && weeks[curW].subs.length === 0 && weeks[curW].ul) {
+      fetchContent();
+    }
+  }, [curW, weeks]);
+
+  // Persist state to localStorage and sync URL
+  useEffect(() => {
+    const courseId = searchParams.get("course_id");
+    if (courseId && user) {
+      const state = {
+        activeTab,
+        curW,
+        curS
+      };
+      localStorage.setItem(`course_state_${user.id}_${courseId}`, JSON.stringify(state));
+      
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        if (next.get("tab") !== activeTab) next.set("tab", activeTab);
+        if (next.get("week_idx") !== curW.toString()) next.set("week_idx", curW.toString());
+        if (next.get("sub_idx") !== curS.toString()) next.set("sub_idx", curS.toString());
+        return next;
+      }, { replace: true });
+    }
+  }, [activeTab, curW, curS, searchParams.get("course_id"), user, setSearchParams]);
+
+  // Scroll content area to top whenever the active tab changes
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [activeTab]);
+
+
 
   useEffect(() => {
     if (weeks.length === 0) return;
@@ -150,18 +299,22 @@ const CourseLearning: React.FC = () => {
 
     switch (activeTab) {
       case 'home':
-        return <HomeTab weeks={weeks} goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setActiveTab('learn'); }} done={done} />;
+        return <HomeTab goToCourseContent={(weekIdx: number) => { setCurW(weekIdx); setCurS(0); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} introVideo={introVideo} />;
       case 'modules':
         return <ModulesTab />;
       case 'learn':
         return <CourseContentTab 
+          key={searchParams.get("course_id")}
           weeks={weeks} 
           curW={curW} 
-          setCurW={setCurW} 
+          setCurW={(w) => { setCurW(w); setCurS(0); }} 
+          curS={curS}
+          setCurS={setCurS}
           done={done} 
           markDone={markDone} 
           courseId={Number(searchParams.get("course_id")) as number} 
           userId={user?.id as number} 
+          refetchContent={fetchContent}
         />;
       case 'grades':
         return <GradesTab done={done} />;
@@ -174,7 +327,7 @@ const CourseLearning: React.FC = () => {
       case 'support':
         return <SupportTab />;
       default:
-        return <HomeTab weeks={weeks} goToCourseContent={(w) => { setCurW(w); setActiveTab('learn'); }} done={done} />;
+        return <HomeTab goToCourseContent={(w) => { setCurW(w); setCurS(0); setActiveTab('learn'); }} courseId={Number(searchParams.get("course_id"))} userId={user?.id as number} introVideo={introVideo} />;
     }
   };
 
@@ -222,8 +375,9 @@ const CourseLearning: React.FC = () => {
           setActiveTab={setActiveTab} 
           isOpen={isSidebarOpen} 
           setIsOpen={setIsSidebarOpen} 
+          courseName={courseName}
         />
-        <div className="flex-1 overflow-y-auto bg-[#F3EDE7] relative">
+        <div ref={contentRef} className="flex-1 overflow-y-auto bg-[#F3EDE7] relative">
           {renderActiveTab()}
         </div>
       </div>

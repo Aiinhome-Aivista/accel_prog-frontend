@@ -12,17 +12,17 @@ export interface TopicDay {
 }
 
 export interface Question {
+  id: number;
   q: string;
   type: 'subjective' | 'mcq';
   opts?: string[];
   ans?: number; // Correct option index
+  marks?: number;
 }
 
-export interface AssessmentQuestions {
-  critical: Question[];
-  technical: Question[];
-  problem: Question[];
-  subjective: Question[];
+export interface AssessmentCategory {
+  label: string;
+  questions: Question[];
 }
 
 export interface TopicSeed {
@@ -37,14 +37,17 @@ export interface SubTopic {
   id: string;
   type: 'reading' | 'video' | 'assess' | 'discussion' | 'project';
   title: string;
-  content?: string; // HTML content for reading
+  videoPath?: string;
+  content?: any; // HTML for reading OR data array for others
   videoTitle?: string;
   videoDesc?: string;
-  questions?: AssessmentQuestions;
+  videoDuration?: number;
+  categories?: AssessmentCategory[]; // Dynamic categories for assessment
   topic?: string; // Discussion topic
   seeds?: TopicSeed[];
   brief?: string; // Project brief
   reqs?: string[]; // Project requirements
+  moduleName?: string; // Added to store parent module name
 }
 
 export interface WeekData {
@@ -55,6 +58,8 @@ export interface WeekData {
   color: string;
   topics: TopicDay[];
   subs: SubTopic[];
+  progress: ApiProgress | null;
+  moduleId: number;
 }
 
 export interface Flashcard {
@@ -103,6 +108,54 @@ export interface ApiWeek {
   progress: ApiProgress | null;
   topics: ApiTopic[];
   week: number;
+}
+
+export interface CourseHomeOverview {
+  course_name: string;
+  stats: {
+    projects: number;
+    questions: number;
+    subtopics: number;
+    weeks: number;
+  };
+  welcome_text: string;
+  streak?: {
+    count: number;
+    text: string;
+    description: string;
+    history: {
+      day: string;
+      status: "completed" | "current" | "pending";
+    }[];
+  };
+}
+
+export interface CourseHomeTimelineItem {
+  module_id: number;
+  progress: string;
+  status: "Available" | "Locked";
+  title: string;
+  week: string;
+}
+
+export interface WeekVideo {
+  duration_sec: number;
+  module_id: number;
+  subtopic_id: number;
+  video_path: string;
+  video_subtitle: string;
+  video_title: string;
+}
+
+export interface CourseIntroVideo {
+  video_path: string;
+  video_subtitle: string;
+  video_title: string;
+}
+
+export interface CourseVideoData {
+  course_intro_video: CourseIntroVideo;
+  week_videos: WeekVideo[];
 }
 
 export interface CourseLearningContent {

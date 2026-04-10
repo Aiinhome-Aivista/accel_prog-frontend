@@ -5,7 +5,7 @@ import Header from "../../../common/Header";
 import Footer from "../../../common/Footer";
 import type { CourseItem, ProgramStats } from "../../../types/registration";
 import HeroIcon from "../../../assets/hero.svg";
-
+import UpArrowScroll from '../../../components/shared/UpArrowScroll'
 interface LandingPageProps {
   onSignInClick: () => void;
   onExploreCourse: (index: number) => void;
@@ -360,8 +360,8 @@ function LandingPage({
                             .slice(0, 2)
                             .join(" "),
                         )
-                    ).map((tag) => (
-                      <span className="course-tag" key={tag}>
+                    ).map((tag, i) => (
+                      <span className="course-tag" key={`${tag}-${i}`}>
                         {tag}
                       </span>
                     ))}
@@ -613,6 +613,7 @@ function LandingPage({
         onCloseNav={onCloseNav}
         onGoHome={onGoHome}
       />
+      <UpArrowScroll />
     </div>
   );
 }

@@ -38,11 +38,31 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const { kpiData, refreshKPI } = useDashboard();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  // const location = useLocation();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [navOpen, setNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [availableCourses, setAvailableCourses] = useState<CourseData[]>([]);
+
+  // Function to format name to Proper Case (e.g., SONIA KHATUN -> Sonia Khatun)
+  const formatName = (name: string) => {
+    if (!name) return "";
+    return name
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  const displayName = user?.name ? formatName(user.name) : "Learner";
+  const displayInitial = displayName !== "Learner" ? displayName[0].toUpperCase() : "L";
+
+  // Check if user just registered (sessionStorage is more reliable than location state)
+  const [isJustRegistered] = useState(() => {
+    return sessionStorage.getItem("just_registered") === "true";
+  });
+
   const [enrolledCourses, setEnrolledCourses] = useState<CourseData[]>([]);
   const [completedEnrolledCourses, setCompletedEnrolledCourses] = useState<
     CourseData[]
@@ -177,11 +197,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               `🧩 ${course.total_projects} Project`,
             ],
             progress: course.progress_pct,
-            progressText: `${course.progress_pct}% Completed`,
+            progressText: `${course.progress_pct}% complete · Week ${course.current_week}: ${course.current_module_name}`,
             progressColor: style.progress,
             badgeBg: style.bg,
             badgeColor: style.color,
             bannerGradient: style.banner,
+            currentWeek: course.current_week,
+            currentModuleName: course.current_module_name,
           };
         });
       };
@@ -253,13 +275,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       setStats((prevStats) =>
         prevStats.map((s) => {
           if (s.label === "In Progress")
-            return { ...s, value: kpiData.in_progress_count.toString() };
+            return { ...s, value: (kpiData.in_progress_count ?? 0).toString() };
           if (s.label === "Completed")
-            return { ...s, value: kpiData.completed_count.toString() };
+            return { ...s, value: (kpiData.completed_count ?? 0).toString() };
           if (s.label === "Day Streak")
-            return { ...s, value: kpiData.streak_days.toString() };
+            return { ...s, value: (kpiData.streak_days ?? 0).toString() };
           if (s.label === "Progress")
-            return { ...s, value: `${kpiData.overall_progress}%` };
+            return { ...s, value: `${kpiData.overall_progress ?? 0}%` };
           return s;
         }),
       );
@@ -321,6 +343,24 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   };
 
+  const handleContinueLearning = (courseId: string | number) => {
+    const userId = user?.id || 1;
+    const savedState = localStorage.getItem(`course_state_${userId}_${courseId}`);
+    
+    let url = `/course-learning?course_id=${courseId}`;
+    
+    if (savedState) {
+      try {
+        const { activeTab, curW, curS } = JSON.parse(savedState);
+        url += `&tab=${activeTab}&week_idx=${curW}&sub_idx=${curS}`;
+      } catch (e) {
+        console.error("Error parsing saved course state:", e);
+      }
+    }
+    
+    navigate(url, { replace: true });
+  };
+
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     sectionId: string,
@@ -379,6 +419,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       fetchRecentActivity();
     }
   }, [user, fetchRecentActivity]);
+
+  useEffect(() => {
+    if (user || !user) { // Trigger it regardless of auth for development
+      refreshKPI();
+    }
+  }, [user, refreshKPI]);
 
   return (
     <div className="dashboard-container">
@@ -471,14 +517,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[13px] font-semibold text-[#2B2D42] hidden sm:block">
-            {user?.name || "Learner"}
+            {displayName}
           </span>
           <div
             className="w-[34px] h-[34px] rounded-full bg-[#E87A2E]/10 flex items-center justify-center text-[12px] font-bold text-[#E87A2E] cursor-pointer"
             onClick={() => setIsLogoutModalOpen(true)}
             title="Click to Sign Out"
           >
-            {user?.name?.[0].toUpperCase() || "L"}
+            {displayInitial}
           </div>
           <button
             className="md:hidden p-1 flex flex-col gap-1 cursor-pointer bg-transparent border-none"
@@ -510,19 +556,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 className="welcome-title"
                 style={{ fontFamily: '"DM Serif Display", serif' }}
               >
-                {typedDashboardData.welcome.title}, {user?.name || "Learner"}!
+                {isJustRegistered ? "Welcome" : "Welcome back"}, {displayName}!
               </h1>
-              <p className="welcome-sub">
-                {typedDashboardData.welcome.streakText}
+              <p className="welcome-sub text-[13.5px] text-[#6B6D7B] leading-relaxed">
+                {typedDashboardData.welcome.streakText.replace(
+                  "{streak}",
+                  (kpiData?.streak_days ?? 0).toString(),
+                )}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
+              
               className="btn-primary"
-              onClick={() =>
-                navigate("/course-learning?course_id=1", { replace: true })
-              }
+              onClick={() => handleContinueLearning(1)}
             >
               Continue Learning
             </button>
@@ -571,7 +619,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               className="mycourses-title"
               style={{ fontFamily: '"DM Serif Display", serif' }}
             >
-              My Courses {'— '+enrolledCourses[0]?.status}
+              My Courses{" "}
+              {enrolledCourses.length > 0 && enrolledCourses[0]?.status
+                ? `— ${enrolledCourses[0].status}`
+                : ""}
             </h2>
             <div className="mycourses-badge">
               {isLoadingEnrolled ? "-" : enrolledCourses.length} Active
@@ -668,11 +719,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     <div className="flex gap-2">
                       <button
                         className="btn-primary hover:bg-[#D06A20]transition-colors flex items-center"
-                        onClick={() =>
-                          navigate(`/course-learning?course_id=${course.id}`, {
-                            replace: true,
-                          })
-                        }
+                        onClick={() => handleContinueLearning(course.id)}
                       >
                         Continue Learning
                       </button>

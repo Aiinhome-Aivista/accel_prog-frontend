@@ -1,9 +1,11 @@
+// import { Save } from "lucide-react";
+
 export const API_ENDPOINTS = {
   LOGIN: "/auth/login",
   REGISTER: "/auth/register",
   USERS: "/users",
   COURSE: "/api/v1/courses",
-  REGISTRATION: "api/v1/register",
+  REGISTRATION: "/api/v1/register",
   SEND_OTP: "/api/v1/send-otp",
   VERIFY_OTP: "/api/v1/verify-otp",
   GOOGLE_SIGNIN: "/api/v1/google-signin",
@@ -17,5 +19,20 @@ export const API_ENDPOINTS = {
   GET_USER_RECENT_ACTIVITY: "/api/v1/get-user-recent-activity",
   GET_FLASHCARDS: "/api/v1/get-flashcards",
   GET_COURSE_LEARNING_CONTENT: "/api/v1/get_course_learning_content_by_user",
-  COMPLETE_SUBTOPIC_MODULE_COURSE_WISE_BY_USER: "/api/v1/complete_subtopic_module_course_wise_by_user"
+  COMPLETE_SUBTOPIC_MODULE_COURSE_WISE_BY_USER: "/api/v1/complete_subtopic_module_course_wise_by_user",
+  SUBMIT_USER_ANSWER: "/api/v1/submit_user_answer",
+  COURSE_HOME_OVERVIEW: "/api/v1/course_home_overview",
+  COURSE_HOME_TIMELINE: "/api/v1/course_home_timeline",
+  GET_COURSE_VIDEOS: "/api/v1/get_course_videos",
+  SUBMIT_COHORT_ANSWER: "/api/v1/submit_cohort_answer",
+  GET_USER_WEEKLY_STREAK: "/api/v1/get_user_weekly_streak",
+  UPLOAD_PROJECT_SUBMISSION: "/api/v1/upload_project_submission_by_user",
+  admin_generate_otp: "/api/v1/admin_generate_otp",
+  admin_verify_otp: "/api/v1/admin_verify_otp",
+  content_dropdown: "/api/v1/get_master_dropdown_data",
+  save_content: "/api/v1/save_content", // New endpoint for updating content
+  get_all_contents: "/api/v1/admin/get_all_contents",
+  get_all_questions: "/api/v1/get-assessment-questions",
+  manage_questions: "/api/v1/manage-assessment-questions",
+  get_course_video_mapping: "/api/v1/admin/get_course_video_mapping" // Single endpoint for all question operations
 };

@@ -16,6 +16,7 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  courseName: string;
 }
 
 const NAV_ITEMS = [
@@ -34,6 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   isOpen,
   setIsOpen,
+  courseName,
 }) => {
   return (
     <>
@@ -44,15 +46,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div
         className={`sidebar ${isOpen ? "translate-x-0" : ""} `}
       >
-        <div className="sidebar-header">
-          <div className="sidebar-subtitle">
-            Course 1 · Foundation
+        
+        <div className="sidebar-header p-[0.8rem_0.9rem_0.6rem] border-b border-[#E5DDD4]">
+          <div className="sidebar-subtitle text-[0.55rem] font-bold uppercase tracking-[0.06em] text-[#9597A6]">
+            Course Overview
           </div>
           <div
             className="sidebar-title"
             style={{ fontFamily: '"DM Serif Display", serif' }}
           >
-            The AI Consumer & Builder
+            {courseName}
           </div>
         </div>
         <div className="sidebar-nav">
