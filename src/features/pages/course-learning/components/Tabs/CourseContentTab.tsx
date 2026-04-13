@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type {
   WeekData,
   Question,
@@ -58,6 +58,18 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const [submittingDiscussion, setSubmittingDiscussion] = useState(false);
   const [unansweredQuestions, setUnansweredQuestions] = useState<Set<string>>(new Set());
   const [uploadingProject, setUploadingProject] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  };
+
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
@@ -496,7 +508,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             </div>
           )}
           {sub.type === "video" && (
-            <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center">
+            <div 
+              className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center cursor-pointer"
+              onClick={togglePlay}
+            >
               <div className="absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
                 <div className="w-[45px] h-[45px] bg-[#E87A2E] rounded-full flex items-center justify-center mb-[0.6rem] shadow-lg">
                   <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-[2px]"></div>
@@ -518,6 +533,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               <div className="absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
 
               <video
+                ref={videoRef}
                 key={sub.videoPath}
                 className="w-full h-full object-cover z-0 relative"
                 src={sub.videoPath}
@@ -527,6 +543,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   if (parent) {
                     const overlays = parent.querySelectorAll('.video-overlay');
                     overlays.forEach(n => ((n as HTMLElement).style.opacity = '0'));
+                    overlays.forEach(n => ((n as HTMLElement).style.pointerEvents = 'none'));
                   }
                 }}
                 onPause={(e) => {
@@ -534,6 +551,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   if (parent) {
                     const overlays = parent.querySelectorAll('.video-overlay');
                     overlays.forEach(n => ((n as HTMLElement).style.opacity = '1'));
+                    overlays.forEach(n => ((n as HTMLElement).style.pointerEvents = 'auto'));
                   }
                 }}
               ></video>
