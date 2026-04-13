@@ -147,9 +147,9 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
                   >
                     <Edit size={18} />
                   </button>
-                  <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Delete Video">
+                  {/* <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Delete Video">
                     <Trash2 size={18} />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
