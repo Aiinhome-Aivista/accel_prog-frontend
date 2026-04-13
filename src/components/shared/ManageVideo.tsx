@@ -133,7 +133,7 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
                 <td className="px-6 py-4 font-bold text-[#2B2D42]">{item.video_title}</td>
                 <td className="px-6 py-4">
                   <div className="font-medium text-gray-800">{item.course_name}</div>
-                  <div className="text-xs text-gray-500">{item.module_name || 'Course Level'} / {item.title || 'N/A'}</div>
+                  <div className="text-xs text-gray-500">{item.module_name}/ {item.title}</div>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <div className="text-gray-800 font-medium">{formatDuration(item.duration_sec)}</div>
