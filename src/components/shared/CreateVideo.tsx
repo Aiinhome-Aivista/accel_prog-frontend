@@ -235,15 +235,16 @@ const CreateVideo: React.FC<CreateVideoProps> = ({ videoToEdit, onOperationCompl
             </p>
           </div>
 
-          <div className="flex items-center gap-2 px-4 py-2 bg-[#FDF8F4] border border-[#E87A2E]/20 rounded-xl">
+          <div className={`flex items-center gap-2 px-4 py-2 bg-[#FDF8F4] border border-[#E87A2E]/20 rounded-xl ${videoToEdit ? 'opacity-70' : ''}`}>
             <input 
               type="checkbox" 
               id="isIntro" 
               checked={isIntro} 
               onChange={e => handleIntroToggle(e.target.checked)} 
-              className="w-4 h-4 accent-[#E87A2E] cursor-pointer" 
+              disabled={!!videoToEdit}
+              className="w-4 h-4 accent-[#E87A2E] cursor-pointer disabled:cursor-not-allowed" 
             />
-            <label htmlFor="isIntro" className="text-sm font-semibold text-[#2B2D42] cursor-pointer select-none">
+            <label htmlFor="isIntro" className={`text-sm font-semibold text-[#2B2D42] select-none ${videoToEdit ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
               Is this an introduction video?
             </label>
           </div>
