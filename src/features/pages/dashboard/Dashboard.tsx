@@ -8,6 +8,9 @@ import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import HeroIcon from "../../../assets/hero.svg";
+import { FaCheck, FaFire, FaBook } from "react-icons/fa";
+import { MdChat } from "react-icons/md";
+import { HiDocumentText } from "react-icons/hi";
 
 import type {
   DashboardData,
@@ -256,6 +259,35 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       setIsLoadingActivities(false);
     }
   }, [user]);
+
+ const activityConfig = {
+  completed: {
+    icon: <HiDocumentText className="text-[#7C3AED]" size={14} />,
+    bg: "#F3E8FF",
+  },
+  assessment: {
+    icon: <FaCheck className="text-[#16A34A]" size={14} />,
+    bg: "#DCFCE7",
+  },
+  discussion: {
+    icon: <MdChat className="text-[#0284C7]" size={14} />,
+    bg: "#E0F2FE",
+  },
+  streak: {
+    icon: <FaFire className="text-[#DC2626]" size={14} />,
+    bg: "#FEE2E2",
+  },
+  flashcard: {
+    icon: <FaBook className="text-[#CA8A04]" size={14} />,
+    bg: "#FEF3C7",
+  },
+  // enrolled: {
+  //   icon: <FaBook className="text-[#4F46E5]" size={14} />,
+  //   bg: "#EEF2FF",
+  // },
+};
+
+
 
   const refreshAllData = useCallback(() => {
     fetchDashboardData();
@@ -1016,11 +1048,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 key={index}
                 className="flex items-start gap-3 p-3.5 hover:bg-[#F9F5F0] transition-colors border-b last:border-b-0 border-[rgba(0,0,0,.04)]"
               >
+                
                 <div
                   className="w-[32px] h-[32px] rounded-lg flex items-center justify-center text-[13.5px] shrink-0"
-                  style={{ background: act.iconBg || "rgba(232,122,46,.1)" }}
+                  style={{ background:  activityConfig[act.type as keyof typeof activityConfig]?.bg || "rgba(232,122,46,.1)" }}
                 >
-                  {act.icon || "🚀"}
+                  {activityConfig[act.type as keyof typeof activityConfig]?.icon || "🚀"}
                 </div>
                 <div className="flex-1 mt-0.5">
                   <h4 className="text-[12.5px] font-semibold text-[#2B2D42] mb-[2px]">
