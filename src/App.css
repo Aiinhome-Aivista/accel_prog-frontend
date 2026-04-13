@@ -1579,3 +1579,588 @@ footer {
 .scroll-btn:hover svg circle {
   fill: var(--orange-dark);
 }
+
+/* ==========================================================================
+   Centralized Styling System
+   ========================================================================== */
+
+/* 1. Lesson Content Typography & Layout */
+.course-reading-container {
+  max-width: none !important;
+  color: #6B6D7B;
+}
+
+.course-reading-container h2 {
+  font-family: 'DM Serif Display', serif !important;
+  font-size: 1.15rem !important;
+  color: #2B2D42 !important;
+  margin-top: 1.2rem !important;
+  margin-bottom: 0.4rem !important;
+}
+
+.course-reading-container h2:first-child {
+  margin-top: 0 !important;
+}
+
+.course-reading-container h3 {
+  font-size: 1rem !important;
+  color: #2B2D42 !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.course-reading-container p {
+  margin-bottom: 0.8rem !important;
+  line-height: 1.6;
+}
+
+.course-reading-container blockquote {
+  border-left: 3px solid var(--dynamic-color) !important;
+  padding: 0.5rem 0.9rem !important;
+  margin: 0.8rem 0 !important;
+  background-color: color-mix(in srgb, var(--dynamic-color), transparent 90%) !important;
+  border-radius: 0 8px 8px 0 !important;
+  font-style: italic !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+
+.course-reading-container strong {
+  color: #2B2D42 !important;
+  font-weight: 700;
+}
+
+.course-reading-container code {
+  background-color: color-mix(in srgb, var(--dynamic-color), transparent 95%) !important;
+  padding: 0.1rem 0.35rem !important;
+  border-radius: 4px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 0.85em !important;
+  color: var(--dynamic-color) !important;
+}
+
+.course-reading-container ul, .course-reading-container ol {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.course-reading-container li {
+  margin-bottom: 0.4rem !important;
+  display: list-item !important;
+}
+
+.course-reading-container li p {
+  margin-bottom: 0 !important;
+  display: inline;
+}
+
+.course-reading-container li::marker {
+  color: var(--bullet-color, var(--dynamic-color)) !important;
+  font-weight: bold;
+}
+
+/* 2. Administrative Dashboard Styling */
+.admin-container {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.admin-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .admin-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.admin-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: #2B2D42;
+}
+
+.admin-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .admin-search-wrapper {
+    width: 18rem;
+  }
+}
+
+.admin-input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #E5DDD4;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-color: #fff;
+  transition: all 0.2s;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #E87A2E;
+  box-shadow: 0 0 0 1px #E87A2E;
+}
+
+.admin-search-input {
+  padding-left: 2.5rem !important;
+}
+
+.btn-admin-primary {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #E87A2E;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-admin-primary:hover {
+  background-color: #D06A20;
+}
+
+.admin-table-container {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.admin-table {
+  width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.admin-thead {
+  font-size: 0.75rem;
+  color: #6B6D7B;
+  text-transform: uppercase;
+  background-color: #F9F5F0;
+}
+
+.admin-thead th {
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+}
+
+.admin-tbody-row {
+  background-color: #fff;
+  border-bottom: 1px solid #E5DDD4;
+  transition: background-color 0.2s;
+}
+
+.admin-tbody-row:hover {
+  background-color: #F9F5F0;
+}
+
+.admin-tbody-row td {
+  padding: 1rem 1.5rem;
+}
+
+.admin-badge {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  background-color: #F3F4F6;
+  color: #374151;
+  text-transform: capitalize;
+}
+
+.admin-badge-purple {
+  background-color: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+.btn-admin-icon {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-admin-icon-orange {
+  color: #E87A2E;
+}
+
+.btn-admin-icon-orange:hover {
+  background-color: #FFF7ED;
+}
+
+.btn-admin-icon-red {
+  color: #EF4444;
+}
+
+.btn-admin-icon-red:hover {
+  background-color: #FEF2F2;
+}
+
+.admin-sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  background: transparent;
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  cursor: pointer;
+}
+
+.admin-sidebar-item:hover {
+  background-color: #F9F5F0;
+  color: #2B2D42;
+}
+
+.admin-sidebar-item-active {
+  background-color: rgba(232, 122, 46, 0.1);
+  color: #E87A2E;
+  border-left-color: #E87A2E;
+  font-weight: 600;
+}
+
+.admin-sidebar-item-logout {
+  color: #EF4444;
+}
+
+.admin-sidebar-item-logout:hover {
+  background-color: #FEF2F2;
+  color: #DC2626;
+}
+
+/* 3. Student / Learner UI Styling */
+.std-container {
+  max-width: 1060px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.std-section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  color: #2B2D42;
+  font-weight: 700;
+}
+
+.std-card {
+  background-color: #fff;
+  border-radius: 14px;
+  border: 1px solid #E5DDD4;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.std-card-hover:hover {
+  box-shadow: 0 8px 24px rgba(43, 45, 66, 0.08);
+  transform: translateY(-2px);
+}
+
+.btn-std-primary {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #E87A2E;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-std-primary:hover {
+  background-color: #D06A20;
+}
+
+.btn-std-secondary {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  border: 1.5px solid #E5DDD4;
+  color: #6B6D7B;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-std-secondary:hover {
+  color: #E87A2E;
+  border-color: #E87A2E;
+}
+
+.std-stat-card {
+  background-color: #fff;
+  border-radius: 14px;
+  border: 1px solid #E5DDD4;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  transition: box-shadow 0.2s;
+}
+
+.std-stat-card:hover {
+  box-shadow: 0 2px 8px rgba(43, 45, 66, 0.06);
+}
+
+.std-stat-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.std-stat-value {
+  font-size: 1.3rem;
+  color: #2B2D42;
+  line-height: 1.2;
+}
+
+.std-stat-label {
+  font-size: 11px;
+  color: #9597A6;
+  font-weight: 500;
+}
+
+.std-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.std-nav-item {
+  font-size: 13px;
+  padding: 0.375rem 0.625rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-weight: 500;
+  color: #6B6D7B;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.std-nav-item:hover, .std-nav-item-active {
+  color: #E87A2E;
+  background-color: rgba(232, 122, 46, 0.1);
+}
+
+.std-nav-item-active {
+  font-weight: 600;
+}
+
+/* Sidebar Specific Nav Items */
+.std-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.74rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+  color: #6B6D7B;
+}
+
+.std-sidebar-item:hover {
+  background-color: #F9F5F0;
+  color: #2B2D42;
+}
+
+.std-sidebar-item-active {
+  background-color: rgba(232, 122, 46, 0.1);
+  color: #E87A2E;
+  border-left-color: #E87A2E;
+  font-weight: 600;
+}
+
+/* Learning Tab Container */
+.learning-tab-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .learning-tab-container {
+    padding: 1.3rem 1.8rem 3rem;
+  }
+}
+
+/* Chat Bubbles (AI Companion) */
+.chat-bubble {
+  max-width: 85%;
+  padding: 0.4rem 0.65rem;
+  border-radius: 9px;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.chat-bubble-bot {
+  background-color: #F9F5F0;
+  color: #6B6D7B;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-bubble-user {
+  background-color: #E87A2E;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+/* Flashcards */
+.flashcard-item {
+  min-width: 200px;
+  height: 140px;
+  border-radius: 12px;
+  background-color: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  perspective: 600px;
+}
+
+.flashcard-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+
+.flashcard-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 12px;
+  border: 1px solid #E5DDD4;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.flashcard-front {
+  background-color: #F9F5F0;
+  color: #2B2D42;
+}
+
+.flashcard-back {
+  background-color: rgba(232, 122, 46, 0.1);
+  color: #D06A20;
+  transform: rotateY(180deg);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* Assessment Options */
+.assessment-option {
+  display: flex;
+  align-items: start;
+  gap: 0.4rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #E5DDD4;
+  cursor: pointer;
+  font-size: 0.78rem;
+  transition: all 0.2s;
+  color: #6B6D7B;
+}
+
+.assessment-option:hover {
+  border-color: #E87A2E;
+  color: #E87A2E;
+  background-color: rgba(232, 122, 46, 0.1);
+}
+
+.assessment-option-selected {
+  border-color: #E87A2E;
+  background-color: rgba(232, 122, 46, 0.1);
+  color: #E87A2E;
+}
+
+.assessment-option-correct {
+  border-color: #4CAF50;
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.assessment-option-wrong {
+  border-color: #EA4335;
+  background-color: rgba(234, 67, 53, 0.08);
+  color: #C62828;
+}
+
+/* People / Avatars */
+.std-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+

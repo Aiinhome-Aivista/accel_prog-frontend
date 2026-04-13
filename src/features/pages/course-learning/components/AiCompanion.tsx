@@ -37,9 +37,9 @@ export const AiCompanion: React.FC = () => {
       </div>
 
       {isOpen && (
-        <div className="fixed bottom-[4.5rem] right-4 w-[calc(100vw-2rem)] md:w-[310px] max-h-[400px] bg-white rounded-[14px] border border-[#E5DDD4] shadow-[0_8px_24px_rgba(43,45,66,0.08)] z-40 flex flex-col overflow-hidden">
+        <div className="fixed bottom-[4.5rem] right-4 w-[calc(100vw-2rem)] md:w-[310px] max-h-[400px] std-card shadow-[0_8px_24px_rgba(43,45,66,0.08)] z-40 flex flex-col overflow-hidden">
           <div className="px-3 py-2 bg-[#1A1B2E] text-white flex items-center justify-between">
-            <h4 className="text-[0.76rem] m-0">AI Learning Companion</h4>
+            <h4 className="std-section-title text-white text-[0.76rem] m-0">AI Learning Companion</h4>
             <button className="bg-transparent border-none text-white/60 cursor-pointer pointer-events-auto" onClick={() => setIsOpen(false)}>
               <X size={16} />
             </button>
@@ -49,10 +49,10 @@ export const AiCompanion: React.FC = () => {
             {messages.map((m, i) => (
               <div 
                 key={i} 
-                className={`max-w-[85%] px-2.5 py-1.5 rounded-[9px] text-[0.74rem] leading-[1.45] ${
+                className={`chat-bubble ${
                   m.bot 
-                    ? 'bg-[#F9F5F0] text-[#6B6D7B] self-start rounded-bl-[2px]' 
-                    : 'bg-[#E87A2E] text-white self-end rounded-br-[2px]'
+                    ? 'chat-bubble-bot' 
+                    : 'chat-bubble-user'
                 }`}
               >
                 {m.text}
@@ -71,7 +71,7 @@ export const AiCompanion: React.FC = () => {
             />
             <button 
               onClick={sendMsg}
-              className="px-2 py-1 bg-[#E87A2E] text-white rounded-[6px] text-[0.68rem] font-semibold border-none cursor-pointer"
+              className="btn-std-primary px-2 py-1 text-[0.68rem]"
             >
               Send
             </button>

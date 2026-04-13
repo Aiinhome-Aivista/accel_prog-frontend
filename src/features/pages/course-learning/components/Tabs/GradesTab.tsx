@@ -39,26 +39,27 @@ export const GradesTab: React.FC<{ done: Set<string> }> = () => {
 
   return (
     <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
-      <div className="font-['DM_Serif_Display'] text-[1.3rem] text-[#2B2D42] mb-[1.2rem]">Your Grades & Performance</div>
+      <div className="std-section-title text-[1.3rem] mb-[1.2rem]">Your Grades & Performance</div>
       
-      <div className="grid grid-cols-3 md:grid-cols-5 gap-[0.5rem] mb-[1rem]">
-        {[
-          [`${kpi?.progress_percent || 0}%`, 'Progress', '#E87A2E'],
-          [`${kpi?.completed || '0/0'}`, 'Done', '#4CAF50'],
-          [`${kpi?.avg_score || 0}%`, 'Avg Score', '#4285F4'],
-          [`${kpi?.streak_days || 0}`, 'Streak', '#FF6B35'],
-          [`#${kpi?.rank || 0}`, 'Rank', '#9C27B0']
-        ].map(([v, l, c], idx) => (
-          <div key={idx} className="bg-white rounded-[8px] border border-[#E5DDD4] p-[0.6rem] text-center">
-            <div className="font-['DM_Serif_Display'] text-[1.1rem]" style={{ color: c }}>{v}</div>
-            <div className="text-[0.58rem] text-[#9597A6] uppercase tracking-[0.04em] font-semibold">{l}</div>
-          </div>
-        ))}
-      </div>
+        {/* Performance KPI Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-[0.5rem] mb-[1rem]">
+          {[
+            [`${kpi?.progress_percent || 0}%`, 'Progress', '#E87A2E'],
+            [`${kpi?.completed || '0/0'}`, 'Done', '#4CAF50'],
+            [`${kpi?.avg_score || 0}%`, 'Avg Score', '#4285F4'],
+            [`${kpi?.streak_days || 0}`, 'Streak', '#FF6B35'],
+            [`#${kpi?.rank || 0}`, 'Rank', '#9C27B0']
+          ].map(([v, l, c], idx) => (
+            <div key={idx} className="std-stat-card border border-[#E5DDD4] p-[0.6rem] text-center flex-col justify-center">
+              <div className="std-section-title text-[1.1rem]" style={{ color: c }}>{v}</div>
+              <div className="std-stat-label uppercase tracking-[0.04em]">{l}</div>
+            </div>
+          ))}
+        </div>
 
-      <div className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden mb-[1rem]">
+      <div className="std-card mb-[1rem]">
         <div className="p-[1rem_1.2rem] border-b border-[#E5DDD4] flex items-center justify-between">
-          <h2 className="font-['DM_Serif_Display'] text-[0.95rem] text-[#2B2D42] m-0">Competency</h2>
+          <h2 className="std-section-title text-[0.95rem] m-0">Competency</h2>
         </div>
         <div className="p-[1rem_1.2rem]">
           <div className="grid grid-cols-3 gap-[0.5rem]">
@@ -95,10 +96,10 @@ export const GradesTab: React.FC<{ done: Set<string> }> = () => {
 
       {gradesData?.weeks?.map((w, i) => {
         return (
-          <div key={i} className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[0.7rem] overflow-hidden">
+          <div key={i} className="std-card mb-[0.7rem]">
             <div className="p-[0.7rem_0.9rem] border-b border-[#E5DDD4] flex items-center justify-between">
               <h4 className="text-[0.78rem] font-bold text-[#2B2D42] m-0">{w.week}</h4>
-              <div className={`font-['DM_Serif_Display'] text-[0.9rem] ${w.progress ? 'text-[#4CAF50]' : 'text-[#9597A6]'}`}>
+              <div className={`std-section-title text-[0.9rem] ${w.progress ? 'text-[#4CAF50]' : 'text-[#9597A6]'}`}>
                 {w.progress || '—'}{w.progress ? '%' : ''}
               </div>
             </div>

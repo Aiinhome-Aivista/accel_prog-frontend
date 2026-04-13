@@ -248,12 +248,12 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   if (!w.ul) {
     return (
-      <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
+      <div className="learning-tab-container">
         <WeekTabs w={weeks} curW={curW} setCurW={setCurW} />
-        <div className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[1rem]">
+        <div className="std-card">
           <div className="p-[2rem] text-center text-[#9597A6]">
             <div className="text-[1.6rem] mb-[0.5rem]">🔒</div>
-            <h3 className="font-['DM_Serif_Display'] text-[1.17em] text-[#2B2D42] mb-[0.2rem] mt-0">
+            <h3 className="std-section-title mb-[0.2rem] mt-0">
               Week Locked
             </h3>
             <p className="text-[0.78rem] m-0">
@@ -398,17 +398,14 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   // };
 
   return (
-    <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
+    <div className="learning-tab-container">
       <WeekTabs w={weeks} curW={curW} setCurW={setCurW} />
 
-      <div
-        className="text-[1.3rem] text-[#2B2D42] mb-[1.2rem] font-medium"
-        style={{ fontFamily: '"DM Serif Display", serif' }}
-      >
+      <h2 className="std-section-title mb-[1.2rem]">
         {w.t}
-      </div>
+      </h2>
 
-      <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[0.6rem] mb-[1.2rem]">
+      <div className="std-card p-[0.6rem] mb-[1.2rem]">
         {w.subs.map((s, si) => {
           const a = si === curS;
           const d = done.has(s.id);
@@ -423,13 +420,13 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           return (
             <div
               key={si}
-              className={`flex items-center gap-[0.45rem] p-[0.45rem_0.6rem] rounded-[8px] cursor-pointer text-[0.73rem] font-medium transition-all mb-[0.15rem] ${d
+              className={`std-sidebar-item gap-[0.45rem] p-[0.45rem_0.6rem] rounded-[8px] mb-[0.15rem] border-none ${d
                 ? "bg-[#E8F5E9] text-[#4CAF50] font-semibold"
                 : a
-                  ? "bg-[#e87a2e1f] text-[#E87A2E] font-semibold"
+                  ? "std-sidebar-item-active font-semibold"
                   : l
-                    ? "opacity-35 cursor-default hover:bg-transparent text-[#6B6D7B]"
-                    : "text-[#6B6D7B] hover:bg-[#F9F5F0] hover:text-[#2B2D42]"
+                    ? "opacity-35 cursor-default hover:bg-transparent"
+                    : ""
                 }`}
               onClick={() => {
                 if (!l) setCurS(si);
@@ -453,7 +450,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
         })}
       </div>
 
-      <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[0.7rem_1rem] mb-[1.2rem] flex items-center gap-[0.8rem]">
+      <div className="std-card p-[0.7rem_1rem] mb-[1.2rem] flex items-center gap-[0.8rem]">
         <span className="text-[0.74rem] font-semibold text-[#2B2D42] whitespace-nowrap">
           {doneCount} of {w.subs.length} completed
         </span>
@@ -469,7 +466,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
       </div>
 
       {lk ? (
-        <div className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[1rem]">
+        <div className="std-card mb-[1rem]">
           <div className="p-[2rem] text-center text-[#9597A6]">
             <div className="text-[1.4rem] mb-[0.4rem]">🔒</div>
             <p className="text-[0.78rem] m-0">
@@ -480,7 +477,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
       ) : (
         <>
           {sub.type === "reading" && (
-            <div className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden mb-[1rem]">
+            <div className="std-card overflow-hidden mb-[1rem]">
               <div className="p-[0.5rem_0.8rem] bg-[#F9F5F0] border-b border-[#E5DDD4] flex items-center justify-between">
                 <span className="text-[0.7rem] font-semibold text-[#6B6D7B] flex items-center gap-1.5">
                   <FileText size={14} /> {sub.title}
@@ -511,7 +508,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           )}
           {sub.type === "video" && (
             <div 
-              className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center cursor-pointer"
+              className="std-card bg-black aspect-video relative group mb-[1rem] flex items-center justify-center cursor-pointer"
               onClick={togglePlay}
             >
               <div className="absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
@@ -594,7 +591,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               return (
                 <div
                   key={label}
-                  className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[0.8rem] overflow-hidden"
+                  className="std-card mb-[0.8rem] overflow-hidden"
                 >
                   <div className="p-[0.7rem_1rem] border-b border-[#E5DDD4] flex items-center gap-[0.4rem]">
                     <div
@@ -635,8 +632,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                           {isMcq ? (
                             <div className="flex flex-col gap-[0.25rem]">
                               {q.opts?.map((o: string, oi: number) => {
-                                let cls =
-                                  "flex items-start gap-[0.4rem] p-[0.45rem_0.6rem] rounded-[8px] border-[1.5px] cursor-pointer text-[0.78rem] transition-all ";
+                                let cls = "assessment-option ";
                                 if (sel !== undefined) {
                                   // If submitted, show results
                                   if (submitted) {
@@ -647,26 +643,19 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
                                     // selected correct → GREEN
                                     if (isCorrect && oi === sel)
-                                      cls +=
-                                        "border-[#4CAF50] bg-[#E8F5E9] text-[#2E7D32]";
+                                      cls += "assessment-option-correct";
                                     // wrong → correct option GREEN
                                     else if (!isCorrect && o === correctAnswer)
-                                      cls +=
-                                        "border-[#4CAF50] bg-[#E8F5E9] text-[#2E7D32]";
+                                      cls += "assessment-option-correct";
                                     // wrong → selected RED (FIXED USING TEXT)
                                     else if (!isCorrect && o === selectedText)
-                                      cls +=
-                                        "border-[#EA4335] bg-[#ea433514] text-[#C62828]";
-                                    else
-                                      cls += "border-[#E5DDD4] text-[#6B6D7B]";
+                                      cls += "assessment-option-wrong";
                                   } else {
                                     // If submitting (not yet submitted), blur the selected option
                                     if (oi === sel)
-                                      cls +=
-                                        "border-[#E87A2E] bg-[#e87a2e1f] text-[#E87A2E] opacity-50 cursor-wait";
+                                      cls += "assessment-option-selected opacity-50 cursor-wait";
                                     else
-                                      cls +=
-                                        "border-[#E5DDD4] text-[#6B6D7B] opacity-50 pointer-events-none";
+                                      cls += "opacity-50 pointer-events-none";
                                   }
                                 } else {
                                   cls +=
@@ -817,19 +806,19 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
           {sub.type === "discussion" && (
             <div className="mb-[1rem]">
-              <div className="bg-[#121421] rounded-t-[14px] p-[1.1rem_1.3rem] text-white">
-                <h4 className="font-['DM_Serif_Display'] text-[0.94rem] leading-[1.5] mb-[0.6rem] m-0">
+              <div className="bg-[#1A1B2E] rounded-t-[14px] p-[1.1rem_1.3rem] text-white">
+                <h4 className="std-section-title text-white text-[0.94rem] leading-[1.5] mb-[0.6rem] m-0">
                   {discussionData?.question_text || sub.topic || "Discussion"}
                 </h4>
-                <div className="flex items-center gap-[0.45rem] text-[0.68rem] text-[#9597A6] font-medium">
+                <div className="flex items-center gap-[0.45rem] text-[0.68rem] text-white/60 font-medium">
                   <span>Cohort {discussionData?.tag || "Alpha-3"}</span>
                   <span className="opacity-40">•</span>
                   <span>{sub.moduleName}</span>
                 </div>
               </div>
-              <div className="bg-white border text-[#2B2D42] border-t-0 border-[#E5DDD4] rounded-b-[14px] p-[0.8rem]">
+              <div className="std-card border-t-0 rounded-t-none p-[0.8rem]">
                 <div className="flex gap-[0.4rem] mb-[0.6rem] items-start">
-                  <div className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[0.55rem] font-bold shrink-0 bg-[#e87a2e1f] text-[#E87A2E]">
+                  <div className="std-avatar bg-[#e87a2e1f] text-[#E87A2E]">
                     You
                   </div>
                   <textarea
@@ -859,7 +848,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                     className="flex gap-[0.4rem] py-[0.4rem] border-b border-black/5 last:border-none"
                   >
                     <div
-                      className={`w-[26px] h-[26px] rounded-full flex items-center justify-center text-[0.55rem] font-bold shrink-0 ${i % 2 ? "bg-[#E8F5E9] text-[#4CAF50]" : "bg-[#e87a2e1f] text-[#E87A2E]"}`}
+                      className={`std-avatar ${i % 2 ? "bg-[#E8F5E9] text-[#4CAF50]" : "bg-[#e87a2e1f] text-[#E87A2E]"}`}
                     >
                       {m.a}
                     </div>
@@ -887,7 +876,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             </div>
           )}
           {sub.type === "project" && (
-            <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[1.1rem] mb-[1rem]">
+            <div className="std-card p-[1.1rem] mb-[1rem]">
               <div
                 style={{ "--dynamic-color": weekColor } as React.CSSProperties}
                 className="prose prose-sm max-w-none text-[#6B6D7B] text-[0.78rem] leading-[1.6] mb-[1.2rem]
@@ -959,8 +948,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               className={`px-[1.1rem] py-[0.5rem] rounded-[9px] border text-[0.78rem] font-semibold flex items-center gap-[0.3rem] transition-all cursor-pointer ${isDone
                 ? "bg-[#4CAF50] text-white border-[#4CAF50] hover:bg-[#388E3C]"
                 : loadingSubtopic === sub.id
-                  ? "bg-[#E87A2E] text-white border-[#E87A2E] opacity-75 cursor-wait"
-                  : "bg-[#F9F5F0] text-[#6B6D7B] border-[#E5DDD4] hover:border-[#4CAF50] hover:text-[#4CAF50]"
+                  ? "btn-std-primary opacity-75 cursor-wait"
+                  : "btn-std-secondary hover:border-[#4CAF50] hover:text-[#4CAF50]"
                 }`}
               onClick={() =>
                 !isDone && !loadingSubtopic && handleMarkComplete(sub.id)
@@ -1010,11 +999,11 @@ const WeekTabs: React.FC<{
     {w.map((wk, i) => (
       <button
         key={i}
-        className={`px-[1rem] py-[0.45rem] rounded-full border-[1.5px] font-semibold text-[0.72rem] transition-all font-inherit ${i === curW
-          ? "bg-[#E87A2E] text-white border-[#E87A2E]"
+        className={`std-nav-item rounded-full border-[1.5px] px-[1rem] py-[0.45rem] font-semibold text-[0.72rem] ${i === curW
+          ? "std-nav-item-active border-[#E87A2E]"
           : !wk.ul
             ? "bg-white border-[#E5DDD4] text-[#6B6D7B] opacity-40 cursor-default hover:border-[#E5DDD4] hover:text-[#6B6D7B]"
-            : "bg-white border-[#E5DDD4] text-[#6B6D7B] cursor-pointer hover:border-[#E87A2E] hover:text-[#E87A2E]"
+            : "bg-white border-[#E5DDD4] text-[#6B6D7B]"
           }`}
         onClick={() => wk.ul && setCurW(i)}
       >

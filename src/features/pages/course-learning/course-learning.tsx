@@ -287,12 +287,12 @@ const CourseLearning: React.FC = () => {
               ? "It seems you are not enrolled in this course yet. Please enroll from the dashboard to access the content."
               : "We encountered an issue while loading your course content. Please try again later."}
           </p>
-          <Link
-            to="/dashboard"
-            className="px-6 py-2.5 rounded-lg bg-[#E87A2E] text-white font-semibold no-underline hover:bg-[#D06A20] transition-colors"
-          >
-            Back to Dashboard
-          </Link>
+            <Link
+              to="/dashboard"
+              className="btn-std-primary"
+            >
+              Back to Dashboard
+            </Link>
         </div>
       );
     }
@@ -342,7 +342,7 @@ const CourseLearning: React.FC = () => {
             <Menu size={20} />
           </button>
           
-          <Link to="/dashboard" className="flex items-center gap-[0.2rem] no-underline text-[0.74rem] font-medium text-[#9597A6] p-[0.25rem_0.4rem] rounded-[5px] transition-all hover:text-[#E87A2E] hover:bg-[#e87a2e1f]">
+          <Link to="/dashboard" className="std-nav-item flex items-center gap-[0.2rem]">
             <ChevronLeft size={12} /> Dashboard
           </Link>
 
@@ -357,11 +357,12 @@ const CourseLearning: React.FC = () => {
         </a>
         </div>
         <div className="flex items-center gap-[0.5rem]">
-          <div className="flex items-center gap-[0.25rem] px-[0.55rem] py-[0.2rem] rounded-full bg-gradient-to-br from-[#FF6B35] to-[#F7931E] text-white text-[0.62rem] font-bold">
+          <div className="std-badge" style={{ background: "linear-gradient(to bottom right, #FF6B35, #F7931E)", color: "white" }}>
             🔥 {kpiData?.streak_days || 0}
           </div>
           <div 
-            className="w-[28px] h-[28px] rounded-full bg-[#e87a2e1f] flex items-center justify-center text-[0.6rem] font-bold text-[#E87A2E] cursor-pointer"
+            className="std-stat-icon"
+            style={{ background: "rgba(232, 122, 46, 0.1)", color: "#E87A2E", width: "28px", height: "28px", fontSize: "0.7rem" }}
             title={user?.name || "User"}
           >
             {user?.name?.[0]?.toUpperCase() || "L"}

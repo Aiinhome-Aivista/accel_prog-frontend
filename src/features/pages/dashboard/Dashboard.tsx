@@ -538,11 +538,7 @@ const activityConfig = {
                   key={item.id}
                   href={item.id === "dashboard" ? "#" : `#${item.id}`}
                   onClick={(e) => handleNavClick(e, item.id)}
-                  className={`text-[13px] py-1.5 px-2.5 rounded-md transition-colors cursor-pointer ${
-                    activeSection === item.id
-                      ? "font-semibold text-[#E87A2E] bg-[#E87A2E]/10"
-                      : "font-medium text-[#6B6D7B] hover:text-[#E87A2E] hover:bg-[#E87A2E]/10"
-                  }`}
+                  className={`std-nav-item ${activeSection === item.id ? "std-nav-item-active" : ""}`}
                 >
                   {item.label}
                 </a>
@@ -573,7 +569,7 @@ const activityConfig = {
       </nav>
 
       {/* Main Container */}
-      <main className="max-w-[1060px] w-full mx-auto px-6 py-8 pb-16 flex-1">
+      <main className="std-container py-8 pb-16 flex-1">
         {/* Welcome */}
         <div
           id="welcome-section"
@@ -603,13 +599,13 @@ const activityConfig = {
           </div>
           <div className="flex flex-wrap gap-2">
             <button
-              className="px-5 py-2.5 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[13px] font-semibold transition-colors cursor-pointer"
+              className="btn-std-primary"
               onClick={() => handleContinueLearning(1)}
             >
               Continue Learning
             </button>
             <button
-              className="px-5 py-2.5 rounded-lg bg-white border-[1.5px] border-[#E5DDD4] text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[13px] font-semibold transition-colors cursor-pointer"
+              className="btn-std-secondary"
               onClick={() =>
                 document
                   .getElementById("browse")
@@ -626,19 +622,19 @@ const activityConfig = {
           {stats.map((stat) => (
             <div
               key={stat.id}
-              className="bg-white rounded-[14px] border border-[#E5DDD4] p-4 flex items-center gap-3.5 hover:shadow-[0_2px_8px_rgba(43,45,66,.06)] transition-shadow"
+              className="std-stat-card"
             >
               <div
-                className="w-10 h-10 rounded-[10px] flex items-center justify-center text-[1.1rem] shrink-0"
+                className="std-stat-icon"
                 style={{ background: stat.iconBg }}
               >
                 {stat.icon}
               </div>
               <div>
-                <div className=" text-[1.3rem] text-[#2B2D42]">
+                <div className="std-stat-value">
                   {stat.value}
                 </div>
-                <div className="text-[11px] text-[#9597A6] font-medium">
+                <div className="std-stat-label">
                   {stat.label}
                 </div>
               </div>
@@ -649,16 +645,13 @@ const activityConfig = {
         {/* In Progress Courses */}
         <div id="myCourses" className="scroll-mt-20">
           <div className="flex items-center justify-between mb-4">
-            <h2
-              className="text-[1.15rem] text-[#2B2D42] font-bold"
-              style={{ fontFamily: '"DM Serif Display", serif' }}
-            >
+            <h2 className="std-section-title">
               My Courses{" "}
               {enrolledCourses.length > 0 && enrolledCourses[0]?.status
                 ? `— ${enrolledCourses[0].status}`
                 : ""}
             </h2>
-            <div className="text-[10px] font-bold px-2.5 py-[3px] rounded-full bg-[#E87A2E]/10 text-[#E87A2E]">
+            <div className="std-badge" style={{ background: "rgba(232, 122, 46, 0.1)", color: "#E87A2E" }}>
               {isLoadingEnrolled ? "-" : enrolledCourses.length} Active
             </div>
           </div>
@@ -699,7 +692,7 @@ const activityConfig = {
               {enrolledCourses.map((course) => (
                 <div
                   key={course.id}
-                  className="bg-white rounded-[14px] border border-[#E5DDD4] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all cursor-pointer group"
+                  className="std-card std-card-hover flex flex-col group"
                 >
                   <div
                     className="h-2 w-full"
@@ -707,7 +700,7 @@ const activityConfig = {
                   ></div>
                   <div className="p-[1.2rem] flex-1 flex flex-col">
                     <div
-                      className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-wider px-2 py-1 rounded-full mb-2.5 w-fit"
+                      className="std-badge mb-2.5 w-fit"
                       style={{
                         background: course.badgeBg,
                         color: course.badgeColor,
@@ -752,13 +745,13 @@ const activityConfig = {
                     )}
                     <div className="flex gap-2">
                       <button
-                        className="flex-1 py-[7.5px] px-3 rounded-lg border-none bg-[#E87A2E] hover:bg-[#D06A20] text-white text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
+                        className="btn-std-primary flex-1"
                         onClick={() => handleContinueLearning(course.id)}
                       >
                         Continue Learning
                       </button>
                       <button
-                        className="flex-1 py-[7.5px] px-3 rounded-lg border-[1.5px] border-[#E5DDD4] bg-white text-[#6B6D7B] hover:text-[#E87A2E] hover:border-[#E87A2E] text-[11.8px] font-semibold transition-colors flex items-center justify-center cursor-pointer"
+                        className="btn-std-secondary flex-1"
                         onClick={() =>
                           navigate(
                             `/course-learning?course_id=${course.id}&tab=grades`,

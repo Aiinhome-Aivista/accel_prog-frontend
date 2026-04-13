@@ -71,10 +71,7 @@ export const ModulesTab: React.FC = () => {
 
   return (
     <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
-      <div
-        className="font-['DM_Serif_Display'] text-[1.3rem] text-[#2B2D42] mb-[1.2rem] font-medium"
-        style={{ fontFamily: '"DM Serif Display", serif' }}
-      >
+      <div className="std-section-title text-[1.3rem] mb-[1.2rem]">
         Modules Overview
       </div>
       <p className="text-[0.8rem] text-[#6B6D7B] mt-[-0.8rem] mb-[1rem] leading-[1.5]">
@@ -91,29 +88,29 @@ export const ModulesTab: React.FC = () => {
         return (
           <div
             key={i}
-            className="bg-white rounded-[14px] border border-[#E5DDD4] mb-[0.8rem] overflow-hidden"
+            className="std-card mb-[0.8rem]"
           >
             <div
-              className="p-[0.8rem_1rem] flex items-center gap-[0.5rem] cursor-pointer hover:bg-[#F9F5F0] transition-colors"
+              className={`p-[0.8rem_1rem] flex items-center gap-[0.5rem] cursor-pointer hover:bg-[#F9F5F0] transition-colors ${openMods[i] ? "border-b border-[#E5DDD4]" : ""}`}
               onClick={() => toggleMod(i)}
             >
               <div
-                className="w-[24px] h-[24px] rounded-full text-[0.65rem] font-bold flex items-center justify-center text-white shrink-0"
-                style={{ backgroundColor: bgColor }}
+                className="std-stat-icon text-[0.65rem] font-bold text-white shrink-0"
+                style={{ backgroundColor: bgColor, width: "24px", height: "24px" }}
               >
                 {m.week}
               </div>
               <h3 className="text-[0.85rem] font-bold text-[#2B2D42] flex-1 m-0">
                 {m.module_name}
               </h3>
-              <span className="text-[0.62rem] text-[#9597A6] font-medium">
+              <div className="std-badge" style={{ background: "transparent", color: "#9597A6", fontWeight: "500", padding: 0 }}>
                 {m.days?.length ? `${m.days.length} Days` : "No Days"}
                 {!hasUnlocked ? " · 🔒" : " · 🔓"}
-              </span>
+              </div>
             </div>
 
             {openMods[i] && (
-              <div className="px-[1rem] pb-[0.8rem]">
+              <div className="px-[1rem] py-[0.8rem]">
                 {!m.days || m.days.length === 0 ? (
                   <div className="text-[0.75rem] text-[#9597A6] py-3 text-center bg-[#F9F5F0] rounded-[8px] italic font-medium">
                     No data found
