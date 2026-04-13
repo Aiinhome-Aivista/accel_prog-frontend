@@ -8,6 +8,13 @@ import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import HeroIcon from "../../../assets/hero.svg";
+import {
+  FiFileText,
+  FiCheck,
+  FiMessageSquare,
+  FiBookOpen,
+} from "react-icons/fi";
+import { BsFire } from "react-icons/bs";
 
 import type {
   DashboardData,
@@ -256,6 +263,35 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       setIsLoadingActivities(false);
     }
   }, [user]);
+
+const activityConfig = {
+  completed: {
+    icon: <FiFileText size={14} className="text-[#6B7280]" />,
+    bg: "#F3F4F6", // gray
+  },
+  assessment: {
+    icon: <FiCheck size={14} className="text-white" />,
+    bg: "#22C55E", // green solid
+  },
+  discussion: {
+    icon: <FiMessageSquare size={14} className="text-[#6B7280]" />,
+    bg: "#F3F4F6", // gray
+  },
+  streak: {
+    icon: <BsFire size={14} className="text-[#F97316]" />,
+    bg: "#FEF3C7", // light orange
+  },
+  flashcard: {
+    icon: <FiBookOpen size={14} className="text-[#6B7280]" />,
+    bg: "#F3F4F6",
+  },
+  // enrolled: {
+  //   icon: <FiBookOpen size={14} className="text-[#6B7280]" />,
+  //   bg: "#F3F4F6",
+  // },
+};
+
+
 
   const refreshAllData = useCallback(() => {
     fetchDashboardData();
@@ -1016,11 +1052,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 key={index}
                 className="flex items-start gap-3 p-3.5 hover:bg-[#F9F5F0] transition-colors border-b last:border-b-0 border-[rgba(0,0,0,.04)]"
               >
+                
                 <div
                   className="w-[32px] h-[32px] rounded-lg flex items-center justify-center text-[13.5px] shrink-0"
-                  style={{ background: act.iconBg || "rgba(232,122,46,.1)" }}
+                  style={{ background:  activityConfig[act.type as keyof typeof activityConfig]?.bg || "rgba(232,122,46,.1)" }}
                 >
-                  {act.icon || "🚀"}
+                  {activityConfig[act.type as keyof typeof activityConfig]?.icon || "🚀"}
                 </div>
                 <div className="flex-1 mt-0.5">
                   <h4 className="text-[12.5px] font-semibold text-[#2B2D42] mb-[2px]">
