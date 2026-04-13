@@ -31,6 +31,7 @@ export interface ActivityData {
   title: string;
   description: string;
   time: string;
+  type:string;
 }
 
 export interface DashboardData {
