@@ -270,8 +270,8 @@ const activityConfig = {
     bg: "#F3F4F6", // gray
   },
   assessment: {
-    icon: <FiCheck size={14} className="text-white" />,
-    bg: "#22C55E", // green solid
+    icon: <FiCheck size={14} className="text-[#22C55E]" />,
+    bg: "#F3F4F6", // green solid
   },
   discussion: {
     icon: <FiMessageSquare size={14} className="text-[#6B7280]" />,
