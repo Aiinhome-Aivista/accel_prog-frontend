@@ -122,6 +122,13 @@ body {
   letter-spacing: 0.02em;
 }
 
+@media (max-width: 768px) {
+  .nav-logo-tag {
+    display: none;
+  }
+}
+
+
 .nav-links {
   display: flex;
   align-items: center;
