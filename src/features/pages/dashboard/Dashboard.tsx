@@ -8,9 +8,13 @@ import LogoutModal from "../../../modals/LogoutModal";
 import { dashboardService } from "../../../services/dashboardService";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import HeroIcon from "../../../assets/hero.svg";
-import { FaCheck, FaFire, FaBook } from "react-icons/fa";
-import { MdChat } from "react-icons/md";
-import { HiDocumentText } from "react-icons/hi";
+import {
+  FiFileText,
+  FiCheck,
+  FiMessageSquare,
+  FiBookOpen,
+} from "react-icons/fi";
+import { BsFire } from "react-icons/bs";
 
 import type {
   DashboardData,
@@ -260,30 +264,30 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   }, [user]);
 
- const activityConfig = {
+const activityConfig = {
   completed: {
-    icon: <HiDocumentText className="text-[#7C3AED]" size={14} />,
-    bg: "#F3E8FF",
+    icon: <FiFileText size={14} className="text-[#6B7280]" />,
+    bg: "#F3F4F6", // gray
   },
   assessment: {
-    icon: <FaCheck className="text-[#16A34A]" size={14} />,
-    bg: "#DCFCE7",
+    icon: <FiCheck size={14} className="text-white" />,
+    bg: "#22C55E", // green solid
   },
   discussion: {
-    icon: <MdChat className="text-[#0284C7]" size={14} />,
-    bg: "#E0F2FE",
+    icon: <FiMessageSquare size={14} className="text-[#6B7280]" />,
+    bg: "#F3F4F6", // gray
   },
   streak: {
-    icon: <FaFire className="text-[#DC2626]" size={14} />,
-    bg: "#FEE2E2",
+    icon: <BsFire size={14} className="text-[#F97316]" />,
+    bg: "#FEF3C7", // light orange
   },
   flashcard: {
-    icon: <FaBook className="text-[#CA8A04]" size={14} />,
-    bg: "#FEF3C7",
+    icon: <FiBookOpen size={14} className="text-[#6B7280]" />,
+    bg: "#F3F4F6",
   },
   // enrolled: {
-  //   icon: <FaBook className="text-[#4F46E5]" size={14} />,
-  //   bg: "#EEF2FF",
+  //   icon: <FiBookOpen size={14} className="text-[#6B7280]" />,
+  //   bg: "#F3F4F6",
   // },
 };
 
