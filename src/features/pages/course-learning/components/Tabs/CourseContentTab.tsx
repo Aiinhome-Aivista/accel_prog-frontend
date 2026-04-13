@@ -73,6 +73,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
+  const weekColor = weeks[curW]?.color || "#E87A2E";
 
   useEffect(() => {
     setIsEditing(false);
@@ -500,7 +501,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   />
                 ) : (
                   <div
-                    className="prose prose-sm prose-slate max-w-none text-[#6B6D7B] [&>h2]:font-['DM_Serif_Display'] [&>h2]:text-[1.05rem] [&>h2]:text-[#2B2D42] [&>h2]:mt-[1.2rem] [&>h2]:mb-[0.4rem] [&>h2:first-child]:mt-0 [&>p]:mb-[0.7rem] [&>blockquote]:border-l-[3px] [&>blockquote]:border-[#E87A2E] [&>blockquote]:p-[0.5rem_0.9rem] [&>blockquote]:my-[0.7rem] [&>blockquote]:bg-[#e87a2e1f] [&>blockquote]:rounded-r-[8px] [&>blockquote]:italic [&>strong]:text-[#2B2D42] [&_code]:bg-[#F9F5F0] [&_code]:p-[0.1rem_0.3rem] [&_code]:rounded-[3px] [&_code]:font-mono [&_code]:text-[0.78rem] [&_code]:text-[#D06A20] [&_ul]:list-disc [&_ul]:ml-[1.2rem] [&_li]:mb-[0.3rem]"
+                    style={{ "--dynamic-color": weekColor } as React.CSSProperties}
+                    className="prose prose-sm prose-slate max-w-none text-[#6B6D7B] [&>h2]:font-['DM_Serif_Display'] [&>h2]:text-[1.05rem] [&>h2]:text-[#2B2D42] [&>h2]:mt-[1.2rem] [&>h2]:mb-[0.4rem] [&>h2:first-child]:mt-0 [&>p]:mb-[0.7rem] [&>blockquote]:border-l-[3px] [&>blockquote]:border-[#E87A2E] [&>blockquote]:p-[0.5rem_0.9rem] [&>blockquote]:my-[0.7rem] [&>blockquote]:bg-[#e87a2e1f] [&>blockquote]:rounded-r-[8px] [&>blockquote]:italic [&>strong]:text-[#2B2D42] [&_code]:bg-[#F9F5F0] [&_code]:p-[0.1rem_0.3rem] [&_code]:rounded-[3px] [&_code]:font-mono [&_code]:text-[0.78rem] [&_code]:text-[#D06A20] [&_ul]:list-disc [&_ul]:pl-5 [&_li]:list-item [&_li]:marker:text-[var(--bullet-color,var(--dynamic-color))] [&_li]:mb-[0.3rem]"
                     dangerouslySetInnerHTML={{ __html: sub.content || "" }}
                   />
                 )}
@@ -887,9 +889,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           {sub.type === "project" && (
             <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[1.1rem] mb-[1rem]">
               <div
+                style={{ "--dynamic-color": weekColor } as React.CSSProperties}
                 className="prose prose-sm max-w-none text-[#6B6D7B] text-[0.78rem] leading-[1.6] mb-[1.2rem]
                 [&_h3]:text-[1rem] [&_h3]:text-[#2B2D42] [&_h3]:font-bold [&_h3]:mb-[0.5rem]
-                [&_ul]:list-disc [&_ul]:ml-[1.2rem] [&_li]:mb-[0.3rem]"
+                [&_ul]:list-disc [&_ul]:pl-5 [&_li]:list-item [&_li]:marker:text-[var(--bullet-color,var(--dynamic-color))] [&_li]:mb-[0.3rem]"
                 dangerouslySetInnerHTML={{ __html: sub.content || "" }}
               />
 
