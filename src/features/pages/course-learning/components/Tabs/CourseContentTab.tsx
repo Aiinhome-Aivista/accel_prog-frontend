@@ -808,10 +808,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             <div className="mb-[1rem]">
               <div className="bg-[#1A1B2E] rounded-t-[14px] p-[1.1rem_1.3rem] text-white">
                 <h4 className="std-section-title text-white text-[0.94rem] leading-[1.5] mb-[0.6rem] m-0">
-                  {discussionData?.question_text || sub.topic || "Discussion"}
+                  {discussionData?.question_text || sub.topic}
                 </h4>
                 <div className="flex items-center gap-[0.45rem] text-[0.68rem] text-white/60 font-medium">
-                  <span>Cohort {discussionData?.tag || "Alpha-3"}</span>
+                  <span>Cohort {discussionData?.tag}</span>
                   <span className="opacity-40">•</span>
                   <span>{sub.moduleName}</span>
                 </div>
