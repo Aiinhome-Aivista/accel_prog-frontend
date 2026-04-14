@@ -13,6 +13,7 @@ import {
   FiCheck,
   FiMessageSquare,
   FiBookOpen,
+  FiMenu,
 } from "react-icons/fi";
 import { BsFire } from "react-icons/bs";
 
@@ -558,12 +559,10 @@ const activityConfig = {
             {displayInitial}
           </div>
           <button
-            className="md:hidden p-1 flex flex-col gap-1 cursor-pointer bg-transparent border-none"
+            className="md:hidden p-1 flex cursor-pointer bg-transparent border-none text-[#2B2D42] items-center"
             onClick={() => setNavOpen(!navOpen)}
           >
-            <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
-            <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
-            <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
+            <FiMenu size={26} />
           </button>
         </div>
       </nav>
