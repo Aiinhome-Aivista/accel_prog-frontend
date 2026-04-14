@@ -14,8 +14,8 @@ const Footer: React.FC<FooterProps> = ({
 }) => {
   return (
     <footer>
-      <div className="footer-inner">
-        <div className="footer-left">
+      <div className="footer-inner flex-between">
+        <div className="footer-left flex-align-center gap-1">
           <img
             src={LogoIcon}
             className="nav-logo-icon"

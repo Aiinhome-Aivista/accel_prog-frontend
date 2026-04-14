@@ -348,7 +348,7 @@ const CourseLearning: React.FC = () => {
 
           <a
           href="#"
-          className="nav-logo"
+          className="nav-logo flex-align-center gap-05"
           onClick={(e) => {
             e.preventDefault();
           }}

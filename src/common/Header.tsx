@@ -18,16 +18,16 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <>
-      <div className="top-bar">
+      <div className="top-bar flex-center gap-2">
         <a href="#">Request a Demo</a>
         <a href="#">FAQs</a>
         <a href="#">Help Center</a>
       </div>
 
-      <nav className="nav">
+      <nav className="nav flex-between">
         <a
           href="#"
-          className="nav-logo"
+          className="nav-logo flex-align-center gap-05"
           onClick={(e) => {
             e.preventDefault();
             onCloseNav();
@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({
           </a>
 
           <button
-            className="btn-signin btn-signin-fill"
+            className="btn-signin btn-signin-fill btn-primary"
             onClick={onSignInClick}
           >
             Sign In

@@ -1,36 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
-
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --orange: #e87a2e;
-  --orange-dark: #d06a20;
-  --orange-light: #f5943e;
-  --orange-glow: rgba(232, 122, 46, 0.12);
-  --navy: #2b2d42;
-  --navy-dark: #1a1b2e;
-  --bg: #f3ede7;
-  --bg-card: #ffffff;
-  --bg-light: #f9f5f0;
-  --text-primary: #2b2d42;
-  --text-secondary: #6b6d7b;
-  --text-muted: #9597a6;
-  --border: #e5ddd4;
-  --green: #4caf50;
-  --green-light: #e8f5e9;
-  --shadow-sm: 0 2px 8px rgba(43, 45, 66, 0.06);
-  --shadow-md: 0 8px 24px rgba(43, 45, 66, 0.08);
-  --shadow-lg: 0 16px 48px rgba(43, 45, 66, 0.12);
-  --radius: 14px;
-  --radius-sm: 8px;
-}
-
 .reg-page {
   height: 100vh;
   max-height: 100vh;
@@ -46,9 +13,6 @@
   border-bottom: 1px solid var(--border);
   padding: 0 2rem;
   height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -56,9 +20,6 @@
 }
 
 .reg-back {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -137,9 +98,6 @@
 }
 
 .reg-sec-item {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
   padding: 0.55rem 0.8rem;
   border-radius: 8px;
   cursor: pointer;
@@ -173,9 +131,6 @@
   height: 20px;
   border-radius: 50%;
   border: 2px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
   font-size: 0.6rem;
   transition: all 0.2s;
@@ -198,11 +153,6 @@
 }
 
 .reg-main {
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
   width: 100%;
   max-width: 680px;
   height: 100%;
@@ -248,9 +198,6 @@
 }
 
 .reg-import-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   padding: 0.65rem 1.2rem;
   border: 1.5px dashed var(--border);
   border-radius: 10px;
@@ -263,7 +210,6 @@
   transition: all 0.2s;
   flex: 1;
   min-width: 200px;
-  justify-content: center;
 }
 
 .reg-import-btn:hover {
@@ -302,14 +248,6 @@
 .reg-field input,
 .reg-field textarea,
 .reg-field select {
-  width: 100%;
-  padding: 0.7rem 0.9rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-family: inherit;
-  transition: all 0.2s;
-  background: var(--bg-light);
 }
 
 .reg-field input:focus,
@@ -360,9 +298,6 @@
   padding: 0.6rem 1rem 1rem;
   position: relative;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .reg-banner::before {
@@ -458,17 +393,6 @@
 .reg-nav-next {
   padding: 0.65rem 1.8rem;
   border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  background: var(--orange);
-  color: #fff;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
 }
 
 .reg-nav-next:hover {
@@ -500,9 +424,6 @@
   height: 80px;
   border-radius: 50%;
   background: var(--green-light);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   margin-bottom: 1.5rem;
 }
 

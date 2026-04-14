@@ -103,9 +103,9 @@ function LandingPage({
               builder - from prompt engineering to autonomous agents. Curated by
               industry leaders.
             </p>
-            <div className="hero-cta">
+            <div className="hero-cta flex-align-center gap-1 flex-wrap">
               <button
-                className="btn-signin btn-signin-fill"
+                className="btn-signin btn-signin-fill btn-primary"
                 onClick={onSignInClick}
               >
                 Enroll Now
@@ -127,7 +127,7 @@ function LandingPage({
             <div className="hero-circle"></div>
             <div className="hero-stats-float">
               <div
-                className="hero-stat-card"
+                className="hero-stat-card card-base"
                 style={{ animation: "float 3s ease-in-out infinite" }}
               >
                 <div className="hero-stat-num">
@@ -136,7 +136,7 @@ function LandingPage({
                 <div className="hero-stat-label">Courses</div>
               </div>
               <div
-                className="hero-stat-card"
+                className="hero-stat-card card-base"
                 style={{ animation: "float 3s ease-in-out .4s infinite" }}
               >
                 <div className="hero-stat-num">
@@ -145,7 +145,7 @@ function LandingPage({
                 <div className="hero-stat-label">Modules</div>
               </div>
               <div
-                className="hero-stat-card"
+                className="hero-stat-card card-base"
                 style={{ animation: "float 3s ease-in-out .8s infinite" }}
               >
                 <div className="hero-stat-num">
@@ -154,7 +154,7 @@ function LandingPage({
                 <div className="hero-stat-label">Capstones</div>
               </div>
               <div
-                className="hero-stat-card"
+                className="hero-stat-card card-base"
                 style={{ animation: "float 3s ease-in-out 1.2s infinite" }}
               >
                 <div className="hero-stat-num">
@@ -171,7 +171,7 @@ function LandingPage({
         <div className="container">
           <div className="section-header">
             <div className="section-label">
-              <div className="ico">
+              <div className="ico flex-center">
                 <svg viewBox="0 0 10 10" fill="none">
                   <path
                     d="M1 5h8M5 1v8"
@@ -194,28 +194,28 @@ function LandingPage({
 
           <div className="pathway-track fade-in">
             <div className="pathway-step">
-              <div className="pathway-num">1</div>
+              <div className="pathway-num flex-center">1</div>
               <div className="pathway-week">Course 1</div>
               <div className="pathway-name">AI Consumer & Builder</div>
               <div className="pathway-sessions">Foundation</div>
             </div>
 
             <div className="pathway-step">
-              <div className="pathway-num">2</div>
+              <div className="pathway-num flex-center">2</div>
               <div className="pathway-week">Course 2</div>
               <div className="pathway-name">Data & ML Architect</div>
               <div className="pathway-sessions">Core</div>
             </div>
 
             <div className="pathway-step">
-              <div className="pathway-num">3</div>
+              <div className="pathway-num flex-center">3</div>
               <div className="pathway-week">Course 3</div>
               <div className="pathway-name">Gen AI & RAG Specialist</div>
               <div className="pathway-sessions">Applied</div>
             </div>
 
             <div className="pathway-step">
-              <div className="pathway-num">4</div>
+              <div className="pathway-num flex-center">4</div>
               <div className="pathway-week">Course 4</div>
               <div className="pathway-name">Agentic & Deep Tech</div>
               <div className="pathway-sessions">Advanced</div>
@@ -226,8 +226,8 @@ function LandingPage({
 
       <section id="instructor">
         <div className="container">
-          <div className="instructor-card fade-in">
-            <div className="instructor-icon-wrap">
+          <div className="instructor-card fade-in flex-align-center gap-2">
+            <div className="instructor-icon-wrap flex-center">
               <svg viewBox="0 0 50 50" fill="none">
                 <circle cx="25" cy="15" r="7" stroke="#fff" strokeWidth="2" />
                 <path
@@ -295,7 +295,7 @@ function LandingPage({
         <div className="container">
           <div className="section-header">
             <div className="section-label">
-              <div className="ico">
+              <div className="ico flex-center">
                 <svg viewBox="0 0 10 10" fill="none" aria-hidden="true">
                   <rect
                     x="1"
@@ -331,7 +331,7 @@ function LandingPage({
 
           <div className="courses-grid">
             {courseData.map((course, index) => (
-              <div className="course-card fade-in" key={course.title}>
+              <div className="course-card fade-in card-base" key={course.title}>
                 <div className="course-card-top"></div>
                 <div className="course-card-body">
                   <div className="course-card-header">
@@ -373,7 +373,7 @@ function LandingPage({
                   </div>
 
                   <button
-                    className="btn-explore"
+                    className="btn-explore flex-align-center gap-05"
                     onClick={() => onExploreCourse(index)}
                   >
                     Explore More
@@ -563,10 +563,10 @@ function LandingPage({
                 "#edf7ed",
               ],
             ].map(([title, desc, icon, color, bgColor]) => (
-              <div className="feature fade-in" key={title as string}>
+              <div className="feature fade-in card-base" key={title as string}>
                 {/* Apply the dynamic colors using inline styles */}
                 <div
-                  className="feature-icon"
+                  className="feature-icon flex-center"
                   style={{
                     color: color as string,
                     backgroundColor: bgColor as string,
@@ -598,7 +598,7 @@ function LandingPage({
                 builder with real-world capstone projects.
               </p>
               <button
-                className="btn-signin btn-signin-fill"
+                className="btn-signin btn-signin-fill btn-primary"
                 onClick={onSignInClick}
               >
                 Enroll Now

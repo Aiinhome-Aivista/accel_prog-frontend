@@ -34,9 +34,9 @@ function renderField(
           onUpdateField(field.id, event.target.value)
         }
         disabled={field.id === "email"}
-        className={
+        className={`input-field ${
           field.id === "email" ? "opacity-60 cursor-not-allowed bg-gray-50" : ""
-        }
+        }`}
       />
     );
   }
@@ -44,6 +44,7 @@ function renderField(
   if (field.type === "textarea") {
     return (
       <textarea
+        className="input-field"
         placeholder={field.placeholder || ""}
         value={typeof value === "string" ? value : ""}
         onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
@@ -57,6 +58,7 @@ function renderField(
     return (
       <div className="flex flex-col gap-2">
         <select
+          className="input-field"
           value={typeof value === "string" ? value : ""}
           onChange={(event: ChangeEvent<HTMLSelectElement>) =>
             onUpdateField(field.id, event.target.value)
@@ -184,9 +186,9 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
   if (!section) return null;
 
   return (
-    <div className="reg-page active" id="regPage">
-      <div className="reg-topbar">
-        <button className="reg-back" onClick={onBackHome}>
+    <div className="reg-page active flex-column" id="regPage">
+      <div className="reg-topbar flex-between">
+        <button className="reg-back flex-align-center gap-05" onClick={onBackHome}>
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path
               d="M10 3L5 8l5 5"
@@ -199,12 +201,12 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
           Back to Home
         </button>
 
-        <a className="nav-logo" style={{ textDecoration: "none" }}>
+        <a className="nav-logo flex-align-center gap-05" style={{ textDecoration: "none" }}>
           <BrandLogo compact />
         </a>
       </div>
 
-      <div className="reg-banner">
+      <div className="reg-banner flex-center">
         <div className="reg-banner-inner">
           <h2>
             Let's Shape Your <em>AI Path</em>
@@ -236,11 +238,11 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
               return (
                 <button
                   type="button"
-                  className={`reg-sec-item ${active ? "active" : ""} ${completed && !active ? "completed" : ""}`}
+                  className={`reg-sec-item flex-align-center gap-05 ${active ? "active" : ""} ${completed && !active ? "completed" : ""}`}
                   onClick={() => goToSection(index)}
                   key={item.id}
                 >
-                  <div className="reg-sec-dot">
+                  <div className="reg-sec-dot flex-center">
                     {completed ? (
                       <svg
                         className="reg-sec-check"
@@ -265,7 +267,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
           </div>
         </div>
 
-        <div className="reg-main">
+        <div className="reg-main card-base flex-column">
           {!submitted ? (
             <>
               <div className="reg-form-header">
@@ -276,7 +278,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
               <div className="reg-form-body" ref={formBodyRef}>
                 {currentSection === 0 ? (
                   <div className="reg-import">
-                    <label className="reg-import-btn">
+                    <label className="reg-import-btn flex-center gap-05">
                       <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
                         <path
                           d="M9 2v10m0 0l-3-3m3 3l3-3"
@@ -310,7 +312,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
 
                     <button
                       type="button"
-                      className="reg-import-btn"
+                      className="reg-import-btn flex-center gap-05"
                       onClick={() =>
                         showInfo(
                           "LinkedIn Import",
@@ -397,7 +399,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 {currentSection < REG_SCHEMA.length - 1 ? (
                   <button
                     type="button"
-                    className="reg-nav-next"
+                    className="reg-nav-next btn-primary"
                     onClick={() => goToSection(currentSection + 1)}
                   >
                     Next
@@ -414,7 +416,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
                 ) : (
                   <button
                     type="button"
-                    className={`reg-nav-next submit ${isSubmitting ? "loading" : ""}`}
+                    className={`reg-nav-next btn-primary submit ${isSubmitting ? "loading" : ""}`}
                     onClick={submitForm}
                     disabled={isSubmitting}
                   >
@@ -443,7 +445,7 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
             </>
           ) : (
             <div className="reg-success">
-              <div className="reg-success-icon">
+              <div className="reg-success-icon flex-center">
                 <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
                   <path
                     d="M8 20l8 8L32 12"

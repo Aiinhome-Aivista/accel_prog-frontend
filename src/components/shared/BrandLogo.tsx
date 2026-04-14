@@ -13,7 +13,7 @@ function BrandLogo({ compact = false }: BrandLogoProps) {
                 alt="Logo"
                 aria-hidden="true"
             />
-            <div className="nav-logo-text">
+            <div className="nav-logo-text flex-column">
                 <span className="nav-logo-name">
                     Moksh<span>Path</span>
                 </span>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { courseService } from "../../services/courseService";
 import { useToast } from "../../utils/ToastContext";
-import { Edit, Trash2, Search, FileText } from "lucide-react";
+import { Edit, Search, FileText } from "lucide-react";
 
 // 1. Updated Interface to match your new JSON structure
 interface QuestionItem {

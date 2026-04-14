@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { courseService } from "../../services/courseService";
 import { useToast } from "../../utils/ToastContext";
-import { Edit, Trash2, Search } from "lucide-react";
+import { Edit, Search } from "lucide-react";
 
 interface ContentItem {
   content_id: number;

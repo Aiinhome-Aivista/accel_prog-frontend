@@ -96,7 +96,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     <div className="modal-overlay active" onClick={onClose}>
       <div className="modal" onClick={(event) => event.stopPropagation()}>
         <button
-          className="modal-close"
+          className="modal-close flex-center"
           onClick={onClose}
           aria-label="Close sign in modal"
         >
@@ -116,15 +116,15 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           </svg>
         </button>
 
-        <div className="modal-brand">
+        <div className="modal-brand flex-align-center gap-05">
           <img
             src={LogoIcon}
             className="nav-logo-icon"
             alt="Logo"
             aria-hidden="true"
           />
-          <span className="text-2xl">
-            Moksh<em>Path</em>
+          <span className="text-2xl nav-logo-name">
+            Moksh<span>Path</span>
           </span>
         </div>
 
@@ -138,6 +138,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           <div style={{ display: "flex", gap: "10px" }}>
             <input
               id="signin-email"
+              className="input-field"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -177,6 +178,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             <label htmlFor="signin-otp">OTP Code</label>
             <input
               id="signin-otp"
+              className="input-field"
               type="text"
               placeholder="Enter 6-digit code"
               value={otpCode}
@@ -185,7 +187,7 @@ function AdminSignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           </div>
         )}
         <button
-          className="btn-signin btn-signin-fill w-full mt-4 text-center justify-center flex items-center"
+          className="btn-signin btn-signin-fill btn-primary flex-center w-full mt-4"
           onClick={handleVerifyOtp}
           disabled={!isOtpSent || !otpCode.trim() || isVerifying}
         >
