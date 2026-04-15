@@ -170,9 +170,9 @@ const ManageContent: React.FC<ManageContentProps> = ({ setActiveTab, onEdit }) =
                   >
                     <Edit size={16} />
                   </button>
-                  <button className="font-medium text-red-500 hover:underline" title="Delete Content">
+                  {/* <button className="font-medium text-red-500 hover:underline" title="Delete Content">
                     <Trash2 size={16} />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

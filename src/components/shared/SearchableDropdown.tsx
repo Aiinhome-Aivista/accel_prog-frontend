@@ -20,6 +20,7 @@ export interface SearchableDropdownProps {
   onChange: (value: string) => void;
   error?: string;
   menuKey: string;
+  disabled?: boolean;
   openDropdownKey: string | null;
   setOpenDropdownKey: (key: string | null) => void;
 }
@@ -38,7 +39,7 @@ const selectStyles = (
       : "#E5DDD4",
     boxShadow: "none",
     "&:hover": {
-      borderColor: hasError ? "#f87171" : "#E87A2E",
+      borderColor: hasError ? "#f87171" : state.isDisabled ? "#E5DDD4" : "#E87A2E",
     },
   }),
   valueContainer: (base) => ({
@@ -125,6 +126,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   menuKey,
   openDropdownKey,
   setOpenDropdownKey,
+  disabled = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -148,6 +150,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
 
       <Select
         options={selectOptions}
+        isDisabled={disabled}
         value={selectedOption}
         menuIsOpen={openDropdownKey === menuKey}
         inputValue={inputValue}

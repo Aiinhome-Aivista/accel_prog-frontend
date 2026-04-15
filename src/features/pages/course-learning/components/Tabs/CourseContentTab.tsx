@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type {
   WeekData,
   Question,
@@ -58,9 +58,22 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
   const [submittingDiscussion, setSubmittingDiscussion] = useState(false);
   const [unansweredQuestions, setUnansweredQuestions] = useState<Set<string>>(new Set());
   const [uploadingProject, setUploadingProject] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  };
+
 
   // Provide new seed format properly on unmount/mount or just locally
   const [localMessage, setLocalMessage] = useState("");
+  const weekColor = weeks[curW]?.color || "#E87A2E";
 
   useEffect(() => {
     setIsEditing(false);
@@ -488,7 +501,8 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   />
                 ) : (
                   <div
-                    className="prose prose-sm prose-slate max-w-none text-[#6B6D7B] [&>h2]:font-['DM_Serif_Display'] [&>h2]:text-[1.05rem] [&>h2]:text-[#2B2D42] [&>h2]:mt-[1.2rem] [&>h2]:mb-[0.4rem] [&>h2:first-child]:mt-0 [&>p]:mb-[0.7rem] [&>blockquote]:border-l-[3px] [&>blockquote]:border-[#E87A2E] [&>blockquote]:p-[0.5rem_0.9rem] [&>blockquote]:my-[0.7rem] [&>blockquote]:bg-[#e87a2e1f] [&>blockquote]:rounded-r-[8px] [&>blockquote]:italic [&>strong]:text-[#2B2D42] [&_code]:bg-[#F9F5F0] [&_code]:p-[0.1rem_0.3rem] [&_code]:rounded-[3px] [&_code]:font-mono [&_code]:text-[0.78rem] [&_code]:text-[#D06A20] [&_ul]:list-disc [&_ul]:ml-[1.2rem] [&_li]:mb-[0.3rem]"
+                    style={{ "--dynamic-color": weekColor } as React.CSSProperties}
+                    className="prose prose-sm prose-slate max-w-none text-[#6B6D7B] [&>h2]:font-['DM_Serif_Display'] [&>h2]:text-[1.05rem] [&>h2]:text-[#2B2D42] [&>h2]:mt-[1.2rem] [&>h2]:mb-[0.4rem] [&>h2:first-child]:mt-0 [&>p]:mb-[0.7rem] [&>blockquote]:border-l-[3px] [&>blockquote]:border-[#E87A2E] [&>blockquote]:p-[0.5rem_0.9rem] [&>blockquote]:my-[0.7rem] [&>blockquote]:bg-[#e87a2e1f] [&>blockquote]:rounded-r-[8px] [&>blockquote]:italic [&>strong]:text-[#2B2D42] [&_code]:bg-[#F9F5F0] [&_code]:p-[0.1rem_0.3rem] [&_code]:rounded-[3px] [&_code]:font-mono [&_code]:text-[0.78rem] [&_code]:text-[#D06A20] [&_ul]:list-disc [&_ul]:pl-5 [&_li]:list-item [&_li]:marker:text-[var(--bullet-color,var(--dynamic-color))] [&_li]:mb-[0.3rem]"
                     dangerouslySetInnerHTML={{ __html: sub.content || "" }}
                   />
                 )}
@@ -496,7 +510,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             </div>
           )}
           {sub.type === "video" && (
-            <div className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center">
+            <div 
+              className="bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center cursor-pointer"
+              onClick={togglePlay}
+            >
               <div className="absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
                 <div className="w-[45px] h-[45px] bg-[#E87A2E] rounded-full flex items-center justify-center mb-[0.6rem] shadow-lg">
                   <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-[2px]"></div>
@@ -518,6 +535,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
               <div className="absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
 
               <video
+                ref={videoRef}
                 key={sub.videoPath}
                 className="w-full h-full object-cover z-0 relative"
                 src={sub.videoPath}
@@ -527,6 +545,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   if (parent) {
                     const overlays = parent.querySelectorAll('.video-overlay');
                     overlays.forEach(n => ((n as HTMLElement).style.opacity = '0'));
+                    overlays.forEach(n => ((n as HTMLElement).style.pointerEvents = 'none'));
                   }
                 }}
                 onPause={(e) => {
@@ -534,6 +553,7 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
                   if (parent) {
                     const overlays = parent.querySelectorAll('.video-overlay');
                     overlays.forEach(n => ((n as HTMLElement).style.opacity = '1'));
+                    overlays.forEach(n => ((n as HTMLElement).style.pointerEvents = 'auto'));
                   }
                 }}
               ></video>
@@ -799,10 +819,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
             <div className="mb-[1rem]">
               <div className="bg-[#121421] rounded-t-[14px] p-[1.1rem_1.3rem] text-white">
                 <h4 className="font-['DM_Serif_Display'] text-[0.94rem] leading-[1.5] mb-[0.6rem] m-0">
-                  {discussionData?.question_text || sub.topic || "Discussion"}
+                  {discussionData?.question_text || sub.topic}
                 </h4>
                 <div className="flex items-center gap-[0.45rem] text-[0.68rem] text-[#9597A6] font-medium">
-                  <span>Cohort {discussionData?.tag || "Alpha-3"}</span>
+                  <span>Cohort {discussionData?.tag}</span>
                   <span className="opacity-40">•</span>
                   <span>{sub.moduleName}</span>
                 </div>
@@ -869,9 +889,10 @@ export const CourseContentTab: React.FC<CourseContentTabProps> = ({
           {sub.type === "project" && (
             <div className="bg-white rounded-[14px] border border-[#E5DDD4] p-[1.1rem] mb-[1rem]">
               <div
+                style={{ "--dynamic-color": weekColor } as React.CSSProperties}
                 className="prose prose-sm max-w-none text-[#6B6D7B] text-[0.78rem] leading-[1.6] mb-[1.2rem]
                 [&_h3]:text-[1rem] [&_h3]:text-[#2B2D42] [&_h3]:font-bold [&_h3]:mb-[0.5rem]
-                [&_ul]:list-disc [&_ul]:ml-[1.2rem] [&_li]:mb-[0.3rem]"
+                [&_ul]:list-disc [&_ul]:pl-5 [&_li]:list-item [&_li]:marker:text-[var(--bullet-color,var(--dynamic-color))] [&_li]:mb-[0.3rem]"
                 dangerouslySetInnerHTML={{ __html: sub.content || "" }}
               />
 

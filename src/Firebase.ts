@@ -17,12 +17,12 @@ const firebaseConfig = {
   measurementId: "G-E3H577P90L"
 };
 
-console.log("%c[Firebase Diagnostic] Using Config:", "color: #f39c12; font-weight: bold;");
-console.table({
-  "Project ID": firebaseConfig.projectId,
-  "Auth Domain": firebaseConfig.authDomain,
-  "API Key": firebaseConfig.apiKey.substring(0, 10) + "..."
-});
+// console.log("%c[Firebase Diagnostic] Using Config:", "color: #f39c12; font-weight: bold;");
+// console.table({
+//   "Project ID": firebaseConfig.projectId,
+//   "Auth Domain": firebaseConfig.authDomain,
+//   "API Key": firebaseConfig.apiKey.substring(0, 10) + "..."
+// });
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

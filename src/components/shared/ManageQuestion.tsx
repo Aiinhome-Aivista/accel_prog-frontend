@@ -159,9 +159,9 @@ const ManageQuestion: React.FC<ManageQuestionProps> = ({ setActiveTab, onEdit })
                   >
                     <Edit size={18} />
                   </button>
-                  <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Delete Assessment">
+                  {/* <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Delete Assessment">
                     <Trash2 size={18} />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

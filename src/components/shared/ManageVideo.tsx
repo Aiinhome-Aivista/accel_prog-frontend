@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { courseService } from "../../services/courseService";
 import { useToast } from "../../utils/ToastContext";
-import { Edit, Trash2, Search, Video } from "lucide-react";
+import { Edit, Search, Video } from "lucide-react";
 
 interface VideoItem {
   mapping_id: number;
@@ -133,7 +133,17 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
                 <td className="px-6 py-4 font-bold text-[#2B2D42]">{item.video_title}</td>
                 <td className="px-6 py-4">
                   <div className="font-medium text-gray-800">{item.course_name}</div>
-                  <div className="text-xs text-gray-500">{item.module_name || 'Course Level'} / {item.title || 'N/A'}</div>
+                  {item.is_intro_video ? (
+                    <div className="mt-1">
+                      <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                        Course Introduction Video
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500">
+                      {item.module_name || "N/A"}{item.title ? ` / ${item.title}` : ""}
+                    </div>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-center">
                   <div className="text-gray-800 font-medium">{formatDuration(item.duration_sec)}</div>
@@ -147,9 +157,9 @@ const ManageVideo: React.FC<ManageVideoProps> = ({ setActiveTab, onEdit }) => {
                   >
                     <Edit size={18} />
                   </button>
-                  <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Delete Video">
+                  {/* <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Delete Video">
                     <Trash2 size={18} />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

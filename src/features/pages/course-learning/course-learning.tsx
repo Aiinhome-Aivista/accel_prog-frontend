@@ -209,7 +209,7 @@ const CourseLearning: React.FC = () => {
     setIntroVideo(null);
     setWeeks([]);
     fetchContent();
-  }, [searchParams.get("course_id"), user, fetchContent]);
+  }, [searchParams.get("course_id"), user, fetchContent, activeTab]);
 
   // Re-fetch when switching to a week with no content (newly unlocked)
   useEffect(() => {
