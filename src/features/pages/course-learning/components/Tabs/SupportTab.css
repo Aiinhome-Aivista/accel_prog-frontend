@@ -1,0 +1,59 @@
+.support-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .support-container {
+    padding: 1.3rem 1.8rem 3rem;
+  }
+}
+
+.support-title {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.3rem;
+  color: #2B2D42;
+  margin-bottom: 1.2rem;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+
+.support-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #E5DDD4;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.support-card:hover {
+  box-shadow: 0 8px 24px rgba(43,45,66,0.08);
+}
+
+.support-card-body {
+  padding: 1rem;
+  text-align: center;
+}
+
+.support-icon {
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.support-card-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2B2D42;
+  margin: 0 0 0.08rem 0;
+}
+
+.support-card-description {
+  font-size: 0.7rem;
+  color: #6B6D7B;
+  margin: 0;
+}
