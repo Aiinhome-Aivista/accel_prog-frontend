@@ -94,26 +94,26 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
       {introVideo && (
         <div 
-          className="intro-video-wrapper bg-black rounded-[14px] overflow-hidden aspect-video relative group border border-[#E5DDD4] mb-[1rem] flex items-center justify-center cursor-pointer"
+          className="intro-video-wrapper group cursor-pointer"
           onClick={togglePlay}
         >
-          <div className="video-overlay-content absolute flex flex-col items-center justify-center pointer-events-none z-10 text-center text-white transition-opacity duration-300 video-overlay">
-            <div className="video-play-btn w-[45px] h-[45px] bg-[#E87A2E] rounded-full flex items-center justify-center mb-[0.6rem] shadow-lg">
-              <div className="video-play-icon w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-[2px]"></div>
+          <div className="video-overlay-content video-overlay">
+            <div className="video-play-btn">
+              <div className="video-play-icon"></div>
             </div>
-            <h3 className="video-title font-['DM_Serif_Display'] text-[1.1rem] md:text-[1.3rem] mb-[0.2rem] drop-shadow-md">
+            <h3 className="video-title drop-shadow-md">
               {introVideo.video_title}
             </h3>
-            <p className="video-subtitle text-[0.7rem] md:text-[0.78rem] opacity-90 drop-shadow-md m-0">
+            <p className="video-subtitle drop-shadow-md">
               {introVideo.video_subtitle}
             </p>
           </div>
-          <div className="video-overlay-bg absolute inset-0 bg-black/40 pointer-events-none z-[5] transition-opacity duration-300 video-overlay"></div>
+          <div className="video-overlay-bg video-overlay"></div>
           
           <video
             ref={videoRef}
             key={introVideo.video_path}
-            className="video-element w-full h-full object-cover z-0 relative"
+            className="video-element"
             src={introVideo.video_path}
             controls={true}
             onPlay={(e) => {
