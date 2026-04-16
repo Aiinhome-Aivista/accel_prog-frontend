@@ -315,6 +315,23 @@
   background: #e05a1e;
 }
 
+.success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #e6f4ea; /* light green background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.success-icon svg {
+  width: 32px;
+  height: 32px;
+  color: #4caf50; /* green check */
+}
+
 /* Typing Indicator */
 .typing-bubble {
   display: flex;

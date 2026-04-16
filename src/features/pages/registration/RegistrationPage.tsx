@@ -161,6 +161,17 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
             {msg.type === "user" && <div className="bubble-user">{msg.content}</div>}
             {msg.type === "profile" && (
               <div className="profile-card">
+                <div className="success-icon flex-center">
+                  <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                    <path
+                      d="M8 20l8 8L32 12"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
                 <div className="profile-header">You're On the Radar!</div>
                 <div className="profile-description">Thanks for sharing your story with us. Our team is now crafting
                   the perfect learning path just for you. We'll notify you shortly
