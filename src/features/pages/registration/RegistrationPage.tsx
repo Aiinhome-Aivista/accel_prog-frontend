@@ -116,15 +116,28 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
     <div className="reg-page">
       <div className="reg-topbar">
         <button className="reg-back" onClick={onBackHome}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="#b0b0b0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          Back
+          Back to Home
         </button>
-        <BrandLogo compact />
-        <div style={{ width: 60 }}></div>
+        <div className="reg-logo-wrapper">
+          <BrandLogo compact />
+        </div>
       </div>
 
+       <div className="reg-banner flex-center">
+        <div className="reg-banner-inner">
+          <h2>
+            Let's Shape Your <em>AI Path</em>
+          </h2>
+          <p className="">
+            The more we know you, the better we curate your learning journey.
+            Tell us your story — your curiosity is the first algorithm.
+          </p>
+        </div>
+
+ </div>
       <div className="chat-container">
         {messages.map((msg) => (
           <div key={msg.id} className={`message-${msg.type}`}>
