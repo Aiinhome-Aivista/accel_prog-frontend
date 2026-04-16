@@ -30,7 +30,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
 
   // Maintain flat list of fields AND knowledge of which section they belong to
   const allFields = useMemo(() => {
-    return REG_SCHEMA.flatMap((section) => 
+    return REG_SCHEMA.flatMap((section) =>
       section.fields.map(field => ({ ...field, sectionTitle: section.title }))
     );
   }, []);
@@ -112,7 +112,8 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
     await submitForm();
     sessionStorage.setItem("just_registered", "true");
     setTimeout(() => navigate("/dashboard"), 800);
-  };  return (
+  };
+  return (
     <div className="reg-page">
       {/* Top Navigation */}
       <div className="reg-topbar">
@@ -134,7 +135,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
             Let's Shape Your <span className="highlight-orange">AI Path</span>
           </h1>
           <p className="banner-subtitle">
-            The more we know you, the better we curate your learning journey. 
+            The more we know you, the better we curate your learning journey.
             Tell us your story — your curiosity is the first algorithm.
           </p>
         </div>
@@ -155,11 +156,22 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
             {msg.type === "user" && <div className="bubble-user">{msg.content}</div>}
             {msg.type === "profile" && (
               <div className="profile-card">
-                <div className="profile-header">Registration Summary</div>
-                <div className="profile-description">
-                  Excellent! Your profile for <strong>{String(formData["fullName"] || user?.name || "Student")}</strong> has been prepared.
-                  We'll customize your experience based on your background in {String(formData["branch"] || "your field")}.
+                <div className="profile-header">You're On the Radar!</div>
+                <div className="profile-description">Thanks for sharing your story with us. Our team is now crafting
+                  the perfect learning path just for you. We'll notify you shortly
+                  with your course details, schedule, and everything you need to
+                  hit the ground running. In the mean time explore & subscribe to
+                  our pre recommended courses which may suite your need.
                 </div>
+                <p
+                  style={{
+                    fontStyle: "italic",
+                    color: "var(--orange)",
+                    fontWeight: 600,
+                    textAlign: "center",
+                  }}>
+                  The best algorithms start with great inputs — and yours are brilliant.
+                </p>
                 <button className="btn-letsgo" onClick={handleLetsGo} disabled={isSubmitting}>
                   {isSubmitting ? "Finalizing..." : "Complete Registration & Go! 🚀"}
                 </button>
@@ -181,7 +193,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
           <div className="chat-actions">
             {(currentField.type === "chips" || currentField.type === "select" || currentField.type === "scale") ? (
               <>
-                {(currentField.options || (currentField.type === "scale" ? Array.from({length: (currentField.max||5)-(currentField.min||1)+1}, (_, i) => String((currentField.min||1)+i)) : [])).map((opt) => {
+                {(currentField.options || (currentField.type === "scale" ? Array.from({ length: (currentField.max || 5) - (currentField.min || 1) + 1 }, (_, i) => String((currentField.min || 1) + i)) : [])).map((opt) => {
                   const selected = String(formData[currentField.id] || "").split(", ").includes(opt);
                   return (
                     <button
@@ -194,48 +206,48 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
                   );
                 })}
                 {currentField.type === "chips" && String(formData[currentField.id] || "") && (
-                  <button className="chip-choice" style={{background: '#f06428', color: 'white'}} onClick={() => processNextStep(String(formData[currentField.id]))}>
+                  <button className="chip-choice" style={{ background: '#f06428', color: 'white' }} onClick={() => processNextStep(String(formData[currentField.id]))}>
                     Confirm ✓
                   </button>
                 )}
               </>
             ) : (
               <div className="flex flex-col gap-2 w-full max-w-md">
-                 {currentField.type === "textarea" ? (
-                   <textarea
-                     className="bubble-assistant border w-full"
-                     style={{borderRadius: 18, minHeight: 100, padding: '1rem'}}
-                     placeholder={currentField.placeholder || "Your answer..."}
-                     onKeyDown={(e) => {
-                       if (e.key === "Enter" && !e.shiftKey) {
-                         e.preventDefault();
-                         const val = (e.target as HTMLTextAreaElement).value;
-                         if (val.trim()) {
-                           processNextStep(val);
-                           updateField(currentField.id, val);
-                           (e.target as HTMLTextAreaElement).value = "";
-                         }
-                       }
-                     }}
-                   />
-                 ) : (
-                   <input
-                     className="bubble-assistant border w-full"
-                     style={{borderRadius: 20, padding: '0.8rem 1.2rem'}}
-                     type={currentField.type}
-                     placeholder={currentField.placeholder || "Type here..."}
-                     onKeyDown={(e) => {
-                       if (e.key === "Enter") {
-                         const val = (e.target as HTMLInputElement).value;
-                         if (val.trim()) {
-                           processNextStep(val);
-                           updateField(currentField.id, val);
-                           (e.target as HTMLInputElement).value = "";
-                         }
-                       }
-                     }}
-                   />
-                 )}
+                {currentField.type === "textarea" ? (
+                  <textarea
+                    className="bubble-assistant border w-full"
+                    style={{ borderRadius: 18, minHeight: 100, padding: '1rem' }}
+                    placeholder={currentField.placeholder || "Your answer..."}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        const val = (e.target as HTMLTextAreaElement).value;
+                        if (val.trim()) {
+                          processNextStep(val);
+                          updateField(currentField.id, val);
+                          (e.target as HTMLTextAreaElement).value = "";
+                        }
+                      }
+                    }}
+                  />
+                ) : (
+                  <input
+                    className="bubble-assistant border w-full"
+                    style={{ borderRadius: 20, padding: '0.8rem 1.2rem' }}
+                    type={currentField.type}
+                    placeholder={currentField.placeholder || "Type here..."}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const val = (e.target as HTMLInputElement).value;
+                        if (val.trim()) {
+                          processNextStep(val);
+                          updateField(currentField.id, val);
+                          (e.target as HTMLInputElement).value = "";
+                        }
+                      }
+                    }}
+                  />
+                )}
               </div>
             )}
           </div>
