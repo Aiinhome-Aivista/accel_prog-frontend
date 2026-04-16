@@ -26,6 +26,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
   const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const hasStarted = useRef(false);
 
   // Maintain flat list of fields AND knowledge of which section they belong to
   const allFields = useMemo(() => {
@@ -48,7 +49,8 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
 
   // Initial Greeting
   useEffect(() => {
-    if (messages.length === 0) {
+    if (!hasStarted.current) {
+      hasStarted.current = true;
       const startChat = async () => {
         const firstName = user?.name?.split(" ")[0] || "there";
         await addAssistantMessage(`Hey ${firstName}! 👋 I'm your learning assistant. Let's get you registered!`);
@@ -126,18 +128,19 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
         </div>
       </div>
 
-       <div className="reg-banner flex-center">
-        <div className="reg-banner-inner">
-          <h2>
-            Let's Shape Your <em>AI Path</em>
-          </h2>
-          <p className="">
-            The more we know you, the better we curate your learning journey.
-            Tell us your story — your curiosity is the first algorithm.
+      <div className="reg-banner">
+        <div className="banner-content">
+          <h1 className="banner-title">
+            Let's Shape Your <span className="highlight-orange">AI Path</span>
+          </h1>
+          <p className="banner-subtitle">
+            The more we know you, the better we curate your learning journey. Tell us your story — your curiosity is the first algorithm.
           </p>
         </div>
+        <div className="banner-decoration decoration-1"></div>
+        <div className="banner-decoration decoration-2"></div>
+      </div>
 
- </div>
       <div className="chat-container">
         {messages.map((msg) => (
           <div key={msg.id} className={`message-${msg.type}`}>
