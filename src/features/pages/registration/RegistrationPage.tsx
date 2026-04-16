@@ -47,12 +47,18 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
     ]);
   };
 
-  // Initial Greeting
+  const formatFirstName = (name: string) => {
+    const firstName = name.trim().split(" ")[0];
+    return firstName
+      ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase()
+      : "There";
+  };
+
   useEffect(() => {
     if (!hasStarted.current) {
       hasStarted.current = true;
       const startChat = async () => {
-        const firstName = user?.name?.split(" ")[0] || "there";
+        const firstName = user?.name ? formatFirstName(user.name) : "there";
         await addAssistantMessage(`Hey ${firstName}! 👋 I'm your learning assistant. Let's get you registered!`);
         await addAssistantMessage(`We'll start with: ${allFields[0].sectionTitle}`);
         await addAssistantMessage(allFields[0].label);
@@ -135,8 +141,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
             Let's Shape Your <span className="highlight-orange">AI Path</span>
           </h1>
           <p className="banner-subtitle">
-            The more we know you, the better we curate your learning journey.
-            Tell us your story — your curiosity is the first algorithm.
+            The more we know you, the better we curate your learning journey. Tell us your story — your curiosity is the first algorithm.
           </p>
         </div>
         <div className="banner-decoration decoration-1"></div>
