@@ -1,519 +1,233 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useToast } from "../../../utils/ToastContext";
 import { useRegistration } from "../../../hooks/context/RegistrationContext";
+import { useAuth } from "../../../hooks/context/AuthContext";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import { REG_SCHEMA } from "../../../data/registrationSchema";
 import "./RegistrationPage.css";
-import swamiji from "../../../assets/hero.svg";
-import type {
-  FieldSchema,
-  FormValue,
-  FormDataMap,
-} from "../../../types/registration";
 
-interface RegistrationPageProps {
-  onBackHome: () => void;
+interface Message {
+  id: string;
+  type: "assistant" | "user" | "typing" | "profile" | "section";
+  content?: string;
 }
 
-function renderField(
-  field: FieldSchema,
-  value: FormValue | undefined,
-  onUpdateField: (id: string, value: FormValue) => void,
-  onToggleChip: (fieldId: string, value: string) => void,
-  formData: FormDataMap,
-) {
-  if (field.type === "text" || field.type === "email" || field.type === "tel") {
-    return (
-      <input
-        type={field.type}
-        placeholder={field.placeholder || ""}
-        value={typeof value === "string" ? value : ""}
-        onChange={(event: ChangeEvent<HTMLInputElement>) =>
-          onUpdateField(field.id, event.target.value)
-        }
-        disabled={field.id === "email"}
-        className={`input-field ${field.id === "email" ? "opacity-60 cursor-not-allowed bg-gray-50" : ""
-          }`}
-      />
-    );
-  }
-
-  if (field.type === "textarea") {
-    return (
-      <textarea
-        className="input-field"
-        placeholder={field.placeholder || ""}
-        value={typeof value === "string" ? value : ""}
-        onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-          onUpdateField(field.id, event.target.value)
-        }
-      />
-    );
-  }
-
-  if (field.type === "select") {
-    return (
-      <div className="flex flex-col gap-2">
-        <select
-          className="input-field"
-          value={typeof value === "string" ? value : ""}
-          onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-            onUpdateField(field.id, event.target.value)
-          }
-        >
-          <option value="">Select...</option>
-          {(field.options || []).map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-        {value === "Others" && (
-          <input
-            type="text"
-            placeholder="Please specify..."
-            value={
-              typeof formData[`${field.id}_other`] === "string"
-                ? formData[`${field.id}_other`]
-                : ""
-            }
-            onChange={(e) => onUpdateField(`${field.id}_other`, e.target.value)}
-            className="mt-2"
-          />
-        )}
-      </div>
-    );
-  }
-
-  if (field.type === "chips") {
-    const selected = Array.isArray(value) ? value : [];
-    return (
-      <div className="flex flex-col gap-3">
-        <div className="chip-group">
-          {(field.options || []).map((option) => (
-            <button
-              type="button"
-              className={`chip ${selected.includes(option) ? "selected" : ""}`}
-              onClick={() => onToggleChip(field.id, option)}
-              key={option}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-        {selected.includes("Others") && (
-          <input
-            type="text"
-            placeholder="Please specify..."
-            value={
-              typeof formData[`${field.id}_other`] === "string"
-                ? formData[`${field.id}_other`]
-                : ""
-            }
-            onChange={(e) => onUpdateField(`${field.id}_other`, e.target.value)}
-            className="mt-1"
-          />
-        )}
-      </div>
-    );
-  }
-
-  if (field.type === "scale") {
-    const min = field.min || 1;
-    const max = field.max || 5;
-    const labels = field.labels || [];
-    const selectedValue = typeof value === "number" ? value : Number(value);
-
-    return (
-      <div className="scale-group">
-        {Array.from({ length: max - min + 1 }, (_, offset) => {
-          const n = min + offset;
-          return (
-            <div style={{ textAlign: "center" }} key={n}>
-              <button
-                type="button"
-                className={`scale-btn ${selectedValue === n ? "selected" : ""}`}
-                onClick={() => onUpdateField(field.id, n)}
-              >
-                {n}
-              </button>
-              {labels[n - 1] ? (
-                <div className="scale-label">{labels[n - 1]}</div>
-              ) : (
-                <div className="h-5"> </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  return null;
-}
-
-function RegistrationPage({ onBackHome }: RegistrationPageProps) {
+function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
   const navigate = useNavigate();
-  const { showSuccess, showInfo } = useToast();
+  const { user } = useAuth();
   const {
-    currentSection,
     formData,
-    submitted,
-    progressPct,
-    goToSection,
     updateField,
-    toggleChip,
     submitForm,
-    isSectionComplete,
     isSubmitting,
   } = useRegistration();
 
-  const formBodyRef = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Maintain flat list of fields AND knowledge of which section they belong to
+  const allFields = useMemo(() => {
+    return REG_SCHEMA.flatMap((section) => 
+      section.fields.map(field => ({ ...field, sectionTitle: section.title }))
+    );
+  }, []);
+
+  const currentField = allFields[currentFieldIndex];
+
+  const addAssistantMessage = async (content: string, delay = 800) => {
+    setIsTyping(true);
+    await new Promise((r) => setTimeout(r, delay));
+    setIsTyping(false);
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now().toString() + Math.random(), type: "assistant", content },
+    ]);
+  };
+
+  // Initial Greeting
+  useEffect(() => {
+    if (messages.length === 0) {
+      const startChat = async () => {
+        const firstName = user?.name?.split(" ")[0] || "there";
+        await addAssistantMessage(`Hey ${firstName}! 👋 I'm your learning assistant. Let's get you registered!`);
+        await addAssistantMessage(`We'll start with: ${allFields[0].sectionTitle}`);
+        await addAssistantMessage(allFields[0].label);
+      };
+      startChat();
+    }
+  }, []);
 
   useEffect(() => {
-    if (formBodyRef.current) {
-      formBodyRef.current.scrollTop = 0;
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
+
+  const processNextStep = async (displayValue: string) => {
+    setMessages((prev) => [
+      ...prev,
+      { id: `user-${Date.now()}`, type: "user", content: displayValue },
+    ]);
+
+    if (currentFieldIndex < allFields.length - 1) {
+      const nextIndex = currentFieldIndex + 1;
+      const nextField = allFields[nextIndex];
+      const prevField = allFields[currentFieldIndex];
+
+      setCurrentFieldIndex(nextIndex);
+
+      if (nextField.sectionTitle !== prevField.sectionTitle) {
+        await addAssistantMessage(`Great. Now let's move to ${nextField.sectionTitle}.`);
+      }
+
+      await addAssistantMessage(nextField.label);
+    } else {
+      await addAssistantMessage("Thank you! I've gathered all the details.");
+      setMessages((prev) => [
+        ...prev,
+        { id: "profile-summary", type: "profile" },
+      ]);
     }
-  }, [currentSection]);
+  };
 
-  const [isNavigating, setIsNavigating] = useState(false);
+  const handleOptionSelect = (fieldId: string, value: string) => {
+    if (currentField.type === "chips") {
+      const currentVal = String(formData[fieldId] || "");
+      const items = currentVal ? currentVal.split(", ") : [];
+      if (items.includes(value)) {
+        items.splice(items.indexOf(value), 1);
+      } else {
+        items.push(value);
+      }
+      updateField(fieldId, items.join(", "));
+    } else {
+      updateField(fieldId, value);
+      processNextStep(value);
+    }
+  };
 
-  const section = REG_SCHEMA[currentSection];
-
-  if (!section) return null;
+  const handleLetsGo = async () => {
+    await submitForm();
+    sessionStorage.setItem("just_registered", "true");
+    setTimeout(() => navigate("/dashboard"), 800);
+  };
 
   return (
-    <div className="reg-page active flex-column" id="regPage">
-      <div className="reg-topbar flex-between">
-        <button className="reg-back flex-align-center gap-05" onClick={onBackHome}>
-          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M10 3L5 8l5 5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+    <div className="reg-page">
+      <div className="reg-topbar">
+        <button className="reg-back" onClick={onBackHome}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          Back to Home
+          Back
         </button>
-
-        <a className="nav-logo flex-align-center gap-05" style={{ textDecoration: "none" }}>
-          <BrandLogo compact />
-        </a>
+        <BrandLogo compact />
+        <div style={{ width: 60 }}></div>
       </div>
 
-      <div className="reg-banner flex-center">
-        <div className="reg-banner-inner">
-          <h2>
-            Let's Shape Your <em>AI Path</em>
-          </h2>
-          <p className="">
-            The more we know you, the better we curate your learning journey.
-            Tell us your story — your curiosity is the first algorithm.
-          </p>
-        </div>
-      </div>
-      <div className="reg-layout">
-        <div className="reg-hero-wrap">
-          <img className="reg-hero-img" src={swamiji} alt="swamiji" />
-        </div>
-
-        <div className="reg-sidebar">
-          <div className="reg-progress-pct">{progressPct}% Complete</div>
-          <div className="reg-progress-bar">
-            <div
-              className="reg-progress-fill"
-              style={{ width: `${progressPct}%` }}
-            ></div>
-          </div>
-
-          <div className="reg-sections">
-            {REG_SCHEMA.map((item, index) => {
-              const active = index === currentSection;
-              const completed = isSectionComplete(index);
-              return (
-                <button
-                  type="button"
-                  className={`reg-sec-item flex-align-center gap-05 ${active ? "active" : ""} ${completed && !active ? "completed" : ""}`}
-                  onClick={() => goToSection(index)}
-                  key={item.id}
-                >
-                  <div className="reg-sec-dot flex-center">
-                    {completed ? (
-                      <svg
-                        className="reg-sec-check"
-                        viewBox="0 0 10 10"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M2 5l2.5 2.5L8 3"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    ) : null}
-                  </div>
-                  {item.title}
+      <div className="chat-container">
+        {messages.map((msg) => (
+          <div key={msg.id} className={`message-${msg.type}`}>
+            {msg.type === "assistant" && (
+              <>
+                <div className="assistant-avatar">M</div>
+                <div className="bubble-assistant">{msg.content}</div>
+              </>
+            )}
+            {msg.type === "user" && <div className="bubble-user">{msg.content}</div>}
+            {msg.type === "profile" && (
+              <div className="profile-card">
+                <div className="profile-header">Registration Summary</div>
+                <div className="profile-description">
+                  Excellent! Your profile for <strong>{String(formData["fullName"] || user?.name || "Student")}</strong> has been prepared.
+                  We'll customize your experience based on your background in {String(formData["branch"] || "your field")}.
+                </div>
+                <button className="btn-letsgo" onClick={handleLetsGo} disabled={isSubmitting}>
+                  {isSubmitting ? "Finalizing..." : "Complete Registration & Go! 🚀"}
                 </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="reg-main card-base flex-column">
-          {!submitted ? (
-            <>
-              <div className="reg-form-header">
-                <h2>{section.title}</h2>
-                <p>{section.subtitle}</p>
               </div>
+            )}
+          </div>
+        ))}
 
-              <div className="reg-form-body" ref={formBodyRef}>
-                {currentSection === 0 ? (
-                  <div className="reg-import">
-                    <label className="reg-import-btn flex-center gap-05">
-                      <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                        <path
-                          d="M9 2v10m0 0l-3-3m3 3l3-3"
-                          stroke="currentColor"
-                          strokeWidth="1.3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M3 13v2a1 1 0 001 1h10a1 1 0 001-1v-2"
-                          stroke="currentColor"
-                          strokeWidth="1.3"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      Upload Resume
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(event) => {
-                          const fileName = event.target.files?.[0]?.name;
-                          if (fileName) {
-                            showSuccess(
-                              "Resume Uploaded",
-                              `Resume ${fileName} uploaded successfully! In a production system, we would parse this to pre-fill your details.`,
-                            );
-                          }
-                        }}
-                      />
-                    </label>
+        {isTyping && (
+          <div className="message-assistant">
+            <div className="assistant-avatar">M</div>
+            <div className="bubble-assistant typing-bubble">
+              <div className="dot"></div><div className="dot"></div><div className="dot"></div>
+            </div>
+          </div>
+        )}
 
-                    <button
-                      type="button"
-                      className="reg-import-btn flex-center gap-05"
-                      onClick={() =>
-                        showInfo(
-                          "LinkedIn Import",
-                          "LinkedIn import would redirect to LinkedIn OAuth in a production system. For now, please fill in the details manually.",
-                        )
-                      }
-                    >
-                      <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                        <rect
-                          x="1"
-                          y="1"
-                          width="16"
-                          height="16"
-                          rx="3"
-                          stroke="#0077B5"
-                          strokeWidth="1.3"
-                        />
-                        <path
-                          d="M5.5 7.5v5m3.5-5v5m0-3.5a2 2 0 014 0v3.5"
-                          stroke="#0077B5"
-                          strokeWidth="1.3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <circle cx="5.5" cy="5.5" r=".8" fill="#0077B5" />
-                      </svg>
-                      Import from LinkedIn
-                    </button>
-                  </div>
-                ) : null}
-
-                {section.fields.map((field) => {
-                  const value = formData[field.id];
-                  const isFilled = Array.isArray(value)
-                    ? value.length > 0
-                    : value !== undefined && String(value).trim() !== "";
-
+        {!isTyping && currentField && !messages.find(m => m.type === "profile") && (
+          <div className="chat-actions">
+            {(currentField.type === "chips" || currentField.type === "select" || currentField.type === "scale") ? (
+              <>
+                {(currentField.options || (currentField.type === "scale" ? Array.from({length: (currentField.max||5)-(currentField.min||1)+1}, (_, i) => String((currentField.min||1)+i)) : [])).map((opt) => {
+                  const selected = String(formData[currentField.id] || "").split(", ").includes(opt);
                   return (
-                    <div
-                      className={`reg-field ${isFilled ? "filled" : ""}`}
-                      key={field.id}
+                    <button
+                      key={opt}
+                      className={`chip-choice ${selected ? 'selected' : ''}`}
+                      onClick={() => handleOptionSelect(currentField.id, opt)}
                     >
-                      <label>
-                        {field.label}
-                        {field.required ? <span className="req">*</span> : null}
-                      </label>
-                      {renderField(
-                        field,
-                        value,
-                        updateField,
-                        toggleChip,
-                        formData,
-                      )}
-                      {field.hint ? (
-                        <div className="hint">{field.hint}</div>
-                      ) : null}
-                    </div>
+                      {opt}
+                    </button>
                   );
                 })}
-              </div>
-
-              <div className="reg-nav">
-                {currentSection > 0 ? (
-                  <button
-                    type="button"
-                    className="reg-nav-prev"
-                    onClick={() => goToSection(currentSection - 1)}
-                  >
-                    <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path
-                        d="M9 3L4 7l5 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    Previous
-                  </button>
-                ) : (
-                  <div></div>
-                )}
-
-                {currentSection < REG_SCHEMA.length - 1 ? (
-                  <button
-                    type="button"
-                    className="reg-nav-next btn-primary"
-                    onClick={() => goToSection(currentSection + 1)}
-                  >
-                    Next
-                    <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path
-                        d="M5 3l5 4-5 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className={`reg-nav-next btn-primary submit ${isSubmitting ? "loading" : ""}`}
-                    onClick={submitForm}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <div className="btn-loader">
-                        <div className="spinner"></div>
-                        Submitting...
-                      </div>
-                    ) : (
-                      <>
-                        Submit Registration
-                        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                          <path
-                            d="M2 7l3.5 3.5L12 4"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </>
-                    )}
+                {currentField.type === "chips" && String(formData[currentField.id] || "") && (
+                  <button className="chip-choice" style={{background: '#f06428', color: 'white'}} onClick={() => processNextStep(String(formData[currentField.id]))}>
+                    Confirm ✓
                   </button>
                 )}
+              </>
+            ) : (
+              <div className="flex flex-col gap-2 w-full max-w-md">
+                 {currentField.type === "textarea" ? (
+                   <textarea
+                     className="bubble-assistant border w-full"
+                     style={{borderRadius: 18, minHeight: 100, padding: '1rem'}}
+                     placeholder={currentField.placeholder || "Your answer..."}
+                     onKeyDown={(e) => {
+                       if (e.key === "Enter" && !e.shiftKey) {
+                         e.preventDefault();
+                         const val = (e.target as HTMLTextAreaElement).value;
+                         if (val.trim()) {
+                           processNextStep(val);
+                           updateField(currentField.id, val);
+                           (e.target as HTMLTextAreaElement).value = "";
+                         }
+                       }
+                     }}
+                   />
+                 ) : (
+                   <input
+                     className="bubble-assistant border w-full"
+                     style={{borderRadius: 20, padding: '0.8rem 1.2rem'}}
+                     type={currentField.type}
+                     placeholder={currentField.placeholder || "Type here..."}
+                     onKeyDown={(e) => {
+                       if (e.key === "Enter") {
+                         const val = (e.target as HTMLInputElement).value;
+                         if (val.trim()) {
+                           processNextStep(val);
+                           updateField(currentField.id, val);
+                           (e.target as HTMLInputElement).value = "";
+                         }
+                       }
+                     }}
+                   />
+                 )}
               </div>
-            </>
-          ) : (
-            <div className="reg-success">
-              <div className="reg-success-icon flex-center">
-                <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                  <path
-                    d="M8 20l8 8L32 12"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <h2>You're On the Radar!</h2>
-              <p>
-                Thanks for sharing your story with us. Our team is now crafting
-                the perfect learning path just for you. We'll notify you shortly
-                with your course details, schedule, and everything you need to
-                hit the ground running. In the mean time explore & subscribe to
-                our pre recommended courses which may suite your need.
-              </p>
-              <p
-                style={{
-                  fontStyle: "italic",
-                  color: "var(--orange)",
-                  fontWeight: 600,
-                }}
-              >
-                "The best algorithms start with great inputs — and yours are
-                brilliant."
-              </p>
-              <button
-                className="btn-signin btn-signin-fill"
-                style={{
-                  backgroundColor: "var(--orange)",
-                  color: "#fff",
-                  border: "none",
-                  padding: ".8rem 2rem",
-                  fontSize: "1rem",
-                  borderRadius: "10px",
-                  fontWeight: 600,
-                  // display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: "180px",
-                  margin: "1rem auto",
-                  display: "block",
-                }}
-                disabled={isNavigating}
-                onClick={() => {
-                  setIsNavigating(true);
-                  // Use sessionStorage as it's more reliable than navigation state for redirects
-                  sessionStorage.setItem("just_registered", "true");
-                  // Brief delay to show loader before navigation
-                  setTimeout(() => navigate("/dashboard"), 600);
-                }}
-              >
-                {isNavigating ? (
-                  <div className="btn-loader">
-                    <div className="spinner"></div>
-                    Going to Dashboard...
-                  </div>
-                ) : (
-                  "Go to Dashboard"
-                )}
-              </button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
+        <div ref={chatEndRef} />
       </div>
     </div>
   );
 }
 
 export default RegistrationPage;
+
