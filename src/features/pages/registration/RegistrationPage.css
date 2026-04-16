@@ -45,6 +45,13 @@
 .reg-logo-wrapper {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.reg-logo-wrapper .nav-logo-icon {
+  width: 45px;
+  height: 45px;
 }
 
 /* Banner Styles */
