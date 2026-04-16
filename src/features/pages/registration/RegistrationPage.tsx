@@ -178,7 +178,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
                   The best algorithms start with great inputs — and yours are brilliant.
                 </p>
                 <button className="btn-letsgo" onClick={handleLetsGo} disabled={isSubmitting}>
-                  {isSubmitting ? "Finalizing..." : "Complete Registration & Go! 🚀"}
+                  {isSubmitting ? "Loading..." : "Go to Dashboard"}
                 </button>
               </div>
             )}
