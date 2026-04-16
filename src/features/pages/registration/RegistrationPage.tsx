@@ -48,11 +48,18 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
   };
 
   // Initial Greeting
+  const formatFirstName = (name: string) => {
+    const firstName = name.trim().split(" ")[0];
+    return firstName
+      ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase()
+      : "There";
+  };
+
   useEffect(() => {
     if (!hasStarted.current) {
       hasStarted.current = true;
       const startChat = async () => {
-        const firstName = user?.name?.split(" ")[0] || "there";
+        const firstName = user?.name ? formatFirstName(user.name) : "there";
         await addAssistantMessage(`Hey ${firstName}! 👋 I'm your learning assistant. Let's get you registered!`);
         await addAssistantMessage(`We'll start with: ${allFields[0].sectionTitle}`);
         await addAssistantMessage(allFields[0].label);
@@ -112,7 +119,8 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
     await submitForm();
     sessionStorage.setItem("just_registered", "true");
     setTimeout(() => navigate("/dashboard"), 800);
-  };  return (
+  };
+  return (
     <div className="reg-page">
       {/* Top Navigation */}
       <div className="reg-topbar">
