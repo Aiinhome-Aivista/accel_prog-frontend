@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { Flashcard } from "../../../dashboard/dashboard.models";
 import { dashboardService } from "../../../../../services/dashboardService";
+import "./FlashcardsTab.css"; 
+
 
 export const FlashcardsTab: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -63,7 +65,7 @@ export const FlashcardsTab: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
+    <div className="flashcards-container">
       {/* Hide WebKit scrollbars globally for this component */}
       <style
         dangerouslySetInnerHTML={{
@@ -74,22 +76,22 @@ export const FlashcardsTab: React.FC = () => {
         `,
         }}
       />
-      <div className="font-['DM_Serif_Display'] text-[1.3rem] text-[#2B2D42] mb-[1.2rem]">
+      <div className="flashcards-title">
         Flashcards
       </div>
-      <p className="text-[0.74rem] text-[#6B6D7B] mt-[-0.8rem] mb-[0.6rem]">
+      <p className="flashcards-subtitle">
         Click to flip. Practice daily.
       </p>
 
       {loading && (
-        <div className="flex justify-center items-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E87A2E]"></div>
+        <div className="flashcards-loader flex justify-center items-center h-[calc(100vh-200px)]">
+          <div className="loader-circle animate-spin rounded-full h-12 w-12 border-b-2 border-[#E87A2E]"></div>
         </div>
       )}
 
       {error && (
-        <div className="flex items-center justify-center py-8">
-          <div className="text-[0.9rem] text-[#D06A20]">{error}</div>
+        <div className="flashcards-message flex items-center justify-center py-8">
+          <div className="error text-[0.9rem] text-[#D06A20]">{error}</div>
         </div>
       )}
 
@@ -107,7 +109,7 @@ export const FlashcardsTab: React.FC = () => {
           {hasScrolled && (
             <button
               onClick={scrollLeft}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2 hover:bg-gray-50 transition-colors border border-gray-200"
+              className="carousel-btn left   hover:bg-gray-50"
               style={{ marginLeft: "-1rem" }}
             >
               <svg
@@ -128,7 +130,7 @@ export const FlashcardsTab: React.FC = () => {
           {/* Right Arrow */}
           <button
             onClick={scrollRight}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2 hover:bg-gray-50 transition-colors border border-gray-200"
+            className="carousel-btn right absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2 hover:bg-gray-50 transition-colors border border-gray-200"
             style={{ marginRight: "-1rem" }}
           >
             <svg
