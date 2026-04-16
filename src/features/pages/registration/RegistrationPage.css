@@ -144,7 +144,7 @@
 .assistant-avatar {
   width: 36px;
   height: 36px;
-  background: #f06428;
+  background: #E87A2E;
   /* Orange from screenshot */
   color: white;
   border-radius: 50%;
@@ -175,7 +175,7 @@
 }
 
 .bubble-user {
-  background: #f06428;
+  background: #E87A2E;
   /* Signature orange */
   color: white;
   padding: 0.8rem 1.3rem;
@@ -214,15 +214,15 @@
 }
 
 .chip-choice:hover {
-  border-color: #f06428;
+  border-color: #E87A2E;
   background: rgba(240, 100, 40, 0.05);
-  color: #f06428;
+  color: #E87A2E;
 }
 
 .chip-choice.selected {
-  background: #f06428;
+  background: #E87A2E;
   color: white;
-  border-color: #f06428;
+  border-color: #E87A2E;
 }
 
 /* Learning Profile Card */
@@ -268,7 +268,7 @@
 
 .tag-orange {
   background: #fff5f0;
-  color: #f06428;
+  color: #E87A2E;
 }
 
 .tag-blue {
@@ -319,7 +319,8 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #e6f4ea; /* light green background */
+  background: #e6f4ea;
+  /* light green background */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -329,7 +330,8 @@
 .success-icon svg {
   width: 32px;
   height: 32px;
-  color: #4caf50; /* green check */
+  color: #4caf50;
+  /* green check */
 }
 
 /* Typing Indicator */
