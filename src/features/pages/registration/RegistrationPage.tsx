@@ -34,9 +34,8 @@ function renderField(
           onUpdateField(field.id, event.target.value)
         }
         disabled={field.id === "email"}
-        className={`input-field ${
-          field.id === "email" ? "opacity-60 cursor-not-allowed bg-gray-50" : ""
-        }`}
+        className={`input-field ${field.id === "email" ? "opacity-60 cursor-not-allowed bg-gray-50" : ""
+          }`}
       />
     );
   }
@@ -219,8 +218,8 @@ function RegistrationPage({ onBackHome }: RegistrationPageProps) {
       </div>
       <div className="reg-layout">
         <div className="reg-hero-wrap">
-  <img className="reg-hero-img" src={swamiji} alt="swamiji" />
-</div>
+          <img className="reg-hero-img" src={swamiji} alt="swamiji" />
+        </div>
 
         <div className="reg-sidebar">
           <div className="reg-progress-pct">{progressPct}% Complete</div>

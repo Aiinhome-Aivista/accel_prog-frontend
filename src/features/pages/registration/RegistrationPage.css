@@ -245,10 +245,6 @@
   margin-left: 2px;
 }
 
-.reg-field input,
-.reg-field textarea,
-.reg-field select {
-}
 
 .reg-field input:focus,
 .reg-field textarea:focus,
@@ -391,7 +387,7 @@
 }
 
 .reg-nav-next {
-  padding: 0.65rem 1.8rem;
+  padding: 0.5rem 1.8rem;
   border-radius: 10px;
 }
 
@@ -403,6 +399,8 @@
 .reg-nav-next svg {
   width: 14px;
   height: 14px;
+  display: inline-block;
+  margin-left: 0.6rem;
 }
 
 .reg-nav-next.submit {
