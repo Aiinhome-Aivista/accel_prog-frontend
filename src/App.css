@@ -750,10 +750,12 @@ section {
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content:  flex-start;
-  gap: 3rem;
+  justify-content:  center;
+  gap: 2rem;
   text-align: left;
 }
+
+
 
 .cta-box::before {
   content: "";
@@ -806,7 +808,7 @@ section {
   z-index: 1;
 }
 .text-left {
-  flex: 1;                 /* take remaining space */
+  max-width: 500px;
   text-align: center;      /* center text */
   display: flex;
   flex-direction: column;
