@@ -354,12 +354,12 @@ function LandingPage({
                     {(course.tags && course.tags.length > 0
                       ? course.tags
                       : course.modules.map((m) =>
-                          m.name
-                            .replace(/Module \d+: /, "")
-                            .split(" ")
-                            .slice(0, 2)
-                            .join(" "),
-                        )
+                        m.name
+                          .replace(/Module \d+: /, "")
+                          .split(" ")
+                          .slice(0, 2)
+                          .join(" "),
+                      )
                     ).map((tag, i) => (
                       <span className="course-tag" key={`${tag}-${i}`}>
                         {tag}

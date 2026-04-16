@@ -79,12 +79,31 @@ function AppContent() {
   const location = useLocation();
 
   useEffect(() => {
-  if (location.pathname === "/admin") {
-    setIsAdminSignInOpen(true);
-  } else {
-    setIsAdminSignInOpen(false);
-  }
-}, [location.pathname]);
+    if (location.pathname === "/admin") {
+      setIsAdminSignInOpen(true);
+    } else {
+      setIsAdminSignInOpen(false);
+    }
+  }, [location.pathname]);
+
+
+  useEffect(() => {
+    if (courseIndex !== null) {
+      const scrollBarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollBarWidth}px`;
+    } else {
+      document.body.style.overflow = "auto";
+      document.body.style.paddingRight = "0px";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.paddingRight = "0px";
+    };
+  }, [courseIndex]);
 
   const { login, logout } = useAuth();
   const { resetRegistration } = useRegistration();
@@ -151,13 +170,13 @@ function AppContent() {
         />
 
         {/* admin signin */}
-        <Route 
+        <Route
           path="/admin"
           element={null}
         />
 
         <Route path="/admin/admin-dashboard" element={<AdminDashboard
-        onLogout={handleLogout} />} />
+          onLogout={handleLogout} />} />
 
         <Route
           path="/dashboard"
@@ -177,7 +196,7 @@ function AppContent() {
         onSignIn={handleSignIn}
       />
 
-      <AdminSignInModal 
+      <AdminSignInModal
         open={isAdminSignInOpen}
         onClose={() => {
           setIsAdminSignInOpen(false);

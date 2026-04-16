@@ -750,8 +750,8 @@ section {
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
+  justify-content:  flex-start;
+  gap: 6rem;
   text-align: left;
 }
 
@@ -1028,7 +1028,7 @@ footer {
   width: 92%;
   max-width: 620px;
   max-height: 85vh;
-  /* overflow-y: auto; */
+  overflow-y: auto;
   position: relative;
   animation: modalIn 0.3s ease;
 }
