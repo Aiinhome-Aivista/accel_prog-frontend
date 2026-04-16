@@ -47,7 +47,6 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
     ]);
   };
 
-  // Initial Greeting
   const formatFirstName = (name: string) => {
     const firstName = name.trim().split(" ")[0];
     return firstName
@@ -142,8 +141,7 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
             Let's Shape Your <span className="highlight-orange">AI Path</span>
           </h1>
           <p className="banner-subtitle">
-            The more we know you, the better we curate your learning journey. 
-            Tell us your story — your curiosity is the first algorithm.
+            The more we know you, the better we curate your learning journey. Tell us your story — your curiosity is the first algorithm.
           </p>
         </div>
         <div className="banner-decoration decoration-1"></div>
