@@ -112,10 +112,9 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
     await submitForm();
     sessionStorage.setItem("just_registered", "true");
     setTimeout(() => navigate("/dashboard"), 800);
-  };
-
-  return (
+  };  return (
     <div className="reg-page">
+      {/* Top Navigation */}
       <div className="reg-topbar">
         <button className="reg-back" onClick={onBackHome}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -128,19 +127,22 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
         </div>
       </div>
 
+      {/* Hero Banner */}
       <div className="reg-banner">
         <div className="banner-content">
           <h1 className="banner-title">
             Let's Shape Your <span className="highlight-orange">AI Path</span>
           </h1>
           <p className="banner-subtitle">
-            The more we know you, the better we curate your learning journey. Tell us your story — your curiosity is the first algorithm.
+            The more we know you, the better we curate your learning journey. 
+            Tell us your story — your curiosity is the first algorithm.
           </p>
         </div>
         <div className="banner-decoration decoration-1"></div>
         <div className="banner-decoration decoration-2"></div>
       </div>
 
+      {/* Chat Interface */}
       <div className="chat-container">
         {messages.map((msg) => (
           <div key={msg.id} className={`message-${msg.type}`}>
