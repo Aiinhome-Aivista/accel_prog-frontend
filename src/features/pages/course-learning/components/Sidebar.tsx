@@ -65,11 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             return (
               <div
                 key={n.id}
-                className={`sidebar-item ${
-                  isActive
-                    ? "active"
-                    : " "
-                }`}
+                className={`std-sidebar-item ${isActive ? "std-sidebar-item-active" : ""}`}
                 onClick={() => {
                   setActiveTab(n.id);
                   setIsOpen(false);
@@ -81,7 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 />
                 <span className="flex-1">{n.l}</span>
                 {n.c && (
-                  <span className="sidebar-badge">
+                  <span className="sidebar-badge ml-auto std-badge" style={{ background: "rgba(232, 122, 46, 0.1)", color: "#E87A2E", padding: "1px 5px", fontSize: "0.55rem" }}>
                     {n.c}
                   </span>
                 )}

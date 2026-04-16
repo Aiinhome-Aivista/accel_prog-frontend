@@ -52,9 +52,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   }, [courseId, userId]);
 
   return (
-    <div className="course-container">
-      <div className="streak-card">
-        <div className="streak-icon">🔥</div>
+    <div className="max-w-[860px] mx-auto p-[1rem] md:p-[1.3rem_1.8rem_3rem]">
+      <div className="std-stat-card mb-[1rem]">
+        <div className="text-[1.6rem]">🔥</div>
         <div>
           <h4 className="streak-title">
             {weeklyStreak ? `${weeklyStreak.streak_days}-Day Streak` : (overview?.streak?.text || "0-Day Streak")}
@@ -94,7 +94,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
       {introVideo && (
         <div 
-          className="intro-video-wrapper group cursor-pointer"
+          className="std-card bg-black aspect-video relative group mb-[1rem] flex items-center justify-center cursor-pointer"
           onClick={togglePlay}
         >
           <div className="video-overlay-content video-overlay">
@@ -136,8 +136,8 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         </div>
       )}
 
-      <div className="intro-card">
-        <div className="intro-content">
+      <div className="std-card mb-[1rem]">
+        <div className="flex items-center gap-4 p-[1rem_1.2rem] text-[0.82rem] text-[#6B6D7B] leading-[1.65]">
             <img
               src={HeroIcon}
               className="h-16 w-16"
@@ -159,11 +159,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         ].map(([n, l], idx) => (
           <div
             key={idx}
-            className="stat-box"
+            className="std-stat-card border border-[#E5DDD4] p-[0.7rem] text-center flex-col justify-center"
           >
             <div
-              className="stat-number"
-              style={{ fontFamily: '"DM Serif Display", serif' }}
+              className="std-section-title text-[#E87A2E]"
             >
               {n}
             </div>
@@ -174,48 +173,46 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         ))}
       </div>
 
-      <div className="timeline-card">
-        <div className="timeline-header">
-          <h2
-            className="timeline-title"
-            style={{ fontFamily: '"DM Serif Display", serif' }}
-          >
+      <div className="std-card mb-[1rem]">
+        <div className="p-[1rem_1.2rem] border-b border-[#E5DDD4] flex items-center justify-between">
+          <h2 className="std-section-title m-0">
             Weekly Timeline
           </h2>
         </div>
         <div className="p-[1rem_1.2rem]">
           {timeline.map((t, i) => {
             return (
-              <div
-                key={`t-${i}`}
-                className="timeline-item "
-                onClick={() => goToCourseContent(i)}
-              >
                 <div
-                  className="timeline-dot"
-                  style={{
-                    backgroundColor: t.status === 'Available' ? (i === 0 ? "#E87A2E" : i === 1 ? "#E8A040" : "#4CAF50") : "#9597A6",
-                  }}
-                ></div>
-                <div className="timeline-text-block">
-                  <div className="timeline-text">
-                    {t.title}
-                  </div>
-                  <div className="timeline-subtext">
-                    {t.progress} completed ·{" "}
-                    {t.status}
-                  </div>
-                </div>
-                <div
-                  className={`timeline-badge ${
-                    t.status === 'Available'
-                      ? "active"
-                      : "locked"
-                  }`}
+                  className={`std-sidebar-item gap-[0.5rem] border-b border-black/5 last:border-none ${t.status === 'Available' ? "hover:bg-black/5" : ""}`}
+                  style={{ fontSize: "0.76rem" }}
+                  onClick={() => goToCourseContent(i)}
                 >
-                  {t.week}
+                  <div
+                    className="w-[7px] h-[7px] rounded-full shrink-0"
+                    style={{
+                      backgroundColor: t.status === 'Available' ? (i === 0 ? "#E87A2E" : i === 1 ? "#E8A040" : "#4CAF50") : "#9597A6",
+                    }}
+                  ></div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-[#2B2D42]">
+                      {t.title}
+                    </div>
+                    <div className="text-[0.64rem] text-[#6B6D7B]">
+                      {t.progress} completed ·{" "}
+                      {t.status}
+                    </div>
+                  </div>
+                  <div
+                    className="std-badge"
+                    style={{ 
+                      background: t.status === 'Available' ? "rgba(232, 122, 46, 0.1)" : "#F9F5F0",
+                      color: t.status === 'Available' ? "#E87A2E" : "#9597A6",
+                      padding: "2px 6px"
+                    }}
+                  >
+                    {t.week}
+                  </div>
                 </div>
-              </div>
             );
           })}
         </div>

@@ -144,7 +144,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
     <div className="modal-overlay active" onClick={onClose}>
       <div className="modal" onClick={(event) => event.stopPropagation()}>
         <button
-          className="modal-close"
+          className="modal-close flex-center"
           onClick={onClose}
           aria-label="Close sign in modal"
         >
@@ -164,7 +164,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           </svg>
         </button>
 
-        <div className="modal-brand">
+        <div className="modal-brand flex-center w-full mx-auto">
           <img
             src={HeroIcon}
             className="modal-logo"
@@ -186,6 +186,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
           <div style={{ display: "flex", gap: "10px" }}>
             <input
               id="signin-email"
+              className="input-field"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -225,6 +226,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
             <label htmlFor="signin-otp">OTP Code</label>
             <input
               id="signin-otp"
+              className="input-field"
               type="text"
               placeholder="Enter 6-digit code"
               value={otpCode}
@@ -234,7 +236,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
         )}
 
         <button
-          className="form-submit"
+          className="form-submit btn-primary"
           onClick={handleVerifyOtp}
           disabled={isVerifying || !isOtpSent}
         >
@@ -243,7 +245,7 @@ function SignInModal({ open, onClose, onSignIn }: SignInModalProps) {
 
         <div className="form-divider">or</div>
 
-        <button className="btn-google" onClick={handleGoogleSignIn}>
+        <button className="btn-google flex-center gap-05" onClick={handleGoogleSignIn}>
           <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
             <path
               d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"

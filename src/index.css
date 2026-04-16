@@ -1,15 +1,139 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer base {
-    html {
-        font-family: 'DM Serif Display', serif;
-        scroll-behavior: smooth;
-    }
-
-    body {
-        @apply antialiased;
-    }
+:root {
+  --orange: #e87a2e;
+  --orange-dark: #d06a20;
+  --orange-light: #f5943e;
+  --orange-glow: rgba(232, 122, 46, 0.12);
+  --navy: #2b2d42;
+  --navy-dark: #1a1b2e;
+  --bg: #f3ede7;
+  --bg-card: #ffffff;
+  --bg-light: #f9f5f0;
+  --text-primary: #2b2d42;
+  --text-secondary: #6b6d7b;
+  --text-muted: #9597a6;
+  --border: #e5ddd4;
+  --green: #4caf50;
+  --green-light: #e8f5e9;
+  --shadow-sm: 0 2px 8px rgba(43, 45, 66, 0.06);
+  --shadow-md: 0 8px 24px rgba(43, 45, 66, 0.08);
+  --shadow-lg: 0 16px 48px rgba(43, 45, 66, 0.12);
+  --radius: 14px;
+  --radius-sm: 8px;
 }
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global Utility Classes (Standard CSS) */
+
+/* Layout utilities */
+.flex-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.flex-between {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.flex-align-center {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.flex-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+.gap-05 { gap: 0.5rem !important; }
+.gap-1 { gap: 1rem !important; }
+.gap-15 { gap: 1.5rem !important; }
+.gap-2 { gap: 2rem !important; }
+
+/* Spacing utilities */
+.container-full {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* Common UI Components */
+.card-base {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+
+.btn-primary {
+  background: var(--orange);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(232, 122, 46, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  background: var(--bg-light);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--orange);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(232, 122, 46, 0.08);
+}
+
+

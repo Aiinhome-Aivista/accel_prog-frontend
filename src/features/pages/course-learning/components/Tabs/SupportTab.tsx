@@ -6,9 +6,9 @@ export const SupportTab: React.FC = () => {
   const toast = useToast();
 
   return (
-    <div className="support-container">
-      <div className="support-title">Support</div>
-      <div className="support-grid">
+    <div className="learning-tab-container">
+      <h2 className="std-section-title mb-[1.2rem]">Support</h2>
+      <div className="grid grid-cols-2 gap-[0.6rem]">
         {[
           ['💬', 'Live Chat', 'Real-time help.'],
           ['📧', 'Email', 'Response in 24h.'],
@@ -17,7 +17,7 @@ export const SupportTab: React.FC = () => {
         ].map(([ic, t, d], idx) => (
           <div 
             key={idx} 
-            className="support-card"
+            className="std-card std-card-hover cursor-pointer"
             onClick={() => toast.showInfo(`${t} — coming soon!`)}
           >
             <div className="support-card-body">

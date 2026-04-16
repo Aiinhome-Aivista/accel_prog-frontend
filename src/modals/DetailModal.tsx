@@ -16,7 +16,7 @@ function DetailModal({ courseIndex, courseData, onClose }: DetailModalProps) {
     return (
         <div className="modal-overlay active" onClick={onClose}>
             <div className="detail-modal" onClick={(event) => event.stopPropagation()}>
-                <button className="modal-close" onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 5 }} aria-label="Close course detail modal">
+                <button className="modal-close flex-center" onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 5 }} aria-label="Close course detail modal">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                         <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                     </svg>

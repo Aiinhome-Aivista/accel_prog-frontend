@@ -65,21 +65,11 @@ export const FlashcardsTab: React.FC = () => {
   }, []);
 
   return (
-    <div className="flashcards-container">
-      {/* Hide WebKit scrollbars globally for this component */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-        `,
-        }}
-      />
-      <div className="flashcards-title">
+    <div className="learning-tab-container">
+      <h2 className="std-section-title mb-[1.2rem]">
         Flashcards
-      </div>
-      <p className="flashcards-subtitle">
+      </h2>
+      <p className="text-[0.74rem] text-[#6B6D7B] mt-[-0.8rem] mb-[0.6rem]">
         Click to flip. Practice daily.
       </p>
 
@@ -160,16 +150,16 @@ export const FlashcardsTab: React.FC = () => {
               return (
                 <div
                   key={f.id}
-                  className="min-w-[200px] h-[140px] rounded-[12px] bg-transparent cursor-pointer shrink-0 [perspective:600px]"
+                  className="flashcard-item"
                   onClick={() => toggleFlip(f.id)}
                 >
                   <div
-                    className={`w-full h-full relative transition-[transform] duration-500 [transform-style:preserve-3d] ${isFlipped ? "[transform:rotateY(180deg)]" : ""}`}
+                    className={`flashcard-inner ${isFlipped ? "is-flipped" : ""}`}
                   >
-                    <div className="absolute inset-0 [backface-visibility:hidden] flex items-center justify-center p-[1rem] text-center rounded-[12px] bg-[#F9F5F0] text-[0.8rem] font-semibold text-[#2B2D42] border border-[#E5DDD4]">
+                    <div className="flashcard-face flashcard-front">
                       {f.card_question}
                     </div>
-                    <div className="absolute inset-0 [backface-visibility:hidden] flex items-center justify-center p-[1rem] text-center rounded-[12px] bg-[#e87a2e1f] text-[0.75rem] text-[#D06A20] border border-[#E5DDD4] [transform:rotateY(180deg)] leading-[1.4]">
+                    <div className="flashcard-face flashcard-back">
                       {f.card_answer}
                     </div>
                   </div>

@@ -14,7 +14,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ open, onClose, onConfirm }) =
     <div className="modal-overlay active" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button
-          className="modal-close"
+          className="modal-close flex-center"
           onClick={onClose}
           aria-label="Close logout modal"
         >
@@ -34,15 +34,15 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ open, onClose, onConfirm }) =
           </svg>
         </button>
 
-        <div className="modal-brand">
+        <div className="modal-brand flex-align-center gap-05">
           <img
             src={LogoIcon}
             className="nav-logo-icon"
             alt="Logo"
             aria-hidden="true"
           />
-          <span className="text-2xl">
-            Moksh<em>Path</em>
+          <span className="text-2xl nav-logo-name">
+            Moksh<span>Path</span>
           </span>
         </div>
 

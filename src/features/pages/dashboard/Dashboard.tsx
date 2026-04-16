@@ -14,6 +14,7 @@ import {
   FiCheck,
   FiMessageSquare,
   FiBookOpen,
+  FiMenu,
 } from "react-icons/fi";
 import { BsFire } from "react-icons/bs";
 
@@ -501,7 +502,7 @@ const activityConfig = {
           </a> */}
           <a
             href="#"
-            className="nav-logo"
+            className="nav-logo flex-align-center gap-05"
             onClick={(e) => {
               e.preventDefault();
               // onCloseNav();
@@ -539,11 +540,7 @@ const activityConfig = {
                   key={item.id}
                   href={item.id === "dashboard" ? "#" : `#${item.id}`}
                   onClick={(e) => handleNavClick(e, item.id)}
-                  className={`dashboard-nav-link ${
-                    activeSection === item.id
-                      ? "active-nav"
-                      : ""
-                  }`}
+                  className={`std-nav-item ${activeSection === item.id ? "std-nav-item-active" : ""}`}
                 >
                   {item.label}
                 </a>
@@ -563,18 +560,16 @@ const activityConfig = {
             {displayInitial}
           </div>
           <button
-            className="md:hidden p-1 flex flex-col gap-1 cursor-pointer bg-transparent border-none"
+            className="md:hidden p-1 flex cursor-pointer bg-transparent border-none text-[#2B2D42] items-center"
             onClick={() => setNavOpen(!navOpen)}
           >
-            <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
-            <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
-            <span className="block w-[18px] h-[2px] bg-[#2B2D42]"></span>
+            <FiMenu size={26} />
           </button>
         </div>
       </nav>
 
       {/* Main Container */}
-      <main className="dashboard-main-container">
+      <main className="std-container py-8 pb-16 flex-1">
         {/* Welcome */}
         <div
           id="welcome-section"
@@ -604,14 +599,13 @@ const activityConfig = {
           </div>
           <div className="flex flex-wrap gap-2">
             <button
-              
-              className="btn-primary"
+              className="btn-std-primary"
               onClick={() => handleContinueLearning(1)}
             >
               Continue Learning
             </button>
             <button
-              className="btn-outline transition-colors"
+              className="btn-std-secondary"
               onClick={() =>
                 document
                   .getElementById("browse")
@@ -628,19 +622,19 @@ const activityConfig = {
           {stats.map((stat) => (
             <div
               key={stat.id}
-              className="stat-card"
+              className="std-stat-card"
             >
               <div
-                className="stat-icon"
+                className="std-stat-icon"
                 style={{ background: stat.iconBg }}
               >
                 {stat.icon}
               </div>
               <div>
-                <div className="stat-text-value">
+                <div className="std-stat-value">
                   {stat.value}
                 </div>
-                <div className="stat-label">
+                <div className="std-stat-label">
                   {stat.label}
                 </div>
               </div>
@@ -650,17 +644,14 @@ const activityConfig = {
 
         {/* In Progress Courses */}
         <div id="myCourses" className="scroll-mt-20">
-          <div className="mycourses-header">
-            <h2
-              className="mycourses-title"
-              style={{ fontFamily: '"DM Serif Display", serif' }}
-            >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="std-section-title">
               My Courses{" "}
               {enrolledCourses.length > 0 && enrolledCourses[0]?.status
                 ? `— ${enrolledCourses[0].status}`
                 : ""}
             </h2>
-            <div className="mycourses-badge">
+            <div className="std-badge" style={{ background: "rgba(232, 122, 46, 0.1)", color: "#E87A2E" }}>
               {isLoadingEnrolled ? "-" : enrolledCourses.length} Active
             </div>
           </div>
@@ -701,7 +692,7 @@ const activityConfig = {
               {enrolledCourses.map((course) => (
                 <div
                   key={course.id}
-                  className="mycourses-card overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(43,45,66,.08)] hover:-translate-y-0.5 transition-all cursor-pointer group"
+                  className="std-card std-card-hover flex flex-col group"
                 >
                   <div
                     className="course-banner"
@@ -709,7 +700,7 @@ const activityConfig = {
                   ></div>
                   <div className="course-body">
                     <div
-                      className="course-badge"
+                      className="std-badge mb-2.5 w-fit"
                       style={{
                         background: course.badgeBg,
                         color: course.badgeColor,
@@ -752,15 +743,15 @@ const activityConfig = {
                         </div>
                       </div>
                     )}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-nowrap">
                       <button
-                        className="btn-primary hover:bg-[#D06A20]transition-colors flex items-center"
+                        className="btn-std-primary flex-1 basis-0 min-w-0 whitespace-nowrap"
                         onClick={() => handleContinueLearning(course.id)}
                       >
                         Continue Learning
                       </button>
                       <button
-                        className="btn-secondary hover:text-[#E87A2E] hover:border-[#E87A2E] transition-colors flex items-center justify-center"
+                        className="btn-std-secondary flex-1 basis-0 min-w-0 whitespace-nowrap"
                         onClick={() =>
                           navigate(
                             `/course-learning?course_id=${course.id}&tab=grades`,
