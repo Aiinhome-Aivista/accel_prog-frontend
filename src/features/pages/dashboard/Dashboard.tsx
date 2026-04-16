@@ -742,15 +742,15 @@ const activityConfig = {
                         </div>
                       </div>
                     )}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-nowrap">
                       <button
-                        className="btn-std-primary flex-1"
+                        className="btn-std-primary flex-1 basis-0 min-w-0 whitespace-nowrap"
                         onClick={() => handleContinueLearning(course.id)}
                       >
                         Continue Learning
                       </button>
                       <button
-                        className="btn-std-secondary flex-1"
+                        className="btn-std-secondary flex-1 basis-0 min-w-0 whitespace-nowrap"
                         onClick={() =>
                           navigate(
                             `/course-learning?course_id=${course.id}&tab=grades`,
