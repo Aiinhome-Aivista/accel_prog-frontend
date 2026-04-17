@@ -4,6 +4,7 @@ import { useRegistration } from "../../../hooks/context/RegistrationContext";
 import { useAuth } from "../../../hooks/context/AuthContext";
 import BrandLogo from "../../../components/shared/BrandLogo";
 import { REG_SCHEMA } from "../../../data/registrationSchema";
+import { validateField, type ValidationType } from "../../../utils/validation";
 import "./RegistrationPage.css";
 
 interface Message {
@@ -72,6 +73,18 @@ function RegistrationPage({ onBackHome }: { onBackHome: () => void }) {
   }, [messages, isTyping]);
 
   const processNextStep = async (displayValue: string) => {
+    // Validate current field
+    const error = validateField(
+      currentField.type as ValidationType,
+      displayValue,
+      currentField.required
+    );
+
+    if (error) {
+      await addAssistantMessage(error);
+      return;
+    }
+
     setMessages((prev) => [
       ...prev,
       { id: `user-${Date.now()}`, type: "user", content: displayValue },
